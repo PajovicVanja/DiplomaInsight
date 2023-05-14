@@ -1,6 +1,8 @@
 const express = require('express')
 const cors = require('cors');
 const session = require('express-session');
+const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 const app = express()
 const port = 3000
 const db = require('./db');
@@ -45,6 +47,11 @@ app.post('/login', (req, res) => {
       if (results.length > 0) {
         const user = results[0];
         
+        // Check if the user's email is verified
+        if (!user.verified) {
+          return res.status(401).send('Please verify your email before logging in');
+        }
+        
         // Compare submitted password with hashed password
         const match = await bcrypt.compare(password, user.password);
         if (match) {
@@ -61,6 +68,7 @@ app.post('/login', (req, res) => {
     }
   });
 });
+
 //LOGOUT
 app.post('/logout', (req, res) => {
   console.log('Logout route called'); // Add this
@@ -80,22 +88,86 @@ app.post('/logout', (req, res) => {
 //REGISTER
 
 app.post('/register', async (req, res) => {
-    const { name, email, password } = req.body;
-    
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+  const { name, email, password } = req.body;
   
-    const query = 'INSERT INTO users (name, email, password) VALUES (?, ?, ?)';
-    db.query(query, [name, email, hashedPassword], (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during registration');
-      } else {
-        console.log(results); // log the query results
-        res.status(201).send('User registered successfully');
-      }
-    });
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const query = 'INSERT INTO users (name, email, password, verified) VALUES (?, ?, ?, ?)';
+  db.query(query, [name, email, hashedPassword, false], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during registration');
+    } else {
+      console.log(results); // log the query results
+
+      // Get the id of the newly created user
+      const userId = results.insertId;
+
+      // Send verification email
+      sendVerificationEmail(name, email, userId);
+      
+      res.status(201).send('User registered successfully, please verify your email');
+    }
   });
+});
+
+function sendVerificationEmail(name, email, userId) {
+  // Generate a token
+  const token = jwt.sign({ userId }, secretKey, { expiresIn: '1h' });
+
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    service: "gmail",
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS
+    }
+  });
+
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: email,
+    subject: 'Please confirm your email',
+    text: `Dear ${name},\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\nhttp://localhost:3000/verify?token=${token}\n\nIf you did not request this, please ignore this email.\n`
+  };
+
+  transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+}
+
+app.get('/verify', (req, res) => {
+  const token = req.query.token;
+
+  // Verify the token
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      // Token is invalid or expired
+      return res.status(400).send('Invalid token');
+    } else {
+      // Token is valid, mark user's email as verified
+      const userId = decoded.userId;
+
+      // Code to mark user's email as verified in database
+      const query = 'UPDATE users SET verified = ? WHERE id = ?';
+      db.query(query, [true, userId], (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).send('Error occurred during email verification');
+        } else {
+          res.send('Email verified successfully');
+        }
+      });
+    }
+  });
+});
 
 
 app.listen(port, () => {
