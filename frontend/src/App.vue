@@ -12,12 +12,15 @@
         <li class="nav-item">
           <a class="nav-link" href="#" @click.prevent="showRegister">Register</a>
         </li>
+        <li class="nav-item" v-if="loggedIn">
+          <Logout @user-logged-out="loggedIn = false" />
+        </li>
       </ul>
     </div>
   </nav>
 
   <div v-if="showLoginForm">
-    <Login @hide-form="hideForms" />
+    <Login @hide-form="hideForms" @user-logged-in="loggedIn = true" />
   </div>
 
   <div v-if="showRegisterForm">
@@ -28,17 +31,20 @@
 <script>
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
+import Logout from './components/Logout.vue';
 
 export default {
   name: 'App',
   components: {
     Login,
-    Register
+    Register,
+    Logout
   },
   data() {
     return {
       showLoginForm: false,
       showRegisterForm: false,
+      loggedIn: false,
     };
   },
   methods: {

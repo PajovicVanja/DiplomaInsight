@@ -21,17 +21,26 @@ export default {
     }
   },
   methods: {
-    async login() {
-      try {
-        const response = await axios.post('http://localhost:3000/login', {
-          email: this.email,
-          password: this.password
+    login() {
+      console.log('Login method called'); // Add this
+
+      const loginData = {
+        email: this.email,
+        password: this.password
+      };
+
+      axios.post('http://localhost:3000/login', loginData, { withCredentials: true })
+        .then(response => {
+          console.log('Response:', response);
+          if (response.status === 200) {
+            this.$emit('user-logged-in');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
         });
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
     }
   }
 }
+
 </script>
