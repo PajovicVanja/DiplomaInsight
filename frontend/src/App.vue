@@ -19,6 +19,15 @@
             </a>
           </div>
         </li>
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+          University
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#" @click.prevent="showUniversity">Add</a>
+          <a class="dropdown-item" href="#" @click.prevent="showUniversityDel">Delete</a>
+        </div>
+      </li>
       </ul>
     </div>
   </nav>
@@ -30,19 +39,29 @@
   <div v-if="showRegisterForm">
     <Register @hide-form="hideForms" />
   </div>
+  <div v-if="showUniversityForm">
+    <UniversityForm @hide-form="hideForms" />
+  </div>
+  <div v-if="showUniversityDelList">
+    <DeleteUniversity @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Logout from './components/Logout.vue';
+import UniversityForm from './components/UniversityForm.vue';
+import DeleteUniversity from './components/DeleteUniversity.vue';
 import axios from 'axios';
 export default {
   name: 'App',
   components: {
     Login,
     Register,
-    Logout
+    Logout,
+    UniversityForm,
+    DeleteUniversity,
   },
   created() {
     axios.get('http://localhost:3000/check-session', { withCredentials: true })
@@ -61,9 +80,20 @@ export default {
       showLoginForm: false,
       showRegisterForm: false,
       loggedIn: false,
+      showUniversityForm: false,
+      showUniversityDelList: false,
+
     };
   },
   methods: {
+    showUniversity() {
+      this.hideForms();
+      this.showUniversityForm = true;
+    },
+    showUniversityDel() {
+      this.hideForms();
+      this.showUniversityDelList = true;
+    },
     showLogin() {
       this.hideForms();
       this.showLoginForm = true;
@@ -75,6 +105,8 @@ export default {
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
+      this.showUniversityForm = false;
+      this.showUniversityDelList = false;
     },
   },
 };

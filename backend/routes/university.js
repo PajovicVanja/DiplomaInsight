@@ -65,15 +65,35 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
 
-    const query = 'DELETE FROM universities WHERE id = ?';
-    db.query(query, [id], (error, results) => {
+    const deleteStudyProgramsQuery = 'DELETE FROM study_programs WHERE faculty_id IN (SELECT id FROM faculties WHERE university_id = ?)';
+    const deleteFacultiesQuery = 'DELETE FROM faculties WHERE university_id = ?';
+    const deleteUniversityQuery = 'DELETE FROM universities WHERE id = ?';
+    
+    db.query(deleteStudyProgramsQuery, [id], (error, results) => {
         if (error) {
             console.log(error);
-            res.status(500).send('Error occurred during deleting university');
-        } else {
-            res.status(200).send('University deleted successfully');
+            res.status(500).send('Error occurred during deleting study programs');
+            return;
         }
+
+        db.query(deleteFacultiesQuery, [id], (error, results) => {
+            if (error) {
+                console.log(error);
+                res.status(500).send('Error occurred during deleting faculties');
+                return;
+            }
+
+            db.query(deleteUniversityQuery, [id], (error, results) => {
+                if (error) {
+                    console.log(error);
+                    res.status(500).send('Error occurred during deleting university');
+                } else {
+                    res.status(200).send('University deleted successfully');
+                }
+            });
+        });
     });
 });
+
 
 module.exports = router;
