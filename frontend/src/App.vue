@@ -12,6 +12,9 @@
         <li class="nav-item">
           <a class="nav-link" href="#" @click.prevent="showRegister">Register</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" @click.prevent="showUserCreate">Create candidate</a>
+        </li>
         <li class="nav-item" v-if="loggedIn">
           <Logout @user-logged-out="loggedIn = false" />
         </li>
@@ -26,24 +29,31 @@
   <div v-if="showRegisterForm">
     <Register @hide-form="hideForms" />
   </div>
+
+  <div v-if="showUserCreateForm">
+    <CreateCandidate @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Logout from './components/Logout.vue';
+import CreateCandidate from './components/CreateCandidate.vue';
 
 export default {
   name: 'App',
   components: {
     Login,
     Register,
-    Logout
+    Logout,
+    CreateCandidate
   },
   data() {
     return {
       showLoginForm: false,
       showRegisterForm: false,
+      showUserCreateForm: false,
       loggedIn: false,
     };
   },
@@ -56,9 +66,14 @@ export default {
       this.hideForms();
       this.showRegisterForm = true;
     },
+    showUserCreate() {
+      this.hideForms();
+      this.showUserCreateForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
+      this.showUserCreateForm = false;
     },
   },
 };
