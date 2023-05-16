@@ -5,19 +5,29 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link" href="#" @click.prevent="showLogin">Login</a>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+            Account
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#" @click.prevent="showLogin">Login</a>
+            <a class="dropdown-item" href="#" @click.prevent="showRegister">Register</a>
+            <div class="dropdown-divider" v-if="loggedIn"></div>
+            <a class="dropdown-item" href="#" v-if="loggedIn">
+              <Logout @user-logged-out="loggedIn = false" />
+            </a>
+          </div>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" @click.prevent="showRegister">Register</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" @click.prevent="showUserCreate">Create candidate</a>
-        </li>
-        <li class="nav-item" v-if="loggedIn">
-          <Logout @user-logged-out="loggedIn = false" />
-        </li>
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+          University
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#" @click.prevent="showUniversity">Add</a>
+          <a class="dropdown-item" href="#" @click.prevent="showUniversityDel">Delete</a>
+        </div>
+      </li>
       </ul>
     </div>
   </nav>
@@ -29,9 +39,11 @@
   <div v-if="showRegisterForm">
     <Register @hide-form="hideForms" />
   </div>
-
-  <div v-if="showUserCreateForm">
-    <CreateCandidate @hide-form="hideForms" />
+  <div v-if="showUniversityForm">
+    <UniversityForm @hide-form="hideForms" />
+  </div>
+  <div v-if="showUniversityDelList">
+    <DeleteUniversity @hide-form="hideForms" />
   </div>
 </template>
 
@@ -41,13 +53,30 @@ import Register from './components/Register.vue';
 import Logout from './components/Logout.vue';
 import CreateCandidate from './components/CreateCandidate.vue';
 
+import UniversityForm from './components/UniversityForm.vue';
+import DeleteUniversity from './components/DeleteUniversity.vue';
+import axios from 'axios';
 export default {
   name: 'App',
   components: {
     Login,
     Register,
     Logout,
-    CreateCandidate
+    CreateCandidate,
+    UniversityForm,
+    DeleteUniversity,
+  },
+  created() {
+    axios.get('http://localhost:3000/check-session', { withCredentials: true })
+  .then(response => {
+    console.log('Response:', response);
+    if (response.data.loggedIn) {
+      // Update the global state or a Vuex store to reflect that the user is logged in
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
   },
   data() {
     return {
@@ -55,9 +84,20 @@ export default {
       showRegisterForm: false,
       showUserCreateForm: false,
       loggedIn: false,
+      showUniversityForm: false,
+      showUniversityDelList: false,
+
     };
   },
   methods: {
+    showUniversity() {
+      this.hideForms();
+      this.showUniversityForm = true;
+    },
+    showUniversityDel() {
+      this.hideForms();
+      this.showUniversityDelList = true;
+    },
     showLogin() {
       this.hideForms();
       this.showLoginForm = true;
@@ -74,6 +114,8 @@ export default {
       this.showLoginForm = false;
       this.showRegisterForm = false;
       this.showUserCreateForm = false;
+      this.showUniversityForm = false;
+      this.showUniversityDelList = false;
     },
   },
 };
