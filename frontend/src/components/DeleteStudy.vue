@@ -1,14 +1,30 @@
-
 <template>
-    <div>
-        <h4>Delete a Study Program</h4>
-      <ul>
-        <li v-for="program in programs" :key="program.id">
-          {{ program.name }}, faculty - {{ getFacultyName(program.faculty_id) }}
-          <button @click="deleteProgram(program.id)">Delete</button>
-        </li>
-      </ul>
-    </div>
+  <div>
+    <h4>Study Programs</h4>
+    <ul>
+      <li v-for="program in programs" :key="program.id">
+        {{ program.name }}, faculty - {{ getFacultyName(program.faculty_id) }}
+        <button @click="deleteProgram(program.id)">Delete</button>
+        <button @click="startEditing(program)">Edit</button>
+
+        <div v-if="editingProgramId === program.id">
+          <form @submit.prevent="submitForm">
+            <label for="name">Study Program Name:</label>
+            <input type="text" id="name" v-model="editingProgram.name">
+
+            <label for="faculty_id">Faculty:</label>
+            <select v-model="editingProgram.faculty_id">
+              <option v-for="faculty in faculties" :key="faculty.id" :value="faculty.id">
+                {{ faculty.name }}
+              </option>
+            </select>
+
+            <button type="submit">Update Study Program</button>
+          </form>
+        </div>
+      </li>
+    </ul>
+  </div>
 </template>
   
 <script>
@@ -19,6 +35,11 @@ export default {
     return {
       programs: [],
       faculties: [],
+      editingProgramId: null,
+      editingProgram: {
+        name: '',
+        faculty_id: ''
+      }
     };
   },
   async created() {
@@ -38,6 +59,21 @@ export default {
     getFacultyName(id) {
       const faculty = this.faculties.find(faculty => faculty.id === id);
       return faculty ? faculty.name : '';
+    },
+    startEditing(program) {
+      this.editingProgramId = program.id;
+      this.editingProgram = { ...program };
+    },
+    async submitForm() {
+      try {
+        await axios.put(`http://localhost:3000/studyProgram/${this.editingProgramId}`, this.editingProgram);
+        const index = this.programs.findIndex(program => program.id === this.editingProgramId);
+        this.programs[index] = this.editingProgram;
+        this.editingProgramId = null;
+        this.editingProgram = { name: '', faculty_id: '' };
+      } catch (error) {
+        console.error(error);
+      }
     },
     async deleteProgram(id) {
       try {
