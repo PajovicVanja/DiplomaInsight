@@ -9,6 +9,9 @@
         <li class="nav-item">
           <a class="nav-link" href="#" @click.prevent="showUserCreate">Create candidate</a>
         </li>
+        <li class="nav-item" v-if="loggedIn">
+          <a class="nav-link" href="#" @click.prevent="showUserProfile">Profile</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
             Account
@@ -35,11 +38,11 @@
     </div>
   </nav>
 
-  <div v-if="showLoginForm">
+  <div style="padding-top: 10%;" v-if="showLoginForm">
     <Login @hide-form="hideForms" @user-logged-in="loggedIn = true" />
   </div>
 
-  <div v-if="showRegisterForm">
+  <div style="padding-top: 10%;" v-if="showRegisterForm">
     <Register @hide-form="hideForms" />
   </div>
   <div v-if="showUniversityForm">
@@ -51,6 +54,9 @@
   <div v-if="showUserCreateForm">
     <CreateCandidate @hide-form="hideForms" />
   </div>
+  <div v-if="showUserProfileForm">
+    <UserProfile @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -58,7 +64,7 @@ import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Logout from './components/Logout.vue';
 import CreateCandidate from './components/CreateCandidate.vue';
-
+import UserProfile from './components/UserProfile.vue';
 import UniversityForm from './components/UniversityForm.vue';
 import DeleteUniversity from './components/DeleteUniversity.vue';
 import axios from 'axios';
@@ -71,6 +77,7 @@ export default {
     CreateCandidate,
     UniversityForm,
     DeleteUniversity,
+    UserProfile,
   },
   created() {
     axios.get('http://localhost:3000/check-session', { withCredentials: true })
@@ -92,6 +99,7 @@ export default {
       loggedIn: false,
       showUniversityForm: false,
       showUniversityDelList: false,
+      showUserProfileForm: false,
 
     };
   },
@@ -116,12 +124,17 @@ export default {
       this.hideForms();
       this.showUserCreateForm = true;
     },
+    showUserProfile() {
+      this.hideForms();
+      this.showUserProfileForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
       this.showUserCreateForm = false;
       this.showUniversityForm = false;
       this.showUniversityDelList = false;
+      this.showUserProfileForm = false;
     },
   },
 };

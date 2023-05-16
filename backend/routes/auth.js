@@ -70,8 +70,8 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
   
-    const query = 'INSERT INTO users (name, email, password, verified) VALUES (?, ?, ?, ?)';
-    db.query(query, [name, email, hashedPassword, false], (error, results) => {
+    const query = 'INSERT INTO users (name, email, password, verified, role) VALUES (?, ?, ?, ?, ?)';
+    db.query(query, [name, email, hashedPassword, false, "user"], (error, results) => {
       if (error) {
         console.log(error);
         res.status(500).send('Error occurred during registration');

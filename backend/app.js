@@ -8,6 +8,9 @@ const indexRoutes = require('./routes/index'); // Import the index routes
 const universityRoutes = require('./routes/university');
 const facultyRoutes = require('./routes/faculty');
 const studyProgramRoutes = require('./routes/studyProgram');
+const profileRoutes = require('./routes/profile');
+
+
 const app = express();
 const port = 3000;
 
@@ -27,8 +30,8 @@ app.use(cors({
     saveUninitialized: false,
     cookie: {
       maxAge: 60 * 60 * 1000, // 1 hour
-      sameSite: 'none',
-      secure:true
+      sameSite: 'lax',
+      secure:false
     }
   }));
 app.use('/', indexRoutes); // Use index routes
@@ -36,6 +39,7 @@ app.use('/', authRoutes); // Use auth routes
 app.use('/university', universityRoutes);
 app.use('/faculty', facultyRoutes);
 app.use('/studyProgram', studyProgramRoutes);
+app.use('/profile', profileRoutes);
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)

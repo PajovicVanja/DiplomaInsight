@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <h2>Login</h2>
-    <form @submit.prevent="login">
-      <input type="email" placeholder="Email" v-model="email" />
-      <input type="password" placeholder="Password" v-model="password" />
-      <button type="submit">Login</button>
+   <div class="login-container">
+    <h2 >Login</h2>
+    <form class="login-form" @submit.prevent="login">
+      <input class="input-field" type="email" placeholder="Email" v-model="email" />
+      <input class="input-field" type="password" placeholder="Password" v-model="password" />
+      <button class="submit-btn" type="submit">Login</button>
     </form>
   </div>
 </template>
@@ -44,3 +44,5 @@ export default {
 }
 
 </script>
+
+<style src="../css/Login.css" scoped></style>

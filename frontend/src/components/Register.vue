@@ -1,11 +1,11 @@
 <template>
-  <div>
+    <div class="register-container">
     <h2>Register</h2>
-    <form @submit.prevent="register">
-      <input type="text" placeholder="Name" v-model="name" />
-      <input type="email" placeholder="Email" v-model="email" />
-      <input type="password" placeholder="Password" v-model="password" />
-      <button type="submit">Register</button>
+    <form class="register-form" @submit.prevent="register">
+      <input class="input-field" type="text" placeholder="Name" v-model="name" />
+      <input class="input-field" type="email" placeholder="Email" v-model="email" />
+      <input class="input-field" type="password" placeholder="Password" v-model="password" />
+      <button class="submit-btn" type="submit">Register</button>
     </form>
   </div>
 </template>
@@ -38,3 +38,5 @@ export default {
   }
 }
 </script>
+
+<style src="../css/Register.css" scoped></style>
