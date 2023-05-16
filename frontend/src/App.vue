@@ -6,6 +6,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" @click.prevent="showUserCreate">Create candidate</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
             Account
@@ -44,6 +47,9 @@
   </div>
   <div v-if="showUniversityDelList">
     <DeleteUniversity @hide-form="hideForms" />
+  </div>
+  <div v-if="showUserCreateForm">
+    <CreateCandidate @hide-form="hideForms" />
   </div>
 </template>
 
