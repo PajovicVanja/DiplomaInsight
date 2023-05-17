@@ -40,6 +40,18 @@ router.get('/current', async (req, res) => {
     });
   });
 
+  // Fetching all user profiles
+router.get('/', async (req, res) => {
+  const query = 'SELECT * FROM users';
+  db.query(query, (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching user profiles');
+    } else {
+      res.status(200).json(results);
+    }
+  });
+});
 
   module.exports = router;
 
