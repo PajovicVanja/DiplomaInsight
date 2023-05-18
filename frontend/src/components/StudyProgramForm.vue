@@ -1,18 +1,19 @@
 <template>
-    <form @submit.prevent="submitForm">
-      <label for="name">Study Program Name:</label>
-      <input type="text" id="name" v-model="studyProgram.name">
-      
-      <label for="faculty_id">Faculty:</label>
-      <select v-model="studyProgram.faculty_id">
-        <option v-for="faculty in faculties" :key="faculty.id" :value="faculty.id">
-          {{ faculty.name }}
-        </option>
-      </select>
-      
-      <button type="submit">Add Study Program</button>
-    </form>
-  </template>
+  <form @submit.prevent="submitForm" class="form-section">
+    <label for="name" class="form-label">Study Program Name:</label>
+    <input type="text" id="name" v-model="studyProgram.name" class="form-input">
+    
+    <label for="faculty_id" class="form-label">Faculty:</label>
+    <select v-model="studyProgram.faculty_id" class="form-input">
+      <option v-for="faculty in faculties" :key="faculty.id" :value="faculty.id">
+        {{ faculty.name }}
+      </option>
+    </select>
+
+    <button type="submit" class="form-button">Add Study Program</button>
+  </form>
+</template>
+
   
   <script>
   import axios from 'axios';
@@ -49,4 +50,4 @@
     },
   };
   </script>
-  
+  <style src="../css/UniversityForm.css" scoped></style>

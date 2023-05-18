@@ -4,7 +4,7 @@
       <input type="checkbox" id="show-menu">
       <label for="show-menu" class="menu-icon"><i class="fas fa-bars"></i></label>
       <div class="content">
-        <div class="logo"><a href="#">DiplomaInsight</a></div>
+        <div class="logo"><a href="/">DiplomaInsight</a></div>
         <ul class="links">
           <li v-if="loggedIn">
             <a href="#" class="desktop-link">Candidates</a>
@@ -39,7 +39,7 @@
               <li><a href="#" @click.prevent="showUniversityDel">Delete</a></li>
             </ul>
           </li>
-          <li>
+          <!-- <li>
             <a href="#" class="desktop-link">Diploma</a>
             <input type="checkbox" id="show-diploma">
             <label for="show-diploma">Diploma</label>
@@ -47,7 +47,7 @@
               <li><a href="#" @click.prevent="showDiplomaCreate">Create</a></li>
               <li><a href="#" @click.prevent="showDeleteDiploma">Delete</a></li>
             </ul>
-          </li>
+          </li> -->
           <li>
             <a href="#" class="desktop-link">Help</a>
             <input type="checkbox" id="show-help">
@@ -70,7 +70,7 @@
   <div style="padding-top: 10%;" v-if="showRegisterForm">
     <Register @hide-form="hideForms" />
   </div>
-  <div style="padding-top: 10%;" v-if="showUniversityForm">
+  <div style="padding-top: 2%;" v-if="showUniversityForm">
     <UniversityForm @hide-form="hideForms" />
   </div>
   <div style="padding-top: 10%;" v-if="showUniversityDelList">
