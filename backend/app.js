@@ -9,6 +9,8 @@ const universityRoutes = require('./routes/university');
 const facultyRoutes = require('./routes/faculty');
 const studyProgramRoutes = require('./routes/studyProgram');
 const profileRoutes = require('./routes/profile');
+const candidateRoutes = require('./routes/candidate');
+
 
 
 const app = express();
@@ -40,6 +42,7 @@ app.use('/university', universityRoutes);
 app.use('/faculty', facultyRoutes);
 app.use('/studyProgram', studyProgramRoutes);
 app.use('/profile', profileRoutes);
+app.use('/candidate', candidateRoutes); // Use candidate routes
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
