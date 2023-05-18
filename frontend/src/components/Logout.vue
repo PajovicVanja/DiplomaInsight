@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <a class="nav-link"><button class="btn" @click="logout">Logout</button></a> 
-    </div>
+        <a @click="logout" >>>Logout</a> 
 </template>
   
 <script>
