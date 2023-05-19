@@ -2,11 +2,11 @@
   <div class="register-container">
     <h4 class="delete-candidate-heading">Delete a Candidate</h4>
     <ul>
-      <li v-for="candidate in candidates" :key="candidate.id" class="candidate">
+      <li v-for="candidate in localCandidates" :key="candidate.id" class="candidate">
         {{ candidate.name }}
         <button class="delete-btn" @click="deleteCandidate(candidate.id)">Delete</button>
         <button class="edit-btn" @click="startEditing(candidate)">Edit</button>
-        
+
         <div v-if="editingCandidateId === candidate.id" class="edit-form-container">
           <form @submit.prevent="submitForm" class="edit-form">
             <label for="name">Name:</label>
@@ -29,16 +29,24 @@
     </ul>
   </div>
 </template>
-<style src="../css/deleteCandidate.css" scoped></style>
-
 
 <script>
 import axios from 'axios';
 
 export default {
+  props: {
+    candidates: {
+      type: Array,
+      default: () => [],
+    },
+
+    userId: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
-      candidates: [],
       editingCandidateId: null,
       editingCandidate: {
         name: '',
@@ -46,17 +54,18 @@ export default {
         university: '',
         faculty: '',
         enrollmentNumber: '',
-        email: ''
-      }
+        email: '',
+      },
+      localCandidates: [],
     };
   },
-  async created() {
-    try {
-      const response = await axios.get('http://localhost:3000/candidate');
-      this.candidates = response.data;
-    } catch (error) {
-      console.error(error);
-    }
+  watch: {
+    candidates: {
+      immediate: true,
+      handler(newCandidates) {
+        this.localCandidates = [...newCandidates];
+      },
+    },
   },
   methods: {
     startEditing(candidate) {
@@ -66,10 +75,17 @@ export default {
     async submitForm() {
       try {
         await axios.put(`http://localhost:3000/candidate/${this.editingCandidateId}`, this.editingCandidate);
-        const index = this.candidates.findIndex(candidate => candidate.id === this.editingCandidateId);
-        this.candidates[index] = this.editingCandidate;
+        const index = this.localCandidates.findIndex(candidate => candidate.id === this.editingCandidateId);
+        this.localCandidates[index] = this.editingCandidate;
         this.editingCandidateId = null;
-        this.editingCandidate = { name: '', studyDirection: '', university: '', faculty: '', enrollmentNumber: '', email: '' };
+        this.editingCandidate = {
+          name: '',
+          studyDirection: '',
+          university: '',
+          faculty: '',
+          enrollmentNumber: '',
+          email: '',
+        };
       } catch (error) {
         console.error(error);
       }
@@ -77,7 +93,7 @@ export default {
     async deleteCandidate(id) {
       try {
         await axios.delete(`http://localhost:3000/candidate/${id}`);
-        this.candidates = this.candidates.filter((candidate) => candidate.id !== id);
+        this.localCandidates = this.localCandidates.filter(candidate => candidate.id !== id);
       } catch (error) {
         console.error(error);
       }
@@ -85,3 +101,5 @@ export default {
   },
 };
 </script>
+
+<style src="../css/deleteCandidate.css" scoped></style>

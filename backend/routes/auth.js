@@ -30,6 +30,7 @@ router.post('/login', (req, res) => {
         if (match) {
           req.session.user = user; // Set user to the session
           console.log('Session ID:', req.sessionID); // Log session ID
+          console.log('User ID:', user.id); // Log user ID
           console.log('User:', req.session.user); // Log user object
           res.status(200).send('User logged in successfully');
         } else {

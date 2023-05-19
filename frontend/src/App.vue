@@ -6,6 +6,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" @click.prevent="showAdmin">Admin</a> <!-- Add the "Admin" link -->
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="candidateDropdown" role="button" data-bs-toggle="dropdown">
             Candidates
@@ -15,6 +18,7 @@
             <a class="dropdown-item" href="#" @click.prevent="showDeleteCandidate">Delete</a>
           </div>
         </li>
+       
         <li class="nav-item" v-if="loggedIn">
           <a class="nav-link" href="#" @click.prevent="showUserProfile">Profile</a>
         </li>
@@ -66,6 +70,9 @@
   <div v-if="showUserProfileForm">
     <UserProfile @hide-form="hideForms" />
   </div>
+  <div v-if="showAdminPage">
+    <AdminPage @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -77,6 +84,8 @@ import DeleteCandidate from './components/DeleteCandidate.vue';
 import UserProfile from './components/UserProfile.vue';
 import UniversityForm from './components/UniversityForm.vue';
 import DeleteUniversity from './components/DeleteUniversity.vue';
+import AdminPage from './components/AdminPage.vue';
+
 import axios from 'axios';
 export default {
   name: 'App',
@@ -89,6 +98,7 @@ export default {
     UniversityForm,
     DeleteUniversity,
     UserProfile,
+    AdminPage,
   },
   created() {
     axios.get('http://localhost:3000/check-session', { withCredentials: true })
@@ -112,6 +122,7 @@ export default {
       showUniversityDelList: false,
       showUserProfileForm: false,
       showDeleteCandidateForm: false,
+      showAdminPage: false,
 
     };
   },
@@ -144,6 +155,10 @@ export default {
       this.hideForms();
       this.showUserProfileForm = true;
     },
+    showAdmin() {
+      this.hideForms();
+      this.showAdminPage = true; // Update the showAdminPage property
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -152,6 +167,7 @@ export default {
       this.showUniversityDelList = false;
       this.showUserProfileForm = false;
       this.showDeleteCandidateForm = false;
+      this.showAdminPage = false;
     },
   },
 };

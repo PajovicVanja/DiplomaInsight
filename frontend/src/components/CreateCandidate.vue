@@ -49,8 +49,9 @@ export default {
         university: '',
         faculty: '',
         studyProgram: '',
-        email: '', // New field
-        enrollmentNumber: '', // New field
+        email: '', 
+        enrollmentNumber: '', 
+        mentorId: '',
       },
       universities: [],
       faculties: [],
@@ -72,22 +73,27 @@ export default {
     }
   },
   methods: {
-    async submitForm() {
-      try {
-        await axios.post('http://localhost:3000/candidate/create', this.candidate);
-        this.candidate.name = '';
-        this.candidate.studyDirection = '';
-        this.candidate.university = '';
-        this.candidate.faculty = '';
-        this.candidate.studyProgram = '';
-        this.candidate.email = '';
-        this.candidate.enrollmentNumber = ''; 
-        alert('Candidate created successfully!');
-      } catch (error) {
-        console.error(error);
-      }
-    },
+  async submitForm() {
+    try {
+
+      await axios.post('http://localhost:3000/candidate/create', this.candidate);
+      // Reset form fields
+      this.candidate.name = '';
+      this.candidate.studyDirection = '';
+      this.candidate.university = '';
+      this.candidate.faculty = '';
+      this.candidate.studyProgram = '';
+      this.candidate.email = '';
+      this.candidate.enrollmentNumber = '';
+      this.candidate.mentorId = '';
+
+      alert('Candidate created successfully!');
+    } catch (error) {
+      console.error(error);
+    }
   },
+},
+
 };
 </script>
 <style src="../css/candidate.css" scoped></style>
