@@ -1,19 +1,22 @@
 <template>
-    <div>
-      <form @submit.prevent="submitForm">
-        <label for="name">University Name:</label>
-        <input type="text" id="name" v-model="university.name">
-        <input type="text" id="name" v-model="university.location">
-        <button type="submit">Add University</button>
-      </form>
-      
-      <faculty-form :key="componentKey"></faculty-form>
-    </div>
-  </template>
+  <div class="form-wrapper">
+    <form @submit.prevent="submitForm" class="form-section">
+      <label for="name" class="form-label">University Name:</label>
+      <input type="text" id="name" v-model="university.name" class="form-input">
+      <label for="location" class="form-label">Location</label>
+      <input type="text" id="location" v-model="university.location" class="form-input">
+      <button type="submit" class="form-button">Add University</button>
+    </form>
+    
+    <faculty-form :key="componentKey"></faculty-form>
+  </div>
+</template>
+
   
   <script>
   import axios from 'axios';
   import FacultyForm from './FacultyForm.vue';
+  
   
   export default {
     components: {
@@ -43,4 +46,4 @@
     },
   };
   </script>
-  
+  <style src="../css/UniversityForm.css" scoped></style>

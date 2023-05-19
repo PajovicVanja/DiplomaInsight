@@ -19,16 +19,16 @@
       </option>
     </select>
 
-    <label for="faculty">Faculty:</label>
-    <select id="faculty" class="input-field" v-model="candidate.faculty">
-      <option v-for="faculty in faculties" :key="faculty.id" :value="faculty.id">
+    <label for="faculty" v-if="candidate.university">Faculty:</label>
+  <select id="faculty" class="input-field" v-model="candidate.faculty" v-if="candidate.university">
+    <option v-for="faculty in filteredFaculties" :key="faculty.id" :value="faculty.id">
         {{ faculty.name }}
       </option>
     </select>
 
-    <label for="studyProgram">Study Program:</label>
-    <select id="studyProgram" class="input-field" v-model="candidate.studyProgram">
-      <option v-for="studyProgram in studyPrograms" :key="studyProgram.id" :value="studyProgram.id">
+    <label for="studyProgram" v-if="candidate.faculty">Study Program:</label>
+  <select id="studyProgram" class="input-field" v-model="candidate.studyProgram" v-if="candidate.faculty">
+    <option v-for="studyProgram in filteredPrograms" :key="studyProgram.id" :value="studyProgram.id">
         {{ studyProgram.name }}
       </option>
     </select>
@@ -68,9 +68,18 @@ export default {
 
       const studyProgramsResponse = await axios.get('http://localhost:3000/studyprogram');
       this.studyPrograms = studyProgramsResponse.data;
+
     } catch (error) {
       console.error(error);
     }
+  },
+  computed: {
+    filteredFaculties() {
+      return this.faculties.filter(faculty => faculty.university_id === this.candidate.university);
+    },
+    filteredPrograms() {
+      return this.studyPrograms.filter(program => program.faculty_id === this.candidate.faculty);
+    },
   },
   methods: {
   async submitForm() {

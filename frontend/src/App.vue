@@ -1,52 +1,71 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-info">
-    <a class="navbar-brand" href="#">DiplomaInsight</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
+  <div class="wrapper">
+    <nav>
+      <input type="checkbox" id="show-menu">
+      <label for="show-menu" class="menu-icon"><i class="fas fa-bars"></i></label>
+      <div class="content">
+        <div class="logo"><a href="/">DiplomaInsight</a></div>
+        <ul class="links">
+          <li class="nav-item">
           <a class="nav-link" href="#" @click.prevent="showAdmin">Admin</a> <!-- Add the "Admin" link -->
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="candidateDropdown" role="button" data-bs-toggle="dropdown">
-            Candidates
-          </a>
-          <div class="dropdown-menu" aria-labelledby="candidateDropdown">
-            <a class="dropdown-item" href="#" @click.prevent="showUserCreate">Create</a>
-            <a class="dropdown-item" href="#" @click.prevent="showDeleteCandidate">Delete</a>
-          </div>
-        </li>
-       
-        <li class="nav-item" v-if="loggedIn">
-          <a class="nav-link" href="#" @click.prevent="showUserProfile">Profile</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown">
-            Account
-          </a>
-          <div class="dropdown-menu" aria-labelledby="accountDropdown">
-            <a class="dropdown-item" href="#" @click.prevent="showLogin">Login</a>
-            <a class="dropdown-item" href="#" @click.prevent="showRegister">Register</a>
-            <div class="dropdown-divider" v-if="loggedIn"></div>
-            <a class="dropdown-item" href="#" v-if="loggedIn">
-              <Logout @user-logged-out="loggedIn = false" />
-            </a>
-          </div>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="universityDropdown" role="button" data-bs-toggle="dropdown">
-            University
-          </a>
-          <div class="dropdown-menu" aria-labelledby="universityDropdown">
-            <a class="dropdown-item" href="#" @click.prevent="showUniversity">Add</a>
-            <a class="dropdown-item" href="#" @click.prevent="showUniversityDel">Delete</a>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </nav>  
+        <li v-if="loggedIn">
+            <a href="#" class="desktop-link">Candidates</a>
+            <input type="checkbox" id="show-candidates">
+            <label for="show-candidates">Candidates</label>
+            <ul>
+              <li><a href="#" @click.prevent="showUserCreate">Create</a></li>
+              <li><a href="#" @click.prevent="showDeleteCandidate">Delete</a></li>
+            </ul>
+          </li>
+         
+        <li v-if="loggedIn"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
+          <li>
+            <a href="#" class="desktop-link">Account</a>
+            <input type="checkbox" id="show-account">
+            <label for="show-account">Account</label>
+            <ul>
+              <li><a href="#" @click.prevent="showLogin">Login</a></li>
+              <li><a href="#" @click.prevent="showRegister">Register</a></li>
+              <li v-if="loggedIn">
+                <a href="#">
+                  <Logout @user-logged-out="loggedIn = false" />
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="#" class="desktop-link">University</a>
+            <input type="checkbox" id="show-university">
+            <label for="show-university">University</label>
+            <ul>
+              <li><a href="#" @click.prevent="showUniversity">Create</a></li>
+              <li><a href="#" @click.prevent="showUniversityDel">Delete</a></li>
+            </ul>
+          </li>
+          <!-- <li>
+            <a href="#" class="desktop-link">Diploma</a>
+            <input type="checkbox" id="show-diploma">
+            <label for="show-diploma">Diploma</label>
+            <ul>
+              <li><a href="#" @click.prevent="showDiplomaCreate">Create</a></li>
+              <li><a href="#" @click.prevent="showDeleteDiploma">Delete</a></li>
+            </ul>
+          </li> -->
+          <li>
+            <a href="#" class="desktop-link">Help</a>
+            <input type="checkbox" id="show-help">
+            <label for="show-help">Help</label>
+            <ul>
+              <li><a href="#">FAQs</a></li>
+              <li><a href="#">Contact Us</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+   
+    </nav>
+  </div>
 
   <div style="padding-top: 10%;" v-if="showLoginForm">
     <Login @hide-form="hideForms" @user-logged-in="loggedIn = true" />
@@ -55,19 +74,24 @@
   <div style="padding-top: 10%;" v-if="showRegisterForm">
     <Register @hide-form="hideForms" />
   </div>
-  <div v-if="showUniversityForm">
+  <div style="padding-top: 2%;" v-if="showUniversityForm">
     <UniversityForm @hide-form="hideForms" />
   </div>
-  <div v-if="showUniversityDelList">
+  <div style="padding-top: 10%;" v-if="showUniversityDelList">
     <DeleteUniversity @hide-form="hideForms" />
   </div>
-  <div v-if="showUserCreateForm">
+
+
+
+
+
+  <div style="padding-top: 10%;" v-if="showUserCreateForm">
     <CreateCandidate @hide-form="hideForms" />
   </div>
-  <div v-if="showDeleteCandidateForm">
+  <div style="padding-top: 10%;" v-if="showDeleteCandidateForm">
     <DeleteCandidate @hide-form="hideForms" />
   </div>
-  <div v-if="showUserProfileForm">
+  <div style="padding-top: 10%;" v-if="showUserProfileForm">
     <UserProfile @hide-form="hideForms" />
   </div>
   <div v-if="showAdminPage">
@@ -172,3 +196,4 @@ export default {
   },
 };
 </script>
+<style src="./css/App.css" scoped></style>

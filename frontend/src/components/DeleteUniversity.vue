@@ -80,3 +80,5 @@ export default {
   },
 };
 </script>
+
+<style src="../css/DeletingList.css" scoped></style>

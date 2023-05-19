@@ -1,22 +1,22 @@
 <template>
-        <UniversityForm @university-added="getUniversities" />
-    <form @submit.prevent="submitForm">
-      <label for="name">Faculty Name:</label>
-      <input type="text" id="name" v-model="faculty.name">
-      
-      <label for="university_id">University:</label>
-      <select v-model="faculty.university_id">
-        <option v-for="university in universities" :key="university.id" :value="university.id">
-          {{ university.name }}
-        </option>
-      </select>
-      
-      <button type="submit">Add Faculty</button>
-    </form>
+  <UniversityForm @university-added="getUniversities" />
+<form @submit.prevent="submitForm" class="form-section">
+<label for="name" class="form-label">Faculty Name:</label>
+<input type="text" id="name" v-model="faculty.name" class="form-input">
 
-    <study-program-form :key="componentKey"></study-program-form>
+<label for="university_id" class="form-label">University:</label>
+<select v-model="faculty.university_id" class="form-input">
+  <option v-for="university in universities" :key="university.id" :value="university.id">
+    {{ university.name }}
+  </option>
+</select>
 
-  </template>
+<button type="submit" class="form-button">Add Faculty</button>
+</form>
+
+<study-program-form :key="componentKey"></study-program-form>
+</template>
+
   
   <script>
   import axios from 'axios';
@@ -69,4 +69,4 @@
     },
   };
   </script>
-  
+  <style src="../css/UniversityForm.css" scoped></style>
