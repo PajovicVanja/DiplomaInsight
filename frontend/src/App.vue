@@ -6,7 +6,10 @@
       <div class="content">
         <div class="logo"><a href="/">DiplomaInsight</a></div>
         <ul class="links">
-          <li v-if="loggedIn">
+          <li class="nav-item">
+          <a class="nav-link" href="#" @click.prevent="showAdmin">Admin</a> <!-- Add the "Admin" link -->
+        </li>
+        <li v-if="loggedIn">
             <a href="#" class="desktop-link">Candidates</a>
             <input type="checkbox" id="show-candidates">
             <label for="show-candidates">Candidates</label>
@@ -15,7 +18,8 @@
               <li><a href="#" @click.prevent="showDeleteCandidate">Delete</a></li>
             </ul>
           </li>
-          <li v-if="loggedIn"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
+         
+        <li v-if="loggedIn"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
           <li>
             <a href="#" class="desktop-link">Account</a>
             <input type="checkbox" id="show-account">
@@ -90,6 +94,9 @@
   <div style="padding-top: 10%;" v-if="showUserProfileForm">
     <UserProfile @hide-form="hideForms" />
   </div>
+  <div v-if="showAdminPage">
+    <AdminPage @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -101,6 +108,8 @@ import DeleteCandidate from './components/DeleteCandidate.vue';
 import UserProfile from './components/UserProfile.vue';
 import UniversityForm from './components/UniversityForm.vue';
 import DeleteUniversity from './components/DeleteUniversity.vue';
+import AdminPage from './components/AdminPage.vue';
+
 import axios from 'axios';
 export default {
   name: 'App',
@@ -113,6 +122,7 @@ export default {
     UniversityForm,
     DeleteUniversity,
     UserProfile,
+    AdminPage,
   },
   created() {
     axios.get('http://localhost:3000/check-session', { withCredentials: true })
@@ -136,6 +146,7 @@ export default {
       showUniversityDelList: false,
       showUserProfileForm: false,
       showDeleteCandidateForm: false,
+      showAdminPage: false,
 
     };
   },
@@ -168,7 +179,10 @@ export default {
       this.hideForms();
       this.showUserProfileForm = true;
     },
- 
+    showAdmin() {
+      this.hideForms();
+      this.showAdminPage = true; // Update the showAdminPage property
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -177,6 +191,7 @@ export default {
       this.showUniversityDelList = false;
       this.showUserProfileForm = false;
       this.showDeleteCandidateForm = false;
+      this.showAdminPage = false;
     },
   },
 };

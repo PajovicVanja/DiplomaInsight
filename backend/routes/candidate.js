@@ -9,16 +9,18 @@ router.post('/create', (req, res) => {
     if (!Array.isArray(candidates)) {
       candidates = [candidates];
     }
-  
-    const query = 'INSERT INTO candidates (name, study_direction, university, faculty, enrollment_number, email) VALUES ?';
-  
+    const mentorId = req.session.user.id; // Get the mentorId from the session
+
+    const query = 'INSERT INTO candidates (name, study_direction, university, faculty, enrollment_number, email, mentor_id) VALUES ?';
+
     const values = candidates.map(candidate => [
       candidate.name,
       candidate.studyDirection,
       candidate.university,
       candidate.faculty,
       candidate.enrollmentNumber,
-      candidate.email
+      candidate.email,
+      mentorId
     ]);
   
     db.query(query, [values], (error, results) => {
@@ -32,29 +34,8 @@ router.post('/create', (req, res) => {
   });
   
 
-// Select all candidates
-router.get('/', (req, res) => {
-    const query = 'SELECT * FROM candidates';
-    db.query(query, (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during fetching candidates');
-      } else {
-        const candidates = results.map(candidate => ({
-          id: candidate.id,
-          name: candidate.name,
-          studyDirection: candidate.study_direction,
-          university: candidate.university,
-          faculty: candidate.faculty,
-          enrollmentNumber: candidate.enrollment_number,
-          email: candidate.email
-        }));
-        res.status(200).send(candidates);
-      }
-    });
-  });
-  
-  
+
+
   
   // Get a candidate by ID
   router.get('/:id', (req, res) => {
@@ -101,5 +82,85 @@ router.get('/', (req, res) => {
       }
     });
   });
-  
+
+  // Get candidates by user ID
+router.get('/user/:userId', (req, res) => {
+  const { userId } = req.params;
+
+  const query = 'SELECT * FROM candidates WHERE mentor_id = ?';
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching candidates');
+    } else {
+      const candidates = results.map(candidate => ({
+        id: candidate.id,
+        name: candidate.name,
+        studyDirection: candidate.study_direction,
+        university: candidate.university,
+        faculty: candidate.faculty,
+        enrollmentNumber: candidate.enrollment_number,
+        email: candidate.email
+      }));
+      res.status(200).send(candidates);
+    }
+  });
+});
+
+
+// Get candidates by user ID
+router.get('/', (req, res) => {
+  if (req.session && req.session.user) {
+    const mentorId = req.session.user.id; // Retrieve mentor ID from the session
+    console.log('Mentor ID:', mentorId); // Log the mentor ID
+
+    const query = 'SELECT * FROM candidates WHERE mentor_id = ?';
+    db.query(query, [mentorId], (error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send('Error occurred during fetching candidates');
+      } else {
+        console.log('Query Results:', results); // Log the query results
+
+        const candidates = results.map(candidate => ({
+          id: candidate.id,
+          name: candidate.name,
+          studyDirection: candidate.study_direction,
+          university: candidate.university,
+          faculty: candidate.faculty,
+          enrollmentNumber: candidate.enrollment_number,
+          email: candidate.email
+        }));
+        res.status(200).send(candidates);
+      }
+    });
+  } else {
+    res.status(401).send('Unauthorized');
+  }
+});
+
+// Select all candidates
+router.get('/user', (req, res) => {
+  const query = 'SELECT * FROM candidates';
+  db.query(query, (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching candidates');
+    } else {
+      const candidates = results.map(candidate => ({
+        id: candidate.id,
+        name: candidate.name,
+        studyDirection: candidate.study_direction,
+        university: candidate.university,
+        faculty: candidate.faculty,
+        enrollmentNumber: candidate.enrollment_number,
+        email: candidate.email
+      }));
+      res.status(200).send(candidates);
+    }
+  });
+});
+
+
+
   module.exports = router;
