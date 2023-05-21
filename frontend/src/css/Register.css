@@ -27,9 +27,19 @@ h2 {
     border-radius: 5px;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   }
+  .input-field.green{
+    background-color: #38d0548a;
+  }
+  .input-field.red{
+    background-color: #cf20108a;
+  }
+
+  .centering{
+    text-align: center 
+  }
   
   .submit-btn {
-    width: 100%;
+    width: 40%;
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
@@ -47,3 +57,24 @@ h2 {
   .submit-btn:active {
     transform: scale(0.95);
   }
+
+  .submit-btn.short-password:hover {
+    transform: translateX(100px);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .submit-btn.short-password:hover:active {
+    transform: translateX(-100px);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .submit-btn.move-right {
+    transform: translateX(100px);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .submit-btn.move-left {
+    transform: translateX(-100px);
+    transition: transform 0.3s ease-in-out;
+  }
+  

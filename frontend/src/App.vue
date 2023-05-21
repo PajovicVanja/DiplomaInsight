@@ -6,10 +6,12 @@
       <div class="content">
         <div class="logo"><a href="/">DiplomaInsight</a></div>
         <ul class="links">
-          <li class="nav-item">
-          <a class="nav-link" href="#" @click.prevent="showAdmin">Admin</a> <!-- Add the "Admin" link -->
-        </li>
-        <li v-if="loggedIn">
+        
+          <li v-if="isAdmin">
+  <a href="#" @click.prevent="showAdmin">Admin</a>
+</li>
+
+        <li v-if="loggedIn ">
             <a href="#" class="desktop-link">Candidates</a>
             <input type="checkbox" id="show-candidates">
             <label for="show-candidates">Candidates</label>
@@ -19,7 +21,7 @@
             </ul>
           </li>
          
-        <li v-if="loggedIn"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
+        <li v-if="loggedIn "><a href="#" @click.prevent="showUserProfile">Profile</a></li>
           <li>
             <a href="#" class="desktop-link">Account</a>
             <input type="checkbox" id="show-account">
@@ -28,13 +30,13 @@
               <li><a href="#" @click.prevent="showLogin">Login</a></li>
               <li><a href="#" @click.prevent="showRegister">Register</a></li>
               <li v-if="loggedIn">
-                <a href="#">
-                  <Logout @user-logged-out="loggedIn = false" />
-                </a>
-              </li>
+  <a href="#">
+    <Logout @user-logged-out="logoutUser" />
+  </a>
+</li>
             </ul>
           </li>
-          <li>
+          <li v-if="isAdmin">
             <a href="#" class="desktop-link">University</a>
             <input type="checkbox" id="show-university">
             <label for="show-university">University</label>
@@ -68,7 +70,7 @@
   </div>
 
   <div style="padding-top: 10%;" v-if="showLoginForm">
-    <Login @hide-form="hideForms" @user-logged-in="loggedIn = true" />
+    <Login @hide-form="hideForms" @user-logged-in="checkSession" />
   </div>
 
   <div style="padding-top: 10%;" v-if="showRegisterForm">
@@ -124,18 +126,7 @@ export default {
     UserProfile,
     AdminPage,
   },
-  created() {
-    axios.get('http://localhost:3000/check-session', { withCredentials: true })
-  .then(response => {
-    console.log('Response:', response);
-    if (response.data.loggedIn) {
-      // Update the global state or a Vuex store to reflect that the user is logged in
-    }
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-  },
+ 
   data() {
     return {
       showLoginForm: false,
@@ -147,10 +138,33 @@ export default {
       showUserProfileForm: false,
       showDeleteCandidateForm: false,
       showAdminPage: false,
+      isAdmin: false,
+      isUser: false,
+
 
     };
   },
+  created() {
+    this.checkSession();
+  },
+
   methods: {
+    checkSession() {
+    axios.get('http://localhost:3000/check-session', { withCredentials: true })
+      .then(response => {
+        if (response.data.loggedIn) {
+          this.loggedIn = true;
+          this.isAdmin = response.data.user.role === 'admin';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  },
+  logoutUser() {
+    this.loggedIn = false;
+    this.isAdmin = false;
+  },
     showUniversity() {
       this.hideForms();
       this.showUniversityForm = true;
