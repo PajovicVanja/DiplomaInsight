@@ -4,7 +4,7 @@
       <input type="checkbox" id="show-menu">
       <label for="show-menu" class="menu-icon"><i class="fas fa-bars"></i></label>
       <div class="content">
-        <div class="logo"><a href="/">DiplomaInsight</a></div>
+        <div class="logo"><a href="/"><img class="logo-img" :src="logo" alt="DiplomaInsight logo" /></a></div>
         <ul class="links">
         
           <li v-if="isAdmin">
@@ -113,6 +113,8 @@ import DeleteUniversity from './components/DeleteUniversity.vue';
 import AdminPage from './components/AdminPage.vue';
 import DeleteCandidateUser from './components/DeleteCandidateUser.vue';
 import axios from 'axios';
+import logo from '@/assets/logoo.png';
+
 export default {
   name: 'App',
   components: {
@@ -129,6 +131,7 @@ export default {
  
   data() {
     return {
+      logo,
       showLoginForm: false,
       showRegisterForm: false,
       showUserCreateForm: false,
