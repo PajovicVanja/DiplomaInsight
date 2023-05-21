@@ -41,7 +41,7 @@ export default {
     },
 
     userId: {
-      type: Number,
+      type: Number ,
       required: true,
     },
   },
