@@ -3,13 +3,35 @@ const router = express.Router();
 const db = require('../db');
 
 router.post('/create', (req, res) => {
+    // Check if session exists
+    if (req.session) {
+        console.log('Session exists');
+
+        // Check if user object exists in the session
+        if (req.session.user) {
+            console.log('User exists in the session');
+        } else {
+            console.log('User does NOT exist in the session');
+        }
+    } else {
+        console.log('Session does NOT exist');
+    }
+
     let candidates = req.body;
-  
+
     // If a single candidate object is sent, convert it to an array
     if (!Array.isArray(candidates)) {
-      candidates = [candidates];
+        candidates = [candidates];
     }
-    const mentorId = req.session.user.id; // Get the mentorId from the session
+    // Add a check before accessing user id
+    const mentorId = req.session && req.session.user ? req.session.user.id : null; 
+
+    // Check if mentorId exists
+    if (mentorId) {
+        console.log('Mentor ID:', mentorId);
+    } else {
+        console.log('Mentor ID does NOT exist');
+    }
 
     const query = 'INSERT INTO candidates (name, study_direction, university, faculty, enrollment_number, email, mentor_id) VALUES ?';
 
@@ -22,7 +44,8 @@ router.post('/create', (req, res) => {
       candidate.email,
       mentorId
     ]);
-  
+    console.log("values "+ values);
+
     db.query(query, [values], (error, results) => {
       if (error) {
         console.log(error);
@@ -32,6 +55,7 @@ router.post('/create', (req, res) => {
       }
     });
   });
+
   
 
 
