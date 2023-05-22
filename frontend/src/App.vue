@@ -4,7 +4,7 @@
       <input type="checkbox" id="show-menu">
       <label for="show-menu" class="menu-icon"><i class="fas fa-bars"></i></label>
       <div class="content">
-        <div class="logo"><a href="/">DiplomaInsight</a></div>
+        <div class="logo"><a href="/"><img class="logo-img" :src="logo" alt="DiplomaInsight logo" /></a></div>
         <ul class="links">
         
           <li v-if="isAdmin">
@@ -91,7 +91,8 @@
     <CreateCandidate @hide-form="hideForms" />
   </div>
   <div style="padding-top: 10%;" v-if="showDeleteCandidateForm">
-    <DeleteCandidate @hide-form="hideForms" />
+    <DeleteCandidateUser @hide-form="hideForms"  />
+
   </div>
   <div style="padding-top: 10%;" v-if="showUserProfileForm">
     <UserProfile @hide-form="hideForms" />
@@ -106,13 +107,14 @@ import Login from './components/Login.vue';
 import Register from './components/Register.vue';
 import Logout from './components/Logout.vue';
 import CreateCandidate from './components/CreateCandidate.vue';
-import DeleteCandidate from './components/DeleteCandidate.vue';
 import UserProfile from './components/UserProfile.vue';
 import UniversityForm from './components/UniversityForm.vue';
 import DeleteUniversity from './components/DeleteUniversity.vue';
 import AdminPage from './components/AdminPage.vue';
-
+import DeleteCandidateUser from './components/DeleteCandidateUser.vue';
 import axios from 'axios';
+import logo from '@/assets/logoo.png';
+
 export default {
   name: 'App',
   components: {
@@ -120,15 +122,16 @@ export default {
     Register,
     Logout,
     CreateCandidate,
-    DeleteCandidate,
     UniversityForm,
     DeleteUniversity,
     UserProfile,
     AdminPage,
+    DeleteCandidateUser,
   },
  
   data() {
     return {
+      logo,
       showLoginForm: false,
       showRegisterForm: false,
       showUserCreateForm: false,
