@@ -2,112 +2,112 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-router.post('/create', (req, res) => {
-    // Check if session exists
-    if (req.session) {
-        console.log('Session exists');
+const bcrypt = require('bcrypt');
 
-        // Check if user object exists in the session
-        if (req.session.user) {
-            console.log('User exists in the session');
-        } else {
-            console.log('User does NOT exist in the session');
-        }
+router.post('/create', async (req, res) => {
+  // Check if session exists
+  if (req.session) {
+    console.log('Session exists');
+
+    // Check if user object exists in the session
+    if (req.session.user) {
+      console.log('User exists in the session');
     } else {
-        console.log('Session does NOT exist');
+      console.log('User does NOT exist in the session');
     }
+  } else {
+    console.log('Session does NOT exist');
+  }
 
-    let candidates = req.body;
+  let candidates = req.body;
 
-    // If a single candidate object is sent, convert it to an array
-    if (!Array.isArray(candidates)) {
-        candidates = [candidates];
-    }
-    // Add a check before accessing user id
-    const mentorId = req.session && req.session.user ? req.session.user.id : null; 
+  // If a single candidate object is sent, convert it to an array
+  if (!Array.isArray(candidates)) {
+    candidates = [candidates];
+  }
 
-    // Check if mentorId exists
-    if (mentorId) {
-        console.log('Mentor ID:', mentorId);
-    } else {
-        console.log('Mentor ID does NOT exist');
-    }
+  const query = 'INSERT INTO candidates (name, study_direction, university, faculty, enrollment_number, email, password) VALUES ?';
 
-    const query = 'INSERT INTO candidates (name, study_direction, university, faculty, enrollment_number, email, mentor_id) VALUES ?';
+  const values = [];
+  for (let candidate of candidates) {
+    // Hash the candidate's email to use as their initial password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(candidate.email, salt);
 
-    const values = candidates.map(candidate => [
+    values.push([
       candidate.name,
       candidate.studyDirection,
       candidate.university,
       candidate.faculty,
       candidate.enrollmentNumber,
       candidate.email,
-      mentorId
+      hashedPassword,
     ]);
-    console.log("values "+ values);
+  }
 
-    db.query(query, [values], (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during candidate creation');
-      } else {
-        res.status(201).send('Candidates created successfully');
-      }
-    });
+  db.query(query, [values], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during candidate creation');
+    } else {
+      res.status(201).send('Candidates created successfully');
+    }
   });
-
-  
-
+});
 
 
-  
-  // Get a candidate by ID
-  router.get('/:id', (req, res) => {
-    const { id } = req.params;
-  
-    const query = 'SELECT * FROM candidates WHERE id = ?';
-    db.query(query, [id], (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during fetching candidate');
-      } else {
-        res.status(200).send(results);
-      }
-    });
+
+
+
+
+
+// Get a candidate by ID
+router.get('/:id', (req, res) => {
+  const { id } = req.params;
+
+  const query = 'SELECT * FROM candidates WHERE id = ?';
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching candidate');
+    } else {
+      res.status(200).send(results);
+    }
   });
-  
-  // Update a candidate by ID
-  router.put('/:id', (req, res) => {
-    const { id } = req.params;
-    const { name, studyDirection, university, faculty, enrollmentNumber, email } = req.body;
-  
-    const query = 'UPDATE candidates SET name = ?, study_direction = ?, university = ?, faculty = ?, enrollment_number = ?, email = ? WHERE id = ?';
-    db.query(query, [name, studyDirection, university, faculty, enrollmentNumber, email, id], (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during updating candidate');
-      } else {
-        res.status(200).send('Candidate updated successfully');
-      }
-    });
-  });
-  
-  // Delete a candidate by ID
-  router.delete('/:id', (req, res) => {
-    const { id } = req.params;
-  
-    const query = 'DELETE FROM candidates WHERE id = ?';
-    db.query(query, [id], (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during deleting candidate');
-      } else {
-        res.status(200).send('Candidate deleted successfully');
-      }
-    });
-  });
+});
 
-  // Get candidates by user ID
+// Update a candidate by ID
+router.put('/:id', (req, res) => {
+  const { id } = req.params;
+  const { name, studyDirection, university, faculty, enrollmentNumber, email } = req.body;
+
+  const query = 'UPDATE candidates SET name = ?, study_direction = ?, university = ?, faculty = ?, enrollment_number = ?, email = ? WHERE id = ?';
+  db.query(query, [name, studyDirection, university, faculty, enrollmentNumber, email, id], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during updating candidate');
+    } else {
+      res.status(200).send('Candidate updated successfully');
+    }
+  });
+});
+
+// Delete a candidate by ID
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+
+  const query = 'DELETE FROM candidates WHERE id = ?';
+  db.query(query, [id], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during deleting candidate');
+    } else {
+      res.status(200).send('Candidate deleted successfully');
+    }
+  });
+});
+
+// Get candidates by user ID
 router.get('/user/:userId', (req, res) => {
   const { userId } = req.params;
 
@@ -187,4 +187,4 @@ router.get('/user', (req, res) => {
 
 
 
-  module.exports = router;
+module.exports = router;

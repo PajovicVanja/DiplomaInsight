@@ -6,12 +6,19 @@
       <div class="content">
         <div class="logo"><a href="/"><img class="logo-img" :src="logo" alt="DiplomaInsight logo" /></a></div>
         <ul class="links">
-        
-          <li v-if="isAdmin">
-  <a href="#" @click.prevent="showAdmin">Admin</a>
-</li>
 
-        <li v-if="loggedIn ">
+          <li v-if="loggedIn && isCandidate">
+            <a href="#" @click.prevent="showDispositonRegistration">Thesis Registration</a>
+          </li>
+          <li v-if="loggedIn && isUser">
+            <a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a>
+          </li>
+
+          <li v-if="isAdmin">
+            <a href="#" @click.prevent="showAdmin">Admin</a>
+          </li>
+
+          <li v-if="loggedIn && isAdmin || isUser">
             <a href="#" class="desktop-link">Candidates</a>
             <input type="checkbox" id="show-candidates">
             <label for="show-candidates">Candidates</label>
@@ -20,8 +27,8 @@
               <li><a href="#" @click.prevent="showDeleteCandidate">Delete</a></li>
             </ul>
           </li>
-         
-        <li v-if="loggedIn "><a href="#" @click.prevent="showUserProfile">Profile</a></li>
+
+          <li v-if="loggedIn && isUser"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
           <li>
             <a href="#" class="desktop-link">Account</a>
             <input type="checkbox" id="show-account">
@@ -30,10 +37,10 @@
               <li><a href="#" @click.prevent="showLogin">Login</a></li>
               <li><a href="#" @click.prevent="showRegister">Register</a></li>
               <li v-if="loggedIn">
-  <a href="#">
-    <Logout @user-logged-out="logoutUser" />
-  </a>
-</li>
+                <a href="#">
+                  <Logout @user-logged-out="logoutUser" />
+                </a>
+              </li>
             </ul>
           </li>
           <li v-if="isAdmin">
@@ -65,7 +72,7 @@
           </li>
         </ul>
       </div>
-   
+
     </nav>
   </div>
 
@@ -82,23 +89,23 @@
   <div style="padding-top: 10%;" v-if="showUniversityDelList">
     <DeleteUniversity @hide-form="hideForms" />
   </div>
-
-
-
-
-
   <div style="padding-top: 10%;" v-if="showUserCreateForm">
     <CreateCandidate @hide-form="hideForms" />
   </div>
   <div style="padding-top: 10%;" v-if="showDeleteCandidateForm">
-    <DeleteCandidateUser @hide-form="hideForms"  />
-
+    <DeleteCandidateUser @hide-form="hideForms" />
   </div>
   <div style="padding-top: 10%;" v-if="showUserProfileForm">
     <UserProfile @hide-form="hideForms" />
   </div>
   <div v-if="showAdminPage">
     <AdminPage @hide-form="hideForms" />
+  </div>
+  <div style="padding-top: 10%;" v-if="showDispositionForm">
+    <DispositionRegistration @hide-form="hideForms" />
+  </div>
+  <div style="padding-top: 10%;" v-if="showDispositionReviewForm">
+    <SubmittedDispositions @hide-form="hideForms" />
   </div>
 </template>
 
@@ -112,6 +119,10 @@ import UniversityForm from './components/UniversityForm.vue';
 import DeleteUniversity from './components/DeleteUniversity.vue';
 import AdminPage from './components/AdminPage.vue';
 import DeleteCandidateUser from './components/DeleteCandidateUser.vue';
+import DispositionRegistration from './components/DispositionRegistration.vue';
+import SubmittedDispositions from './components/SubmittedDispositions.vue';
+
+
 import axios from 'axios';
 import logo from '@/assets/logoo.png';
 
@@ -127,8 +138,10 @@ export default {
     UserProfile,
     AdminPage,
     DeleteCandidateUser,
+    DispositionRegistration,
+    SubmittedDispositions
   },
- 
+
   data() {
     return {
       logo,
@@ -143,6 +156,9 @@ export default {
       showAdminPage: false,
       isAdmin: false,
       isUser: false,
+      isCandidate: false,
+      showDispositionForm: false,
+      showDispositionReviewForm: false,
 
 
     };
@@ -153,21 +169,25 @@ export default {
 
   methods: {
     checkSession() {
-    axios.get('http://localhost:3000/check-session', { withCredentials: true })
-      .then(response => {
-        if (response.data.loggedIn) {
-          this.loggedIn = true;
-          this.isAdmin = response.data.user.role === 'admin';
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  },
-  logoutUser() {
-    this.loggedIn = false;
-    this.isAdmin = false;
-  },
+      axios.get('http://localhost:3000/check-session', { withCredentials: true })
+        .then(response => {
+          if (response.data.loggedIn) {
+            this.loggedIn = true;
+            this.isAdmin = response.data.user.role === 'admin';
+            this.isUser = response.data.user.role === 'user';
+            this.isCandidate = response.data.user.role === 'candidate';
+          } 
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+    logoutUser() {
+      this.loggedIn = false;
+      this.isAdmin = false;
+      this.isUser = false;
+      this.isCandidate = false;
+    },
     showUniversity() {
       this.hideForms();
       this.showUniversityForm = true;
@@ -198,7 +218,15 @@ export default {
     },
     showAdmin() {
       this.hideForms();
-      this.showAdminPage = true; // Update the showAdminPage property
+      this.showAdminPage = true;
+    },
+    showDispositonRegistration() {
+      this.hideForms();
+      this.showDispositionForm = true;
+    },
+    showDispositonReviewRegistration() {
+      this.hideForms();
+      this.showDispositionReviewForm = true;
     },
     hideForms() {
       this.showLoginForm = false;
@@ -209,6 +237,8 @@ export default {
       this.showUserProfileForm = false;
       this.showDeleteCandidateForm = false;
       this.showAdminPage = false;
+      this.showDispositionForm = false;
+      this.showDispositionReviewForm = false;
     },
   },
 };
