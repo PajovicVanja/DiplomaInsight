@@ -35,6 +35,13 @@ nav .content .links{
   font-size: 30px;
   font-weight: 600;
 }
+.logo-img {
+  height: 65px; /* adjust as needed */
+  width: auto;
+  mix-blend-mode: multiply;
+
+}
+
 .content .links li{
   list-style: none;
   line-height: 70px;

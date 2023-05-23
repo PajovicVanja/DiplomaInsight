@@ -51,11 +51,10 @@ export default {
         studyProgram: '',
         email: '', 
         enrollmentNumber: '', 
-        mentorId: '',
       },
-      user: {
-          id: '',
-        },
+      // user: {
+      //     id: '',
+      //   },
       universities: [],
       faculties: [],
       studyPrograms: [],
@@ -63,10 +62,10 @@ export default {
   },
   async created() {
     try {
-      axios.defaults.withCredentials = true;
-        const response = await axios.get('http://localhost:3000/profile/current');
-        this.user = response.data;
-        console.log("user id" + this.user.id)
+      // axios.defaults.withCredentials = true;
+      //   const response = await axios.get('http://localhost:3000/profile/current');
+      //   this.user = response.data;
+      //   console.log("user id" + this.user.id)
       axios.defaults.withCredentials = true;
       const universitiesResponse = await axios.get('http://localhost:3000/university');
       this.universities = universitiesResponse.data;

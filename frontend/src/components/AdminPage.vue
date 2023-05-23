@@ -32,7 +32,7 @@
       </tbody>
     </table>
 
-    <DeleteCandidate v-if="selectedUserId !== null" :candidates="userCandidates[selectedUserId]" />
+    <DeleteCandidate v-if="selectedUserId !== null" :candidates="userCandidates[selectedUserId]" :user-id="selectedUserId" />
  
   </div>
 </template>

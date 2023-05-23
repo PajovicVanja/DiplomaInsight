@@ -9,7 +9,19 @@ router.get('/current', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Please log in');
   }
+  if (req.session.user.role == "candidate"){
+    const userId = req.session.user.id; // Get user id from session
 
+  const query = 'SELECT * FROM candidates WHERE id = ?';
+  db.query(query, [userId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching user profile');
+    } else {
+      res.status(200).json(results[0]);
+    }
+  });
+  } else {
   const userId = req.session.user.id; // Get user id from session
 
   const query = 'SELECT * FROM users WHERE id = ?';
@@ -21,6 +33,7 @@ router.get('/current', async (req, res) => {
       res.status(200).json(results[0]);
     }
   });
+}
 });
 
 // Updating user profile data
