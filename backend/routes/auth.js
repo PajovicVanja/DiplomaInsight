@@ -11,37 +11,61 @@ const secretKey = crypto.randomBytes(64).toString('hex');
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
-  const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query, [email], async (error, results) => {
+  const userQuery = 'SELECT * FROM users WHERE email = ?';
+  const candidateQuery = 'SELECT * FROM candidates WHERE email = ?';
+
+  db.query(userQuery, [email], async (error, users) => {
     if (error) {
       console.log(error);
       res.status(500).send('Error occurred during login');
-    } else {
-      if (results.length > 0) {
-        const user = results[0];
-        
-        // Check if the user's email is verified
-        if (!user.verified) {
-          return res.status(401).send('Please verify your email before logging in');
-        }
-        
-        // Compare submitted password with hashed password
-        const match = await bcrypt.compare(password, user.password);
-        if (match) {
-          req.session.user = user; // Set user to the session
-          console.log('Session ID:', req.sessionID); // Log session ID
-          console.log('User ID:', user.id); // Log user ID
-          console.log('User:', req.session.user); // Log user object
-          res.status(200).send('User logged in successfully');
-        } else {
-          res.status(401).send('Incorrect email or password');
-        }
+    } else if (users.length > 0) {
+      const user = users[0];
+
+      // Check if the user's email is verified
+      if (!user.verified) {
+        return res.status(401).send('Please verify your email before logging in');
+      }
+
+      // Compare submitted password with hashed password
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        req.session.user = user; // Set user to the session
+        console.log('Session ID:', req.sessionID); // Log session ID
+        console.log('User ID:', user.id); // Log user ID
+        console.log('User:', req.session.user); // Log user object
+        res.status(200).send('User logged in successfully');
       } else {
         res.status(401).send('Incorrect email or password');
       }
+    } else {
+      // Check in the candidates table if no user was found
+      db.query(candidateQuery, [email], async (error, candidates) => {
+        if (error) {
+          console.log(error);
+          res.status(500).send('Error occurred during login');
+        } else if (candidates.length > 0) {
+          const candidate = candidates[0];
+
+          // Compare submitted password with hashed password
+          const match = await bcrypt.compare(password, candidate.password);
+          if (match) {
+            candidate.role = 'candidate'; // Adding role to the candidate object
+            req.session.user = candidate; // Set user to the session
+            console.log('Session ID:', req.sessionID); // Log session ID
+            console.log('Candidate ID:', candidate.id); // Log candidate ID
+            console.log('User:', req.session.user); // Log user object
+            res.status(200).send('Candidate logged in successfully');
+          } else {
+            res.status(401).send('Incorrect email or password');
+          }
+        } else {
+          res.status(401).send('Incorrect email or password');
+        }
+      });
     }
   });
 });
+
 
 router.get('/check-session', (req, res) => {
     if (req.session && req.session.user) {
