@@ -1,17 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
 *{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
   font-family: 'Poppins', sans-serif;
-  
 }
 .wrapper{
   background: #0062ff;
   position: fixed;
   width: 100%;
-  
 }
 .wrapper nav{
   position: relative;
@@ -34,14 +33,13 @@ nav .content .links{
   color: #fff;
   font-size: 30px;
   font-weight: 600;
+  
 }
 .logo-img {
-  height: 65px; /* adjust as needed */
-  width: auto;
-  mix-blend-mode: multiply;
-
-}
-
+    height: 65px; /* adjust as needed */
+    width: auto;
+    mix-blend-mode: multiply;
+  }
 .content .links li{
   list-style: none;
   line-height: 70px;
@@ -226,6 +224,10 @@ nav .content .links{
   }
   .content .links #show-features:checked ~ ul,
   .content .links #show-services:checked ~ ul,
+  .content .links #show-candidates:checked ~ ul,
+  .content .links #show-account:checked ~ ul,
+  .content .links #show-university:checked ~ ul,
+  .content .links #show-help:checked ~ ul,
   .content .links #show-items:checked ~ ul{
     max-height: 100vh;
   }
