@@ -275,4 +275,27 @@ router.post('/decline-theme/:themeId', (req, res) => {
   });
 });  
 
+//check current diploma
+router.get('/status/:candidateId', (req, res) => {
+  const { candidateId } = req.params;
+
+  const query = 'SELECT status FROM diploma_status WHERE candidate_id = ? ORDER BY id DESC LIMIT 1';
+
+  db.query(query, [candidateId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching status');
+    } else {
+      if (results.length === 0) {
+        // No status found for the candidateId
+        res.status(404).send('No status found for this candidate');
+      } else {
+        const status = results[0].status;
+        // Send the current status as a response
+        res.status(200).json({ currentStatus: status });
+      }
+    }
+  });
+});
+
 module.exports = router;
