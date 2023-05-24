@@ -103,6 +103,30 @@ router.get('/download-disposition/:dispositionId', (req, res) => {
       }
     });
   });
+  
+
+  router.get('/themed-dispositions/:mentorId', (req, res) => {
+    const { mentorId } = req.params;
+  
+    const query = 'SELECT * FROM diploma_status WHERE mentor_id = ? AND status = "Theme Submitted"';
+  
+    db.query(query, [mentorId], (error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send('Error occurred during fetching submitted dispositions');
+      } else {
+        const dispositions = results.map(disposition => ({
+          id: disposition.id,
+          candidateId: disposition.candidate_id,
+          mentorId: disposition.mentor_id,
+          dispositionPath: disposition.disposition,
+          status: disposition.status
+        }));
+        res.status(200).send(dispositions);
+      }
+    });
+  });
+
   //FOR APPROVING AND DISAPPROVING DISPOSITIONS
   router.post('/approve-disposition/:dispositionId', (req, res) => {
     const { dispositionId } = req.params;
@@ -144,7 +168,111 @@ router.get('/download-disposition/:dispositionId', (req, res) => {
   });
   
   
+  router.get('/:candidateId', (req, res) => {
+    const { candidateId } = req.params;
+    const query = 'SELECT * FROM diploma_status WHERE candidate_id = ? ORDER BY id DESC ';
+    db.query(query, [candidateId], (error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send('Error occurred during fetching current disposition');
+      } else {
+        if (results.length === 0) {
+          // No current disposition found for the candidateId
+          res.status(404).send('No current disposition found');
+        } else {
+          const currentDisposition = results[0];
+          // Send the current disposition data as a response
+          res.status(200).json(currentDisposition);
+        }
+      }
+    });
+  });
   
   
+  const uploadT = multer({ dest: 'uploads/' });
+// Route for submitting a dissertation theme for a specific disposition
+router.post('/submitTheme/:dispositionId', uploadT.single('dissertationTheme'), (req, res) => {
+  const theme = req.file;
+  const { candidateId } = req.body;
+  const id = req.params.dispositionId; // Updated to use req.params.dispositionId
   
+  console.log(theme.path);
+  console.log(candidateId);
+  console.log(id);
+
+  // Update the diploma_status table to set the status as "Theme Submitted" for the specific disposition and candidate
+  db.query(
+    'UPDATE diploma_status SET status = ?, theme = ? WHERE candidate_id = ? AND id = ?',
+    ['Theme Submitted', theme.path, candidateId, id],
+    (error, results) => {
+      if (error) {
+        console.log('Database operation error:', error);
+        return res.status(500).json({ error });
+      }
+
+      // TODO: Perform any additional actions or notifications based on the theme submission.
+      // For now, we'll just send a success response.
+      res.json({ message: 'Dissertation theme submitted successfully!' });
+    }
+  );
+});
+
+router.get('/download-theme/:themeId', (req, res) => {
+  const { themeId } = req.params;
+
+  const query = 'SELECT theme FROM diploma_status WHERE id = ?';
+
+  db.query(query, [themeId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching theme');
+    } else {
+      const themePath = results[0].theme;
+
+      // Check if file exists
+      fs.access(themePath, fs.constants.F_OK, (err) => {
+        if (err) {
+          console.log(err);
+          res.status(404).send('File not found');
+        } else {
+          // If file exists, set headers and send file
+          res.setHeader('Content-Type', 'application/octet-stream');
+          res.setHeader('Content-Disposition', 'attachment; filename=theme.docx');
+          res.sendFile(path.resolve(themePath));
+        }
+      });
+    }
+  });
+});
+
+router.post('/accept-theme/:themeId', (req, res) => {
+  const { themeId } = req.params;
+
+  const query = 'UPDATE diploma_status SET status = ? WHERE id = ?';
+
+  db.query(query, ['Theme Accepted', themeId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during accepting theme');
+    } else {
+      res.status(200).send('Theme accepted successfully');
+    }
+  });
+});
+
+router.post('/decline-theme/:themeId', (req, res) => {
+  const { themeId } = req.params;
+
+  const query = 'UPDATE diploma_status SET status = ? WHERE id = ?';
+
+  db.query(query, ['Theme Declined', themeId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during declining theme');
+    } else {
+      res.status(200).send('Theme declined successfully');
+    }
+  });
+});  
+
 module.exports = router;

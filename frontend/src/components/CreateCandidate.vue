@@ -51,10 +51,8 @@ export default {
         studyProgram: '',
         email: '', 
         enrollmentNumber: '', 
+        mentorId: '',
       },
-      // user: {
-      //     id: '',
-      //   },
       universities: [],
       faculties: [],
       studyPrograms: [],
@@ -62,11 +60,6 @@ export default {
   },
   async created() {
     try {
-      // axios.defaults.withCredentials = true;
-      //   const response = await axios.get('http://localhost:3000/profile/current');
-      //   this.user = response.data;
-      //   console.log("user id" + this.user.id)
-      axios.defaults.withCredentials = true;
       const universitiesResponse = await axios.get('http://localhost:3000/university');
       this.universities = universitiesResponse.data;
 
@@ -91,8 +84,7 @@ export default {
   methods: {
   async submitForm() {
     try {
-      axios.defaults.withCredentials = true;
-      this.candidate.mentorId = this.user.id; // or get it from cookie or local storage
+
       await axios.post('http://localhost:3000/candidate/create', this.candidate);
       // Reset form fields
       this.candidate.name = '';
@@ -102,7 +94,8 @@ export default {
       this.candidate.studyProgram = '';
       this.candidate.email = '';
       this.candidate.enrollmentNumber = '';
-      
+      this.candidate.mentorId = '';
+
       alert('Candidate created successfully!');
     } catch (error) {
       console.error(error);
