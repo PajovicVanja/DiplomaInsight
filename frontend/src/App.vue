@@ -7,14 +7,19 @@
         <div class="logo"><a href="/"><img class="logo-img" :src="logo" alt="DiplomaInsight logo" /></a></div>
         <ul class="links">
 
-          <li v-if="loggedIn && isCandidate">
-            <a href="#" @click.prevent="showDispositonRegistration">Thesis Registration</a>
-            <a href="#" @click.prevent="showThemeSubmission">Theme Submission</a>
-          </li>
-          <li v-if="loggedIn && isUser">
-            <a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a>
-          </li>
 
+          <li v-if="loggedIn && isUser || isCandidate">
+            <a href="#" class="desktop-link">Diploma</a>
+            <input type="checkbox" id="show-university">
+            <label for="show-university">Diploma</label>
+            <ul>
+              <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a></li>
+              <li v-if="isCandidate"><a href="#" @click.prevent="showDisaprovedComment">Disaproved</a></li>
+              <li v-if="isCandidate && themeStatus === 'Theme Accepted' "><a href="#" @click.prevent="showDownloadSigned">Download signed theme</a></li>
+              <li v-if="isUser"><a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a></li>
+              <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThemes">Review Themes</a></li>
+            </ul>
+          </li>
           <li v-if="isAdmin">
             <a href="#" @click.prevent="showAdmin">Admin</a>
           </li>
@@ -53,15 +58,6 @@
               <li><a href="#" @click.prevent="showUniversityDel">Delete</a></li>
             </ul>
           </li>
-          <!-- <li>
-            <a href="#" class="desktop-link">Diploma</a>
-            <input type="checkbox" id="show-diploma">
-            <label for="show-diploma">Diploma</label>
-            <ul>
-              <li><a href="#" @click.prevent="showDiplomaCreate">Create</a></li>
-              <li><a href="#" @click.prevent="showDeleteDiploma">Delete</a></li>
-            </ul>
-          </li> -->
           <li>
             <a href="#" class="desktop-link">Help</a>
             <input type="checkbox" id="show-help">
@@ -90,8 +86,10 @@
   <div style="padding-top: 10%;" v-if="showUniversityDelList">
     <DeleteUniversity @hide-form="hideForms" />
   </div>
-  <div style="padding-top: 10%;" v-if="showUserCreateForm">
-    <CreateCandidate @hide-form="hideForms" />
+  <div style="padding-top: 5%;" v-if="showUserCreateForm">
+    <div class="center-content">
+      <CreateCandidate @hide-form="hideForms" />
+    </div>
   </div>
   <div style="padding-top: 10%;" v-if="showDeleteCandidateForm">
     <DeleteCandidateUser @hide-form="hideForms" />
@@ -111,6 +109,15 @@
   <div style="padding-top: 10%;" v-if="showThemeSubmissionForm">
     <ThemeSubmission @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="showSubmittedThemesForm">
+    <SubmittedThemes @hide-form="hideForms" />
+  </div>
+  <div style="padding-top: 10%;" v-if="showDisaprovedCommentForm">
+    <DisaprovedComment @hide-form="hideForms" />
+  </div>
+  <div style="padding-top: 10%;" v-if="showDownloadSignedForm">
+    <DownloadSigned @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -126,6 +133,9 @@ import DeleteCandidateUser from './components/DeleteCandidateUser.vue';
 import DispositionRegistration from './components/DispositionRegistration.vue';
 import SubmittedDispositions from './components/SubmittedDispositions.vue';
 import ThemeSubmission from './components/ThemeSubmission.vue';
+import SubmittedThemes from './components/SubmittedThemes.vue';
+import DisaprovedComment from './components/DisaprovedComment.vue';
+import DownloadSigned from './components/DownloadSigned.vue';
 
 
 import axios from 'axios';
@@ -145,12 +155,18 @@ export default {
     DeleteCandidateUser,
     DispositionRegistration,
     SubmittedDispositions,
-    ThemeSubmission
+    ThemeSubmission,
+    SubmittedThemes,
+    DisaprovedComment,
+    DownloadSigned,
+
   },
 
   data() {
     return {
       logo,
+      userID: null,
+      themeStatus: null,
       showLoginForm: false,
       showRegisterForm: false,
       showUserCreateForm: false,
@@ -166,29 +182,48 @@ export default {
       showDispositionForm: false,
       showDispositionReviewForm: false,
       showThemeSubmissionForm: false,
+      showSubmittedThemesForm: false,
+      showDisaprovedCommentForm: false,
+      showDownloadSignedForm: false,
+      
 
 
 
     };
   },
-  created() {
-    this.checkSession();
+  async created() {
+    await this.checkSession();
   },
 
   methods: {
-    checkSession() {
-      axios.get('http://localhost:3000/check-session', { withCredentials: true })
-        .then(response => {
-          if (response.data.loggedIn) {
-            this.loggedIn = true;
-            this.isAdmin = response.data.user.role === 'admin';
-            this.isUser = response.data.user.role === 'user';
-            this.isCandidate = response.data.user.role === 'candidate';
+    async checkSession() {
+      try {
+        const response = await axios.get('http://localhost:3000/check-session', { withCredentials: true });
+        if (response.data.loggedIn) {
+          this.loggedIn = true;
+          this.isAdmin = response.data.user.role === 'admin';
+          this.isUser = response.data.user.role === 'user';
+          this.isCandidate = response.data.user.role === 'candidate';
+          this.userID = response.data.user.id;
+          if (this.isCandidate){
+          this.fetchDispositionStatus(); 
           } 
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    },
+    fetchDispositionStatus() {
+      if (this.userID !== null) {
+        axios.get(`http://localhost:3000/disposition/status/${this.userID}`)
+          .then(response => {
+            this.themeStatus = response.data.currentThemeStatus;
+            console.log("current status is " + this.themeStatus);
+          })
+          .catch(error => {
+            console.error('Error fetching disposition status:', error);
+          });
+      }
     },
     logoutUser() {
       this.loggedIn = false;
@@ -240,6 +275,18 @@ export default {
       this.hideForms();
       this.showThemeSubmissionForm = true;
     },
+    showSubmittedThemes() {
+      this.hideForms();
+      this.showSubmittedThemesForm = true;
+    },
+    showDisaprovedComment() {
+      this.hideForms();
+      this.showDisaprovedCommentForm = true;
+    },
+    showDownloadSigned() {
+      this.hideForms();
+      this.showDownloadSignedForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -252,8 +299,24 @@ export default {
       this.showDispositionForm = false;
       this.showDispositionReviewForm = false;
       this.showThemeSubmissionForm = false;
+      this.showSubmittedThemesForm = false;
+      this.showDisaprovedCommentForm = false;
+      this.showDownloadSignedForm = false;
     },
   },
 };
 </script>
 <style src="./css/App.css" scoped></style>
+<style scoped>
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  /* Adjust this value according to your needs */
+}
+</style>
+<style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+</style>
+

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Register Your Thesis</h1>
+    <h1>Register Your Disposition</h1>
 
     <form @submit.prevent="registerThesis">
       <div>
@@ -23,12 +23,19 @@
       </div>
     </form>
   </div>
+
+  <div>
+    <ThemeSubmission />
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
-
+import ThemeSubmission from './ThemeSubmission.vue';
 export default {
+  components:{
+    ThemeSubmission
+  },
   data() {
     return {
       disposition: null,
