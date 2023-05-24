@@ -1,38 +1,31 @@
 <template>
-    <div>
-      <h1>Theme Submission</h1>
-  
-      <div v-if="isDispositionApproved">
-        <p>Your disposition has been approved. Please upload your dissertation theme:</p>
-  
-        <input type="file" id="dissertationTheme" @change="onFileChange" required>
-        <button @click="submitDissertationTheme">Submit</button>
-      </div>
-  
-      <div v-else-if="isDispositionDisapproved">
-        <p>Your disposition has been disapproved. Please make the necessary revisions and resubmit.</p>
-      </div>
-  
-      <div v-else>
-        <p>Your disposition is pending approval.</p>
-      </div>
-    </div>
-  </template>
-  
-  <script>
-  import axios from 'axios';
-  
-  export default {
-    data() {
-      return {
-        isDispositionApproved: false,
-        isDispositionDisapproved: false,
-        dissertationTheme: null,
-        candidateId: '', // This will be set by the current user's id
-        dispositionId: '' // This will be set by the current disposition's id
-      };
-    },
-    async created() {
+  <div>
+    <h1>Theme Submission</h1>
+
+
+
+    <input type="file" id="dissertationTheme" @change="onFileChange" required>
+    <button @click="submitDissertationTheme">Submit</button>
+
+  </div>
+</template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      dispositionId: null,  // Initialize it
+      disposition: null,  // Initialize it
+      candidateId: '',
+      comment: '',
+      mentorId: '',
+      mentors: [],
+    };
+  },
+
+  async created() {
       try {
         axios.defaults.withCredentials = true;
         const response = await axios.get('http://localhost:3000/profile/current');
@@ -79,6 +72,5 @@
 }
 
     }
-  };
-  </script>
-  
+};
+</script>
