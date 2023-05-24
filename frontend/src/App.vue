@@ -53,15 +53,6 @@
               <li><a href="#" @click.prevent="showUniversityDel">Delete</a></li>
             </ul>
           </li>
-          <!-- <li>
-            <a href="#" class="desktop-link">Diploma</a>
-            <input type="checkbox" id="show-diploma">
-            <label for="show-diploma">Diploma</label>
-            <ul>
-              <li><a href="#" @click.prevent="showDiplomaCreate">Create</a></li>
-              <li><a href="#" @click.prevent="showDeleteDiploma">Delete</a></li>
-            </ul>
-          </li> -->
           <li>
             <a href="#" class="desktop-link">Help</a>
             <input type="checkbox" id="show-help">
@@ -77,7 +68,7 @@
     </nav>
   </div>
 
-  <div style="padding-top: 10%;" v-if="showLoginForm">
+  <div  style="padding-top: 10%;" v-if="showLoginForm">
     <Login @hide-form="hideForms" @user-logged-in="checkSession" />
   </div>
 
@@ -90,9 +81,11 @@
   <div style="padding-top: 10%;" v-if="showUniversityDelList">
     <DeleteUniversity @hide-form="hideForms" />
   </div>
-  <div style="padding-top: 10%;" v-if="showUserCreateForm">
-    <CreateCandidate @hide-form="hideForms" />
+  <div style="padding-top: 5%;" v-if="showUserCreateForm">
+  <div class="center-content">
+    <CreateCandidate  @hide-form="hideForms" />
   </div>
+</div>
   <div style="padding-top: 10%;" v-if="showDeleteCandidateForm">
     <DeleteCandidateUser @hide-form="hideForms" />
   </div>
@@ -257,3 +250,15 @@ export default {
 };
 </script>
 <style src="./css/App.css" scoped></style>
+<style scoped>
+  .center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Adjust this value according to your needs */
+  }
+</style>
+<style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+</style>
+
