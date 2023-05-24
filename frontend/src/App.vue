@@ -9,6 +9,7 @@
 
           <li v-if="loggedIn && isCandidate">
             <a href="#" @click.prevent="showDispositonRegistration">Thesis Registration</a>
+            <a href="#" @click.prevent="showThemeSubmission">Theme Submission</a>
           </li>
           <li v-if="loggedIn && isUser">
             <a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a>
@@ -100,6 +101,9 @@
   <div style="padding-top: 10%;" v-if="showDispositionReviewForm">
     <SubmittedDispositions @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="showThemeSubmissionForm">
+    <ThemeSubmission @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -114,6 +118,7 @@ import AdminPage from './components/AdminPage.vue';
 import DeleteCandidateUser from './components/DeleteCandidateUser.vue';
 import DispositionRegistration from './components/DispositionRegistration.vue';
 import SubmittedDispositions from './components/SubmittedDispositions.vue';
+import ThemeSubmission from './components/ThemeSubmission.vue';
 
 
 import axios from 'axios';
@@ -132,7 +137,8 @@ export default {
     AdminPage,
     DeleteCandidateUser,
     DispositionRegistration,
-    SubmittedDispositions
+    SubmittedDispositions,
+    ThemeSubmission
   },
 
   data() {
@@ -152,6 +158,8 @@ export default {
       isCandidate: false,
       showDispositionForm: false,
       showDispositionReviewForm: false,
+      showThemeSubmissionForm: false,
+
 
 
     };
@@ -221,6 +229,10 @@ export default {
       this.hideForms();
       this.showDispositionReviewForm = true;
     },
+    showThemeSubmission() {
+      this.hideForms();
+      this.showThemeSubmissionForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -232,6 +244,7 @@ export default {
       this.showAdminPage = false;
       this.showDispositionForm = false;
       this.showDispositionReviewForm = false;
+      this.showThemeSubmissionForm = false;
     },
   },
 };
