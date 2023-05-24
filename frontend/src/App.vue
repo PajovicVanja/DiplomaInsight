@@ -14,7 +14,8 @@
             <label for="show-university">Diploma</label>
             <ul>
               <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a></li>
-              <li v-if="isCandidate"><a href="#" @click.prevent="showThemeSubmission">Theme Submission</a></li>
+              <li v-if="isCandidate"><a href="#" @click.prevent="showDisaprovedComment">Disaproved</a></li>
+              <li v-if="isCandidate && themeStatus === 'Theme Accepted' "><a href="#" @click.prevent="showDownloadSigned">Download signed theme</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThemes">Review Themes</a></li>
             </ul>
@@ -111,6 +112,12 @@
   <div style="padding-top: 10%;" v-if="showSubmittedThemesForm">
     <SubmittedThemes @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="showDisaprovedCommentForm">
+    <DisaprovedComment @hide-form="hideForms" />
+  </div>
+  <div style="padding-top: 10%;" v-if="showDownloadSignedForm">
+    <DownloadSigned @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -127,6 +134,8 @@ import DispositionRegistration from './components/DispositionRegistration.vue';
 import SubmittedDispositions from './components/SubmittedDispositions.vue';
 import ThemeSubmission from './components/ThemeSubmission.vue';
 import SubmittedThemes from './components/SubmittedThemes.vue';
+import DisaprovedComment from './components/DisaprovedComment.vue';
+import DownloadSigned from './components/DownloadSigned.vue';
 
 
 import axios from 'axios';
@@ -148,6 +157,8 @@ export default {
     SubmittedDispositions,
     ThemeSubmission,
     SubmittedThemes,
+    DisaprovedComment,
+    DownloadSigned,
 
   },
 
@@ -155,7 +166,7 @@ export default {
     return {
       logo,
       userID: null,
-      currentStatus: null,
+      themeStatus: null,
       showLoginForm: false,
       showRegisterForm: false,
       showUserCreateForm: false,
@@ -172,6 +183,8 @@ export default {
       showDispositionReviewForm: false,
       showThemeSubmissionForm: false,
       showSubmittedThemesForm: false,
+      showDisaprovedCommentForm: false,
+      showDownloadSignedForm: false,
       
 
 
@@ -204,8 +217,8 @@ export default {
       if (this.userID !== null) {
         axios.get(`http://localhost:3000/disposition/status/${this.userID}`)
           .then(response => {
-            this.currentStatus = response.data.currentStatus;
-            console.log("current status is " + this.currentStatus);
+            this.themeStatus = response.data.currentThemeStatus;
+            console.log("current status is " + this.themeStatus);
           })
           .catch(error => {
             console.error('Error fetching disposition status:', error);
@@ -266,6 +279,14 @@ export default {
       this.hideForms();
       this.showSubmittedThemesForm = true;
     },
+    showDisaprovedComment() {
+      this.hideForms();
+      this.showDisaprovedCommentForm = true;
+    },
+    showDownloadSigned() {
+      this.hideForms();
+      this.showDownloadSignedForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -279,6 +300,8 @@ export default {
       this.showDispositionReviewForm = false;
       this.showThemeSubmissionForm = false;
       this.showSubmittedThemesForm = false;
+      this.showDisaprovedCommentForm = false;
+      this.showDownloadSignedForm = false;
     },
   },
 };
