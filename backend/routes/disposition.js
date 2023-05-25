@@ -446,6 +446,81 @@ router.get('/accepted-themes/:candidateId', (req, res) => {
   });
 });
 
+router.put('/diploma-status/update/:themeId', async (req, res) => {
+  const { themeId } = req.params;
+  const { progression_status } = req.body;
 
+  try {
+    // Update the progression_status in the diploma_status table
+    await db.query('UPDATE diploma_status SET progress_status = ? WHERE id = ?', [progression_status, themeId]);
+
+    // Send a success response
+    res.status(200).json({ message: 'Progression status updated successfully' });
+  } catch (error) {
+    // Send an error response
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while updating the progression status' });
+  }
+});
+
+router.get('/diploma-status/thesis-submitted/:mentorId', (req, res) => {
+  const { mentorId } = req.params;
+  const query = 'SELECT * FROM diploma_status WHERE mentor_id = ? AND progress_status = "Thesis Submitted" OR progress_status = "Thesis Defended" OR progress_status = "Diploma Issued"';
+  
+  db.query(query, [mentorId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching submitted dispositions');
+    } else {
+      const dispositions = results.map(disposition => ({
+        id: disposition.id,
+        candidateId: disposition.candidate_id,
+        mentorId: disposition.mentor_id,
+        dispositionPath: disposition.disposition,
+        progressStatus: disposition.progress_status
+      }));
+      res.status(200).send(dispositions);
+    }
+  });
+});
+
+router.put('/updateProgress/:id', (req, res) => {
+  const { id } = req.params;
+  const {progressStatus } = req.body;
+
+  db.query(
+    'UPDATE diploma_status SET progress_status = ? WHERE id = ?',
+    [progressStatus, id],
+    (error, results) => {
+      if (error) {
+        console.log('Database operation error:', error);
+        return res.status(500).json({ error });
+      }
+
+      res.json({ message: 'Disposition updated successfully!' });
+    }
+  );
+});
+
+router.get('/diploma-status/current-user/:userId', async (req, res) => {
+
+    const userId = req.params.userId;
+    const query = `
+      SELECT * FROM diploma_status WHERE candidate_id = ? AND progress_status IN ("Thesis Submitted", "Thesis Defended", "Diploma Issued")`;
+      db.query(query, [userId], (error, results) => {
+        if (error) {
+          console.log(error);
+          res.status(500).send('Error occurred during fetching submitted dispositions');
+        } else {
+          const dispositions = results.map(disposition => ({
+            id: disposition.id,
+            mentorId: disposition.mentor_id,
+            progressStatus: disposition.progress_status
+          }));
+          res.status(200).send(dispositions);
+        }
+      });
+   
+ });
 
 module.exports = router;
