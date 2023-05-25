@@ -1,16 +1,22 @@
 <template>
-  <div>
+  <div class="container">
     <h1>Register Your Disposition</h1>
 
-    <form @submit.prevent="registerThesis">
-      <div>
+    <form @submit.prevent="registerThesis" class="form-container">
+      <div class="form-group">
+  <button class="submit-btn" @click="downloadBlankDisposition">Download Blank Disposition Form</button>
+</div>
+<div class="form-group">
+  <button class="submit-btn" @click="downloadBlankTheme">Download Blank Theme Form</button>
+</div>
+      <div class="form-group">
         <label for="disposition">Proposal Document:</label>
-        <input type="file" id="disposition" @change="onFileChange" required>
+        <input type="file" id="disposition" class="form-input" @change="onFileChange" required>
       </div>
 
-      <div>
+      <div class="form-group">
         <label for="mentor">Select Mentor:</label>
-        <select id="mentor" v-model="mentorId" required>
+        <select id="mentor" v-model="mentorId" class="form-input" required>
           <option disabled value="">Please select a mentor</option>
           <option v-for="mentor in mentors" :key="mentor.id" :value="mentor.id">
             {{ mentor.name }}
@@ -18,8 +24,8 @@
         </select>
       </div>
 
-      <div>
-        <button type="submit">Submit</button>
+      <div class="form-group">
+        <button type="submit" class="submit-btn">Submit</button>
       </div>
     </form>
   </div>
@@ -80,7 +86,16 @@ export default {
         console.error(error);
         alert('An error occurred while submitting your thesis proposal.');
       }
-    }
+    },
+    downloadBlankDisposition() {
+    window.location.href = "http://localhost:3000/document/download/disposition";
+  },
+  downloadBlankTheme() {
+    window.location.href = "http://localhost:3000/document/download/theme";
+  }
   }
 };
+
 </script>
+
+<style src="../css/DispositionRegistration.css" scoped></style>

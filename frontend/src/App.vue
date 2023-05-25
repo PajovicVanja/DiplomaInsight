@@ -23,6 +23,9 @@
           <li v-if="isAdmin">
             <a href="#" @click.prevent="showAdmin">Admin</a>
           </li>
+          <li v-if="isAdmin || isUser">
+            <a href="#" @click.prevent="showBlankForms">Documents Upload</a>
+          </li>
 
           <li v-if="loggedIn && isAdmin || isUser">
             <a href="#" class="desktop-link">Candidates</a>
@@ -118,6 +121,9 @@
   <div style="padding-top: 10%;" v-if="showDownloadSignedForm">
     <DownloadSigned @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="showBlankFormsForm">
+    <BlankForms @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -136,6 +142,7 @@ import ThemeSubmission from './components/ThemeSubmission.vue';
 import SubmittedThemes from './components/SubmittedThemes.vue';
 import DisaprovedComment from './components/DisaprovedComment.vue';
 import DownloadSigned from './components/DownloadSigned.vue';
+import BlankForms from './components/BlankForms.vue';
 
 
 import axios from 'axios';
@@ -159,6 +166,7 @@ export default {
     SubmittedThemes,
     DisaprovedComment,
     DownloadSigned,
+    BlankForms,
 
   },
 
@@ -185,6 +193,7 @@ export default {
       showSubmittedThemesForm: false,
       showDisaprovedCommentForm: false,
       showDownloadSignedForm: false,
+      showBlankFormsForm: false,
       
 
 
@@ -287,6 +296,10 @@ export default {
       this.hideForms();
       this.showDownloadSignedForm = true;
     },
+    showBlankForms() {
+      this.hideForms();
+      this.showBlankFormsForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -302,6 +315,7 @@ export default {
       this.showSubmittedThemesForm = false;
       this.showDisaprovedCommentForm = false;
       this.showDownloadSignedForm = false;
+      this.showBlankFormsForm = false;
     },
   },
 };
@@ -316,7 +330,7 @@ export default {
   /* Adjust this value according to your needs */
 }
 </style>
-<style>
+<style scoped>
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
 </style>
 
