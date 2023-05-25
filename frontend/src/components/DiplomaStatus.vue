@@ -7,6 +7,7 @@
           <h3>Thesis ID: {{ disposition.id }}</h3>
           <h3>Mentor: {{ disposition.mentorId }}</h3>
           <h3>Status: {{ disposition.progressStatus }}</h3>
+          <h3>Next Deadline: {{ formatDeadline(disposition.deadline) }}</h3>
         </div>
       </div>
     </div>
@@ -35,6 +36,19 @@
       } catch (error) {
         console.error(error);
       }
+    },
+    methods: {
+        formatDeadline(deadline) {
+    if (deadline) {
+      const formattedDeadline = new Date(deadline).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
+      return formattedDeadline;
+    }
+    return 'N/A'; // If no deadline is set, display "N/A"
+  },
     },
   };
   </script>

@@ -429,19 +429,21 @@ router.get('/accepted-themes/:candidateId', (req, res) => {
   const { candidateId } = req.params;
 
   const query = 'SELECT * FROM diploma_status WHERE candidate_id = ? AND theme_status = ?';
-
+  
   db.query(query, [candidateId, "Theme Accepted"], (error, results) => {
     if (error) {
       console.log(error);
       res.status(500).send('Error occurred during fetching accepted themes');
     } else {
-      if (results.length === 0) {
-        // No accepted themes found for the candidateId
-        res.status(404).send('No accepted themes found for this candidate');
-      } else {
-        // Send the accepted themes as a response
-        res.status(200).json(results);
-      }
+      const dispositions = results.map(disposition => ({
+        id: disposition.id,
+        candidateId: disposition.candidate_id,
+        mentorId: disposition.mentor_id,
+        dispositionPath: disposition.disposition,
+        progressStatus: disposition.progress_status,
+        deadline:disposition.deadline
+      }));
+      res.status(200).send(dispositions);
     }
   });
 });
@@ -449,10 +451,13 @@ router.get('/accepted-themes/:candidateId', (req, res) => {
 router.put('/diploma-status/update/:themeId', async (req, res) => {
   const { themeId } = req.params;
   const { progression_status } = req.body;
-
+  let deadline = null;
+  const currentDate = new Date();
+  const oneMonthFromNow = new Date(currentDate.getTime() + 240 * 24 * 60 * 60 * 1000); // Add one month (30 days) to the current date
+  deadline = oneMonthFromNow.toISOString().slice(0, 10); // Convert the deadline to YYYY-MM-DD format
   try {
     // Update the progression_status in the diploma_status table
-    await db.query('UPDATE diploma_status SET progress_status = ? WHERE id = ?', [progression_status, themeId]);
+    await db.query('UPDATE diploma_status SET progress_status = ? , deadline = ? WHERE id = ?', [progression_status, deadline, themeId]);
 
     // Send a success response
     res.status(200).json({ message: 'Progression status updated successfully' });
@@ -465,7 +470,7 @@ router.put('/diploma-status/update/:themeId', async (req, res) => {
 
 router.get('/diploma-status/thesis-submitted/:mentorId', (req, res) => {
   const { mentorId } = req.params;
-  const query = 'SELECT * FROM diploma_status WHERE mentor_id = ? AND progress_status = "Thesis Submitted" OR progress_status = "Thesis Defended" OR progress_status = "Diploma Issued"';
+  const query = 'SELECT * FROM diploma_status WHERE mentor_id = ? AND progress_status = "Thesis Submitted" OR progress_status = "Thesis Reviewed" OR progress_status = "Thesis Defended" OR progress_status = "Diploma Issued"';
   
   db.query(query, [mentorId], (error, results) => {
     if (error) {
@@ -477,37 +482,51 @@ router.get('/diploma-status/thesis-submitted/:mentorId', (req, res) => {
         candidateId: disposition.candidate_id,
         mentorId: disposition.mentor_id,
         dispositionPath: disposition.disposition,
-        progressStatus: disposition.progress_status
+        progressStatus: disposition.progress_status,
+        deadline:disposition.deadline
       }));
       res.status(200).send(dispositions);
     }
   });
 });
 
-router.put('/updateProgress/:id', (req, res) => {
-  const { id } = req.params;
-  const {progressStatus } = req.body;
+router.put('/updateProgress/:dispositionId', async (req, res) => {
+  try {
+    const dispositionId = req.params.dispositionId;
+    const { candidateId, mentorId, progressStatus } = req.body;
+// Calculate the deadline based on the progress status
+let deadline = null;
+if (progressStatus === 'Thesis Reviewed') {
+  const currentDate = new Date();
+  const oneMonthFromNow = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000); // Add one month (30 days) to the current date
+  deadline = oneMonthFromNow.toISOString().slice(0, 10); // Convert the deadline to YYYY-MM-DD format
+} else if (progressStatus === 'Thesis Defended') {
+  const currentDate = new Date();
+  const oneMonthFromNow = new Date(currentDate.getTime() + 15 * 24 * 60 * 60 * 1000); // Add one month (30 days) to the current date
+  deadline = oneMonthFromNow.toISOString().slice(0, 10); // Convert the deadline to YYYY-MM-DD format
 
-  db.query(
-    'UPDATE diploma_status SET progress_status = ? WHERE id = ?',
-    [progressStatus, id],
-    (error, results) => {
-      if (error) {
-        console.log('Database operation error:', error);
-        return res.status(500).json({ error });
-      }
+} else if (progressStatus === 'Diploma Issued') {
+  // Calculate and set the deadline for 'Diploma Issued' status
+}
 
-      res.json({ message: 'Disposition updated successfully!' });
-    }
-  );
+// Update the disposition status and deadline in the database
+const updateQuery = 'UPDATE diploma_status SET progress_status = ?, deadline = ? WHERE id = ?';
+await db.query(updateQuery, [progressStatus, deadline, dispositionId]);
+
+res.json({ message: 'Disposition status updated successfully.' });
+} catch (error) {
+console.error('Error updating disposition status: ', error);
+res.status(500).send('Internal Server Error');
+}
 });
 
 router.get('/diploma-status/current-user/:userId', async (req, res) => {
 
     const userId = req.params.userId;
     const query = `
-      SELECT * FROM diploma_status WHERE candidate_id = ? AND progress_status IN ("Thesis Submitted", "Thesis Defended", "Diploma Issued")`;
+      SELECT * FROM diploma_status WHERE candidate_id = ? AND progress_status IN ("Thesis Submitted", "Thesis Reviewed", "Thesis Defended", "Diploma Issued")`;
       db.query(query, [userId], (error, results) => {
+        console.log(results)
         if (error) {
           console.log(error);
           res.status(500).send('Error occurred during fetching submitted dispositions');
@@ -515,12 +534,35 @@ router.get('/diploma-status/current-user/:userId', async (req, res) => {
           const dispositions = results.map(disposition => ({
             id: disposition.id,
             mentorId: disposition.mentor_id,
-            progressStatus: disposition.progress_status
+            progressStatus: disposition.progress_status,
+            deadline: disposition.deadline,
           }));
           res.status(200).send(dispositions);
         }
       });
    
  });
+
+ router.put('/updateDeadline/:id', (req, res) => {
+  const { deadline } = req.body;
+  const id = req.params.id;
+
+  // Update the diploma status entry in the database
+  db.query(
+    'UPDATE diploma_status SET deadline = ? WHERE id = ?',
+    [deadline, id],
+    (error, results) => {
+      if (error) {
+        console.log('Database operation error:', error);
+        return res.status(500).json({ error });
+      }
+
+      // TODO: Send the updated disposition information to the appropriate recipients.
+      // For now, we'll just send a success response.
+      res.json({ message: 'Disposition deadline updated successfully!' });
+    }
+  );
+});
+
 
 module.exports = router;

@@ -4,7 +4,8 @@
     <div v-for="theme in acceptedThemes" :key="theme.id">
       <div>
         <button @click="downloadTheme(theme.id)">Download Theme</button>
-        <input type="checkbox" @change="updateProgressionStatus(theme.id)">
+        <input type="checkbox" :hidden="theme.progressStatus !== null" @change="updateProgressionStatus(theme.id)">
+        <span v-if="theme.progressStatus !== null">Thesis Submitted</span>
       </div>
     </div>
   </div>
