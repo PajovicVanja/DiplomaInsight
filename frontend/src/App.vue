@@ -6,7 +6,9 @@
       <div class="content">
         <div class="logo"><a href="/"><img class="logo-img" :src="logo" alt="DiplomaInsight logo" /></a></div>
         <ul class="links">
-
+          <li v-if="isCandidate">
+            <a href="#" @click.prevent="showHomeStudent">Home</a>
+          </li>
 
           <li v-if="loggedIn && isUser || isCandidate">
             <a href="#" class="desktop-link">Diploma</a>
@@ -124,6 +126,9 @@
   <div style="padding-top: 10%;" v-if="showBlankFormsForm">
     <BlankForms @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="showHomeStudentForm">
+    <HomeStudent @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -143,7 +148,7 @@ import SubmittedThemes from './components/SubmittedThemes.vue';
 import DisaprovedComment from './components/DisaprovedComment.vue';
 import DownloadSigned from './components/DownloadSigned.vue';
 import BlankForms from './components/BlankForms.vue';
-
+import HomeStudent from './components/HomeStudent.vue';
 
 import axios from 'axios';
 import logo from '@/assets/logoo.png';
@@ -167,6 +172,7 @@ export default {
     DisaprovedComment,
     DownloadSigned,
     BlankForms,
+    HomeStudent,
 
   },
 
@@ -194,6 +200,7 @@ export default {
       showDisaprovedCommentForm: false,
       showDownloadSignedForm: false,
       showBlankFormsForm: false,
+      showHomeStudentForm: false,
       
 
 
@@ -300,6 +307,10 @@ export default {
       this.hideForms();
       this.showBlankFormsForm = true;
     },
+    showHomeStudent() {
+      this.hideForms();
+      this.showHomeStudentForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -316,6 +327,7 @@ export default {
       this.showDisaprovedCommentForm = false;
       this.showDownloadSignedForm = false;
       this.showBlankFormsForm = false;
+      this.showHomeStudentForm = false;
     },
   },
 };
