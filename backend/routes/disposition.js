@@ -258,6 +258,32 @@ router.post('/submitTheme/:dispositionId', uploadT.single('dissertationTheme'), 
       res.json({ message: 'Dissertation theme submitted successfully!' });
     }
   );
+
+  router.post('/submitTheme/:dispositionId', uploadT.single('dissertationTheme'), (req, res) => {
+  const theme = req.file;
+  const { candidateId } = req.body;
+  const id = req.params.dispositionId; // Updated to use req.params.dispositionId
+  
+  console.log(theme.path);
+  console.log(candidateId);
+  console.log(id);
+
+  // Update the diploma_status table to set the status as "Theme Submitted" for the specific disposition and candidate
+  db.query(
+    'UPDATE diploma_status SET theme_status = ?, theme = ? WHERE candidate_id = ? AND id = ?',
+    ['Theme Submitted', theme.path, candidateId, id],
+    (error, results) => {
+      if (error) {
+        console.log('Database operation error:', error);
+        return res.status(500).json({ error });
+      }
+
+      // TODO: Perform any additional actions or notifications based on the theme submission.
+      // For now, we'll just send a success response.
+      res.json({ message: 'Dissertation theme submitted successfully!' });
+    }
+  );
+});
 });
 
 router.get('/download-theme/:themeId', (req, res) => {
