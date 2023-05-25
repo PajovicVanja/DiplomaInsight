@@ -1,14 +1,13 @@
 <template>
-  <div>
+  <div class="theme-submission-container">
     <h1>Theme Submission</h1>
-
-
-
-    <input type="file" id="dissertationTheme" @change="onFileChange" required>
-    <button @click="submitDissertationTheme">Submit</button>
-
+    <div class="theme-submission-group">
+        <input type="file" id="dissertationTheme" class="theme-submission-input" @change="onFileChange" required>
+        <button class="theme-submission-btn" @click="submitDissertationTheme">Submit</button>
+    </div>
   </div>
 </template>
+
 
 <script>
 import axios from 'axios';
@@ -74,3 +73,55 @@ export default {
     }
 };
 </script>
+<style scoped>.theme-submission-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1em;
+}
+
+h1 {
+  color: #444;
+  font-size: 2em;
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+.theme-submission-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.theme-submission-input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 1em;
+}
+
+.theme-submission-btn {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #4881A0;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-submission-btn:hover {
+  background-color: #366873;
+}
+
+@media (max-width: 768px) {
+  .theme-submission-container {
+    padding: 1em;
+  }
+}
+
+</style>

@@ -1,32 +1,32 @@
 <template>
-    <div>
-        <h1>Mentors Comment</h1>
-        <p>{{ comment }}</p>
+    <div class="divclass">
+        <h1 class="h1class">Mentors Comment</h1>
+        <p class="p"> {{ comment }}</p>
     </div>
-    <div>
+    <div class="container">
         <h1>Update Your Disposition</h1>
 
-        <form @submit.prevent="registerThesis">
-            <div>
-                <label for="disposition">Proposal Document:</label>
-                <input type="file" id="disposition" @change="onFileChange" required>
-            </div>
+        <form @submit.prevent="registerThesis" class="form-container">
+      <div class="form-group">
+        <label for="disposition">Proposal Document:</label>
+        <input type="file" id="disposition" class="form-input" @change="onFileChange" required>
+      </div>
 
-            <div>
-                <label for="mentor">Select Mentor:</label>
-                <select id="mentor" v-model="mentorId" required>
-                    <option disabled value="">Please select a mentor</option>
-                    <option v-for="mentor in mentors" :key="mentor.id" :value="mentor.id">
-                        {{ mentor.name }}
-                    </option>
-                </select>
-            </div>
+      <div class="form-group">
+        <label for="mentor">Select Mentor:</label>
+        <select id="mentor" v-model="mentorId" class="form-input" required>
+          <option disabled value="">Please select a mentor</option>
+          <option v-for="mentor in mentors" :key="mentor.id" :value="mentor.id">
+            {{ mentor.name }}
+          </option>
+        </select>
+      </div>
 
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-        </form>
-    </div>
+      <div class="form-group">
+        <button type="submit" class="submit-btn">Submit</button>
+      </div>
+    </form>
+  </div>
     <div>
     <ThemeSubmission />
   </div>
@@ -96,3 +96,39 @@ export default {
     }
 };
 </script>
+<style src="../css/DispositionRegistration.css" scoped></style>
+<style scoped>
+.divclass {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1em;
+}
+
+.h1class {
+  font-size: 2em;
+  color: #444;
+}
+
+.p {
+  font-size: 1.5em;
+  color: #666;
+}
+
+.container {
+  margin-top: 2em;
+}
+
+@media (max-width: 768px) {
+  .h1class {
+    font-size: 1.5em;
+  }
+
+  .p {
+    font-size: 1.2em;
+  }
+}
+
+</style>
