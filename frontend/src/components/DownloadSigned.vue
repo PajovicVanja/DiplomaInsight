@@ -1,14 +1,14 @@
 <template>
+ <div class="parent">
   <div>
-    <h1>Accepted Themes</h1>
+    <h1>Download signed theme</h1>
     <div v-for="theme in acceptedThemes" :key="theme.id">
-      <div>
+      <div class="cntr">
         <button @click="downloadTheme(theme.id)">Download Theme</button>
-        <input type="checkbox" :hidden="theme.progressStatus !== null" @change="updateProgressionStatus(theme.id)">
-        <span v-if="theme.progressStatus !== null">Thesis Submitted</span>
       </div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
@@ -26,7 +26,7 @@ export default {
       const response = await axios.get('http://localhost:3000/profile/current');
       const candidateId = response.data.id;
 
-      const themeResponse = await axios.get(`http://localhost:3000/disposition/accepted-themes/${candidateId}`);
+      const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${candidateId}`);
       this.acceptedThemes = themeResponse.data;
     } catch (error) {
       console.error(error);
@@ -39,7 +39,7 @@ export default {
     async updateProgressionStatus(themeId) {
       try {
         axios.defaults.withCredentials = true;
-        await axios.put(`http://localhost:3000/disposition/diploma-status/update/${themeId}`, {
+        await axios.put(`http://localhost:3000/status/diploma-status/update/${themeId}`, {
           progression_status: 'Thesis Submitted'
         });
       } catch (error) {
@@ -49,3 +49,38 @@ export default {
   },
 };
 </script>
+<style scoped>
+.parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 60vh; 
+}
+
+.parent h1 {
+  font-weight: bold;
+  font-size: 2em; 
+  color: #333; 
+}
+
+.parent button {
+  font-weight: bold;
+  color: #fff; 
+  background-color: #007BFF; 
+  border: none;
+  padding: 10px 20px; 
+  margin-top: 20px; 
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.parent button:hover {
+  background-color: #0056b3;
+}
+.cntr{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

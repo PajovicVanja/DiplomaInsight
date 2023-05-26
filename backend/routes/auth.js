@@ -17,52 +17,46 @@ router.post('/login', (req, res) => {
   db.query(userQuery, [email], async (error, users) => {
     if (error) {
       console.log(error);
-      res.status(500).send('Error occurred during login');
-    } else if (users.length > 0) {
+      return res.status(500).send('Error occurred during login');
+    }
+
+    if (users.length > 0) {
       const user = users[0];
 
-      // Check if the user's email is verified
       if (!user.verified) {
         return res.status(401).send('Please verify your email before logging in');
       }
 
-      // Compare submitted password with hashed password
       const match = await bcrypt.compare(password, user.password);
       if (match) {
-        req.session.user = user; // Set user to the session
-        console.log('Session ID:', req.sessionID); // Log session ID
-        console.log('User ID:', user.id); // Log user ID
-        console.log('User:', req.session.user); // Log user object
-        res.status(200).send('User logged in successfully');
+        req.session.user = user;
+        return res.status(200).send('User logged in successfully');
       } else {
-        res.status(401).send('Incorrect email or password');
+        return res.status(401).send('Incorrect password');
       }
-    } else {
-      // Check in the candidates table if no user was found
-      db.query(candidateQuery, [email], async (error, candidates) => {
-        if (error) {
-          console.log(error);
-          res.status(500).send('Error occurred during login');
-        } else if (candidates.length > 0) {
-          const candidate = candidates[0];
-
-          // Compare submitted password with hashed password
-          const match = await bcrypt.compare(password, candidate.password);
-          if (match) {
-            candidate.role = 'candidate'; // Adding role to the candidate object
-            req.session.user = candidate; // Set user to the session
-            console.log('Session ID:', req.sessionID); // Log session ID
-            console.log('Candidate ID:', candidate.id); // Log candidate ID
-            console.log('User:', req.session.user); // Log user object
-            res.status(200).send('Candidate logged in successfully');
-          } else {
-            res.status(401).send('Incorrect email or password');
-          }
-        } else {
-          res.status(401).send('Incorrect email or password');
-        }
-      });
     }
+
+    db.query(candidateQuery, [email], async (error, candidates) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).send('Error occurred during login');
+      }
+
+      if (candidates.length > 0) {
+        const candidate = candidates[0];
+
+        const match = await bcrypt.compare(password, candidate.password);
+        if (match) {
+          candidate.role = 'candidate';
+          req.session.user = candidate;
+          return res.status(200).send('Candidate logged in successfully');
+        } else {
+          return res.status(401).send('Incorrect password');
+        }
+      }
+
+      res.status(401).send('Email not registered');
+    });
   });
 });
 
@@ -89,30 +83,38 @@ router.post('/logout', (req, res) => {
       res.status(400).send('No active session');
     }});
 
-router.post('/register', async (req, res) => {
-    const { name, email, password } = req.body;
+    router.post('/register', async (req, res) => {
+      const { name, email, password } = req.body;
   
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+      const checkUserQuery = 'SELECT * FROM users WHERE email = ?';
+      db.query(checkUserQuery, [email], async (error, results) => {
+        if (error) {
+          console.log(error);
+          return res.status(500).send('Error occurred during registration');
+        }
   
-    const query = 'INSERT INTO users (name, email, password, verified, role) VALUES (?, ?, ?, ?, ?)';
-    db.query(query, [name, email, hashedPassword, false, "user"], (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during registration');
-      } else {
-        console.log(results); // log the query results
+        if (results.length > 0) {
+          return res.status(400).send('User with that email already exists');
+        }
   
-        // Get the id of the newly created user
-        const userId = results.insertId;
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
   
-        // Send verification email
-        sendVerificationEmail(name, email, userId);
-        
-        res.status(201).send('User registered successfully, please verify your email');
-      }
-    });
-});
+        const insertQuery = 'INSERT INTO users (name, email, password, verified, role) VALUES (?, ?, ?, ?, ?)';
+        db.query(insertQuery, [name, email, hashedPassword, false, "user"], (error, results) => {
+          if (error) {
+            console.log(error);
+            return res.status(500).send('Error occurred during registration');
+          }
+  
+          const userId = results.insertId;
+  
+          sendVerificationEmail(name, email, userId);
+  
+          return res.status(201).send('User registered successfully, please verify your email');
+        });
+      });
+  });
 
 router.get('/verify', (req, res) => {
     const token = req.query.token;

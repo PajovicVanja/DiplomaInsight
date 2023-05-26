@@ -82,10 +82,10 @@ export default {
     },
   },
   methods: {
-  async submitForm() {
+    async submitForm() {
     try {
-
       await axios.post('http://localhost:3000/candidate/create', this.candidate);
+
       // Reset form fields
       this.candidate.name = '';
       this.candidate.studyDirection = '';
@@ -98,7 +98,11 @@ export default {
 
       alert('Candidate created successfully!');
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 400) {
+        alert(error.response.data);
+      } else {
+        console.error(error);
+      }
     }
   },
 },

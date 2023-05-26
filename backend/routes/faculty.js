@@ -44,6 +44,20 @@ router.put('/:id', (req, res) => {
     });
 });
 
+router.get('/faculty/:id', (req, res) => {
+    const { id } = req.params;
+  
+    const query = 'SELECT name FROM faculties WHERE id = ?';
+    db.query(query, [id], (error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send('Error occurred during fetching faculty name');
+      } else {
+        res.status(200).send(results[0].name); // Send back only the name
+      }
+    });
+  });
+
 // Delete a faculty
 router.delete('/:id', (req, res) => {
     const { id } = req.params;

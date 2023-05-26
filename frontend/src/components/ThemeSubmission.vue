@@ -20,12 +20,15 @@ export default {
       candidateId: '',
       comment: '',
       mentorId: '',
+      themeStatus:'',
       mentors: [],
     };
   },
 
   async created() {
       try {
+
+        
         axios.defaults.withCredentials = true;
         const response = await axios.get('http://localhost:3000/profile/current');
         this.candidateId = response.data.id;
@@ -34,6 +37,8 @@ export default {
         const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
         const disposition = dispositionResponse.data.status;
         this.dispositionId = dispositionResponse.data.id; // Get the disposition ID
+
+        this.fetchDispositionStatus(response.data.id);
         if (disposition === 'Disposition Approved') {
           this.isDispositionApproved = true;
         } else if (disposition === 'Disposition Disapproved') {
@@ -47,7 +52,25 @@ export default {
       onFileChange(e) {
         this.dissertationTheme = e.target.files[0];
       },
+      fetchDispositionStatus(id) {
+    console.log("is called")
+      if (this.candidateId !== null) {
+        axios.get(`http://localhost:3000/disposition/status/${id}`)
+          .then(response => {
+            this.themeStatus = response.data.currentThemeStatus;
+            console.log("current status is " + this.themeStatus);
+          })
+          .catch(error => {
+            console.error('Error fetching disposition status:', error);
+          });
+      }
+    },
       async submitDissertationTheme() {
+
+        if (this.themeStatus && this.themeStatus !== 'Theme Declined') {
+      alert('You have already submitted a theme.');
+      return;
+    }
   const formData = new FormData();
   formData.append('dissertationTheme', this.dissertationTheme);
   formData.append('candidateId', this.candidateId);
@@ -64,6 +87,8 @@ export default {
     });
 
     alert(response.data.message);
+    this.fetchDispositionStatus(this.candidateId);
+
   } catch (error) {
     console.error(error);
     alert('An error occurred while submitting your dissertation theme.');

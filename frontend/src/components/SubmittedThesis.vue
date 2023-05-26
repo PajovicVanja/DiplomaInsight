@@ -41,7 +41,7 @@ export default {
       this.mentorId = response.data.id;
 
       // Fetch submitted dispositions with theme status "Theme Submitted" for the mentorId
-      const submittedResponse = await axios.get(`http://localhost:3000/disposition/diploma-status/thesis-submitted/${this.mentorId}`);
+      const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/thesis-submitted/${this.mentorId}`);
       this.submitted = submittedResponse.data;
 
       // Initialize the edited deadlines with the current deadlines
@@ -55,7 +55,7 @@ export default {
   methods: {
     async updateDispositionStatus(disposition) {
       try {
-        const response = await axios.put(`http://localhost:3000/disposition/updateProgress/${disposition.id}`, {
+        const response = await axios.put(`http://localhost:3000/status/updateProgress/${disposition.id}`, {
           candidateId: disposition.candidateId,
           mentorId: disposition.mentorId,
           progressStatus: disposition.progressStatus,
@@ -70,7 +70,7 @@ export default {
     const editedDeadline = new Date(this.editedDeadlines[disposition.id]);
     const formattedDeadline = editedDeadline.toISOString().split('T')[0];
 
-    const response = await axios.put(`http://localhost:3000/disposition/updateDeadline/${disposition.id}`, {
+    const response = await axios.put(`http://localhost:3000/status/updateDeadline/${disposition.id}`, {
       deadline: formattedDeadline,
     });
     console.log(response.data.message);

@@ -38,19 +38,24 @@ export default {
   methods: {
     
     async register() {
-      if (!this.isPasswordShort) {
-      try {
-        const response = await axios.post('http://localhost:3000/register', {
-          name: this.name,
-          email: this.email,
-          password: this.password
-        });
-        console.log(response.data);
-      } catch (error) {
+  if (!this.isPasswordShort) {
+    try {
+      const response = await axios.post('http://localhost:3000/register', {
+        name: this.name,
+        email: this.email,
+        password: this.password
+      });
+      console.log(response.data);
+      alert(response.data);
+    } catch (error) {
+      if (error.response && error.response.data === 'User with that email already exists') {
+        alert('User with that email already exists');
+      } else {
         console.error(error);
       }
     }
-    },
+  }
+},
     moveButton() {
       if(this.isPasswordShort) {
         this.buttonPosition = this.buttonPosition === 'right' ? 'left' : 'right';
