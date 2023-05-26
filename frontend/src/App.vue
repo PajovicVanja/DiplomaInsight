@@ -6,7 +6,9 @@
       <div class="content">
         <div class="logo"><a href="/"><img class="logo-img" :src="logo" alt="DiplomaInsight logo" /></a></div>
         <ul class="links">
-
+          <li v-if="isCandidate">
+            <a href="#" @click.prevent="showHomeStudent">Home</a>
+          </li>
 
           <li v-if="loggedIn && isUser || isCandidate">
             <a href="#" class="desktop-link">Diploma</a>
@@ -126,6 +128,9 @@
   <div style="padding-top: 10%;" v-if="showBlankFormsForm">
     <BlankForms @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="showHomeStudentForm">
+    <HomeStudent @hide-form="hideForms" />
+  </div>
   <div style="padding-top: 10%;" v-if="showSubmittedThesisForm">
     <SubmittedThesis @hide-form="hideForms" />
   </div>
@@ -151,7 +156,7 @@ import SubmittedThemes from './components/SubmittedThemes.vue';
 import DisaprovedComment from './components/DisaprovedComment.vue';
 import DownloadSigned from './components/DownloadSigned.vue';
 import BlankForms from './components/BlankForms.vue';
-import SubmittedThesis from './components/SubmittedThesis.vue';
+import HomeStudent from './components/HomeStudent.vue';import SubmittedThesis from './components/SubmittedThesis.vue';
 import DiplomaStatus from './components/DiplomaStatus.vue';
 
 
@@ -179,6 +184,7 @@ export default {
     DisaprovedComment,
     DownloadSigned,
     BlankForms,
+    HomeStudent,
     SubmittedThesis,
     DiplomaStatus,
 
@@ -208,6 +214,7 @@ export default {
       showDisaprovedCommentForm: false,
       showDownloadSignedForm: false,
       showBlankFormsForm: false,
+      showHomeStudentForm: false,
       showSubmittedThesisForm: false,
       showDiplomaStatusForm: false,
     };
@@ -312,6 +319,10 @@ export default {
       this.hideForms();
       this.showBlankFormsForm = true;
     },
+    showHomeStudent() {
+      this.hideForms();
+      this.showHomeStudentForm = true;
+    },
     showSubmittedThesis() {
       this.hideForms();
       this.showSubmittedThesisForm = true;
@@ -336,6 +347,7 @@ export default {
       this.showDisaprovedCommentForm = false;
       this.showDownloadSignedForm = false;
       this.showBlankFormsForm = false;
+      this.showHomeStudentForm = false;
       this.showSubmittedThesisForm = false;
       this.showDiplomaStatusForm = false;
     },
