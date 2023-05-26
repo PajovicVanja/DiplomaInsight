@@ -18,8 +18,10 @@
               <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a></li>
               <li v-if="isCandidate"><a href="#" @click.prevent="showDisaprovedComment">Disaproved</a></li>
               <li v-if="isCandidate && themeStatus === 'Theme Accepted' "><a href="#" @click.prevent="showDownloadSigned">Download signed theme</a></li>
+              <li v-if="isCandidate"><a href="#" @click.prevent="showDiplomaStatus">Diploma Status</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThemes">Review Themes</a></li>
+              <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThesis">Review Thesis</a></li>
             </ul>
           </li>
           <li v-if="isAdmin">
@@ -129,6 +131,12 @@
   <div style="padding-top: 10%;" v-if="showHomeStudentForm">
     <HomeStudent @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="showSubmittedThesisForm">
+    <SubmittedThesis @hide-form="hideForms" />
+  </div>
+  <div style="padding-top: 10%;" v-if="showDiplomaStatusForm">
+    <DiplomaStatus @hide-form="hideForms" />
+  </div>
 </template>
 
 <script>
@@ -148,7 +156,11 @@ import SubmittedThemes from './components/SubmittedThemes.vue';
 import DisaprovedComment from './components/DisaprovedComment.vue';
 import DownloadSigned from './components/DownloadSigned.vue';
 import BlankForms from './components/BlankForms.vue';
-import HomeStudent from './components/HomeStudent.vue';
+import HomeStudent from './components/HomeStudent.vue';import SubmittedThesis from './components/SubmittedThesis.vue';
+import DiplomaStatus from './components/DiplomaStatus.vue';
+
+
+
 
 import axios from 'axios';
 import logo from '@/assets/logoo.png';
@@ -173,6 +185,8 @@ export default {
     DownloadSigned,
     BlankForms,
     HomeStudent,
+    SubmittedThesis,
+    DiplomaStatus,
 
   },
 
@@ -201,10 +215,8 @@ export default {
       showDownloadSignedForm: false,
       showBlankFormsForm: false,
       showHomeStudentForm: false,
-      
-
-
-
+      showSubmittedThesisForm: false,
+      showDiplomaStatusForm: false,
     };
   },
   async created() {
@@ -311,6 +323,14 @@ export default {
       this.hideForms();
       this.showHomeStudentForm = true;
     },
+    showSubmittedThesis() {
+      this.hideForms();
+      this.showSubmittedThesisForm = true;
+    },
+    showDiplomaStatus() {
+      this.hideForms();
+      this.showDiplomaStatusForm = true;
+    },
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -328,6 +348,8 @@ export default {
       this.showDownloadSignedForm = false;
       this.showBlankFormsForm = false;
       this.showHomeStudentForm = false;
+      this.showSubmittedThesisForm = false;
+      this.showDiplomaStatusForm = false;
     },
   },
 };
