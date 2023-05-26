@@ -15,10 +15,11 @@
             <input type="checkbox" id="show-university">
             <label for="show-university">Diploma</label>
             <ul>
-              <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a></li>
+              <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a>
+              </li>
               <li v-if="isCandidate"><a href="#" @click.prevent="showDisaprovedComment">Disaproved</a></li>
-              <li v-if="isCandidate && themeStatus === 'Theme Accepted' "><a href="#" @click.prevent="showDownloadSigned">Download signed theme</a></li>
-              <li v-if="isCandidate"><a href="#" @click.prevent="showDiplomaStatus">Diploma Status</a></li>
+              <li v-if="isCandidate && themeStatus === 'Theme Accepted'"><a href="#"
+                  @click.prevent="showDownloadSigned">Download signed theme</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThemes">Review Themes</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThesis">Review Thesis</a></li>
@@ -41,14 +42,14 @@
             </ul>
           </li>
 
-          <li v-if="loggedIn && isUser"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
+          <li v-if="loggedIn && isUser || isCandidate"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
           <li>
             <a href="#" class="desktop-link">Account</a>
             <input type="checkbox" id="show-account">
             <label for="show-account">Account</label>
             <ul>
-              <li><a href="#" @click.prevent="showLogin">Login</a></li>
-              <li><a href="#" @click.prevent="showRegister">Register</a></li>
+              <li v-if="!loggedIn"><a href="#" @click.prevent="showLogin">Login</a></li>
+              <li v-if="!loggedIn"><a href="#" @click.prevent="showRegister">Register</a></li>
               <li v-if="loggedIn">
                 <a href="#">
                   <Logout @user-logged-out="logoutUser" />
@@ -134,9 +135,6 @@
   <div style="padding-top: 10%;" v-if="showSubmittedThesisForm">
     <SubmittedThesis @hide-form="hideForms" />
   </div>
-  <div style="padding-top: 10%;" v-if="showDiplomaStatusForm">
-    <DiplomaStatus @hide-form="hideForms" />
-  </div>
 </template>
 
 <script>
@@ -156,8 +154,7 @@ import SubmittedThemes from './components/SubmittedThemes.vue';
 import DisaprovedComment from './components/DisaprovedComment.vue';
 import DownloadSigned from './components/DownloadSigned.vue';
 import BlankForms from './components/BlankForms.vue';
-import HomeStudent from './components/HomeStudent.vue';import SubmittedThesis from './components/SubmittedThesis.vue';
-import DiplomaStatus from './components/DiplomaStatus.vue';
+import HomeStudent from './components/HomeStudent.vue'; import SubmittedThesis from './components/SubmittedThesis.vue';
 
 
 
@@ -186,7 +183,6 @@ export default {
     BlankForms,
     HomeStudent,
     SubmittedThesis,
-    DiplomaStatus,
 
   },
 
@@ -216,7 +212,6 @@ export default {
       showBlankFormsForm: false,
       showHomeStudentForm: false,
       showSubmittedThesisForm: false,
-      showDiplomaStatusForm: false,
     };
   },
   async created() {
@@ -233,9 +228,9 @@ export default {
           this.isUser = response.data.user.role === 'user';
           this.isCandidate = response.data.user.role === 'candidate';
           this.userID = response.data.user.id;
-          if (this.isCandidate){
-          this.fetchDispositionStatus(); 
-          } 
+          if (this.isCandidate) {
+            this.fetchDispositionStatus();
+          }
         }
       } catch (error) {
         console.error('Error:', error);
@@ -327,10 +322,7 @@ export default {
       this.hideForms();
       this.showSubmittedThesisForm = true;
     },
-    showDiplomaStatus() {
-      this.hideForms();
-      this.showDiplomaStatusForm = true;
-    },
+
     hideForms() {
       this.showLoginForm = false;
       this.showRegisterForm = false;
@@ -349,7 +341,6 @@ export default {
       this.showBlankFormsForm = false;
       this.showHomeStudentForm = false;
       this.showSubmittedThesisForm = false;
-      this.showDiplomaStatusForm = false;
     },
   },
 };

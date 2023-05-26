@@ -7,11 +7,20 @@
     </div>
   </div>
   <h2 class="textClass">{{ status.text }}</h2>
+<div v-if="status.text == 'Congratulations! Now start working on your diploma, watch out for deadlines!'">
+  <DiplomaStatus  />
+</div>
+
+  
 </template>
   
 <script>
 import axios from 'axios';
+import DiplomaStatus from './DiplomaStatus.vue';
 export default {
+  components: {
+    DiplomaStatus
+  },  
     data() {
       return {
         status: {
@@ -39,7 +48,7 @@ export default {
             console.log('loadStatus called');  // Debug log
             // Call to backend to get status
             try {
-                const response = await axios.get(`http://localhost:3000/disposition/statuss/${this.candidateId}`);
+                const response = await axios.get(`http://localhost:3000/status/statusForBar/${this.candidateId}`);
                 console.log('axios response:', response.data);  // Debug log
                 this.status = response.data;
             } catch (error) {

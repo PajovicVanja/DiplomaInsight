@@ -5,11 +5,9 @@ const db = require('../db');
 const bcrypt = require('bcrypt');
 
 router.post('/create', async (req, res) => {
-  // Check if session exists
   if (req.session) {
     console.log('Session exists');
 
-    // Check if user object exists in the session
     if (req.session.user) {
       console.log('User exists in the session');
     } else {
@@ -21,38 +19,49 @@ router.post('/create', async (req, res) => {
 
   let candidates = req.body;
 
-  // If a single candidate object is sent, convert it to an array
   if (!Array.isArray(candidates)) {
     candidates = [candidates];
   }
 
-  const query = 'INSERT INTO candidates (name, study_direction, university, faculty, enrollment_number, email, password) VALUES ?';
+  const checkCandidateQuery = 'SELECT * FROM candidates WHERE email = ?';
+  const insertQuery = 'INSERT INTO candidates (name, study_direction, university, faculty, enrollment_number, email, password,study_program) VALUES ?';
 
-  const values = [];
   for (let candidate of candidates) {
-    // Hash the candidate's email to use as their initial password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(candidate.email, salt);
-    values.push([
-      candidate.name,
-      candidate.studyDirection,
-      candidate.university,
-      candidate.faculty,
-      candidate.enrollmentNumber,
-      candidate.email,
-      hashedPassword,
-    ]);
-  }
+    db.query(checkCandidateQuery, [candidate.email], async (error, existingCandidates) => {
+      if (error) {
+        return res.status(500).send('Error occurred during candidate creation');
+      }
 
-  db.query(query, [values], (error, results) => {
-    if (error) {
-      console.log(error);
-      res.status(500).send('Error occurred during candidate creation');
-    } else {
-      res.status(201).send('Candidates created successfully');
-    }
-  });
+      if (existingCandidates.length > 0) {
+        return res.status(400).send(`Candidate with email ${candidate.email} already exists`);
+      } else {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(candidate.email, salt);
+
+        const values = [[
+          candidate.name,
+          candidate.studyDirection,
+          candidate.university,
+          candidate.faculty,
+          candidate.enrollmentNumber,
+          candidate.email,
+          hashedPassword,
+          candidate.studyProgram
+        ]];
+
+        db.query(insertQuery, [values], (error, results) => {
+          if (error) {
+            return res.status(500).send('Error occurred during candidate creation');
+          } else {
+            return res.status(201).send('Candidate created successfully');
+          }
+        });
+      }
+    });
+  }
 });
+
+module.exports = router;
 
 
 
@@ -123,7 +132,8 @@ router.get('/user/:userId', (req, res) => {
         university: candidate.university,
         faculty: candidate.faculty,
         enrollmentNumber: candidate.enrollment_number,
-        email: candidate.email
+        email: candidate.email,
+        studyProgram: candidate.study_program
       }));
       res.status(200).send(candidates);
     }

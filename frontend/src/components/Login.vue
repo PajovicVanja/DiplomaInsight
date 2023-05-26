@@ -22,24 +22,28 @@ export default {
   },
   methods: {
     login() {
-      console.log('Login method called'); // Add this
+    console.log('Login method called');
 
-      const loginData = {
-        email: this.email,
-        password: this.password
-      };
+    const loginData = {
+      email: this.email,
+      password: this.password
+    };
 
-      axios.post('http://localhost:3000/login', loginData, { withCredentials: true })
-        .then(response => {
-          console.log('Response:', response);
-          if (response.status === 200) {
-            this.$emit('user-logged-in');
-          }
-        })
-        .catch(error => {
+    axios.post('http://localhost:3000/login', loginData, { withCredentials: true })
+      .then(response => {
+        console.log('Response:', response);
+        if (response.status === 200) {
+          this.$emit('user-logged-in');
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          alert(error.response.data);
+        } else {
           console.error('Error:', error);
-        });
-    }
+        }
+      });
+  }
   }
 }
 

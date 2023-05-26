@@ -28,6 +28,20 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/studyProgram/:id', (req, res) => {
+    const { id } = req.params;
+  
+    const query = 'SELECT name FROM study_programs WHERE id = ?';
+    db.query(query, [id], (error, results) => {
+      if (error) {
+        console.log(error);
+        res.status(500).send('Error occurred during fetching university name');
+      } else {
+        res.status(200).send(results[0].name); // Send back only the name
+      }
+    });
+  });
+
 // Update a study program
 router.put('/:id', (req, res) => {
     const { name, faculty_id } = req.body;

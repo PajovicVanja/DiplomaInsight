@@ -45,6 +45,7 @@ export default {
   data() {
     return {
       disposition: null,
+      themeStatus:'',
       candidateId: '',  // This will be set by the current user's id
       mentorId: '',  // This will be selected from the dropdown
       mentors: []  // This will hold the list of mentors
@@ -60,6 +61,8 @@ export default {
       // Fetch the list of mentors here, you might need to adjust the endpoint
       const mentorResponse = await axios.get('http://localhost:3000/disposition/mentor');
       this.mentors = mentorResponse.data;
+
+      this.fetchDispositionStatus(response.data.id);
     } catch (error) {
       console.error(error);
     }
@@ -69,30 +72,50 @@ export default {
       this.disposition = e.target.files[0];
     },
     async registerThesis() {
-      const formData = new FormData();
-      formData.append('disposition', this.disposition);
-      formData.append('candidateId', this.candidateId);
-      formData.append('mentorId', this.mentorId);
+  try {
+  
+    if (this.themeStatus && this.themeStatus !== 'Disposition Disapproved') {
+      alert('You have already submitted a disposition.');
+      return;
+    }
 
-      try {
-        const response = await axios.post('http://localhost:3000/disposition/registerDisposition', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+    const formData = new FormData();
+    formData.append('disposition', this.disposition);
+    formData.append('candidateId', this.candidateId);
+    formData.append('mentorId', this.mentorId);
 
-        alert(response.data.message);
-      } catch (error) {
-        console.error(error);
-        alert('An error occurred while submitting your thesis proposal.');
+    const response = await axios.post('http://localhost:3000/disposition/registerDisposition', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
-    },
+    });
+
+    alert(response.data.message);
+    this.fetchDispositionStatus(this.candidateId);
+  } catch (error) {
+    console.error(error);
+    alert('An error occurred while submitting your thesis proposal.');
+  }
+},
     downloadBlankDisposition() {
     window.location.href = "http://localhost:3000/document/download/disposition";
   },
   downloadBlankTheme() {
     window.location.href = "http://localhost:3000/document/download/theme";
-  }
+  },
+  fetchDispositionStatus(id) {
+    console.log("is called")
+      if (this.candidateId !== null) {
+        axios.get(`http://localhost:3000/disposition/statusDisp/${id}`)
+          .then(response => {
+            this.themeStatus = response.data.currentThemeStatus;
+            console.log("current status is " + this.themeStatus);
+          })
+          .catch(error => {
+            console.error('Error fetching disposition status:', error);
+          });
+      }
+    },
   }
 };
 
