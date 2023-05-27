@@ -17,12 +17,12 @@
             <ul>
               <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a>
               </li>
-              <li v-if="isCandidate"><a href="#" @click.prevent="showDisaprovedComment">Disaproved</a></li>
+              <li v-if="isCandidate && dispStatus === 'Disposition Disapproved'"><a href="#" @click.prevent="showDisaprovedComment">Disapproved</a></li>
               <li v-if="isCandidate && themeStatus === 'Theme Accepted'"><a href="#"
                   @click.prevent="showDownloadSigned">Download signed theme</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThemes">Review Themes</a></li>
-              <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThesis">Review Thesis</a></li>
+              <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThesis">Set deadlines and status</a></li>
             </ul>
           </li>
           <li v-if="isAdmin">
@@ -191,6 +191,7 @@ export default {
       logo,
       userID: null,
       themeStatus: null,
+      dispStatus: null,
       showLoginForm: false,
       showRegisterForm: false,
       showUserCreateForm: false,
@@ -242,6 +243,16 @@ export default {
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
             console.log("current status is " + this.themeStatus);
+          })
+          .catch(error => {
+            console.error('Error fetching disposition status:', error);
+          });
+      }
+      if (this.userID !== null) {
+        axios.get(`http://localhost:3000/disposition/statusDisp/${this.userID}`)
+          .then(response => {
+            this.dispStatus = response.data.currentThemeStatus;
+            console.log("current disp status is " + this.dispStatus);
           })
           .catch(error => {
             console.error('Error fetching disposition status:', error);
