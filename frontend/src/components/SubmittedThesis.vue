@@ -13,12 +13,12 @@
       <option value="Thesis Defended">Thesis Defended</option>
       <option value="Diploma Issued">Diploma Issued</option>
     </select>
-    <button @click="updateDispositionStatus(disposition)">Update Status</button>
+    <button class="statusButton" @click="updateDispositionStatus(disposition)">Update Status</button>
   </div>
   <div>
     <label>Change Deadline:</label>
     <input type="date" v-model="editedDeadlines[disposition.id]">
-    <button @click="updateDeadline(disposition)">Update Deadline</button>
+    <button class="deadlineButton" @click="updateDeadline(disposition)">Update Deadline</button>
   </div>
       </div>
     </div>

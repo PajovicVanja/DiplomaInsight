@@ -238,4 +238,53 @@ router.get('/diploma-status/thesis-submitted/:mentorId', (req, res) => {
   });
 });
 
+router.get('/mentor/dispositionsCount/:mentorId', (req, res) => {
+  const { mentorId } = req.params;
+  const query = `SELECT COUNT(*) AS dispositionsCount FROM diploma_status 
+                 WHERE mentor_id = ? AND 
+                 (disposition_status = 'Disposition Submitted' OR disposition_status = 'Disposition Updated')`;
+  db.query(query, [mentorId], (error, results) => {
+      if (error) {
+          console.log(error);
+          res.status(500).send('Error occurred during fetching dispositions count');
+      } else {
+          res.status(200).send(results[0]);
+      }
+  });
+});
+
+
+router.get('/mentor/themesCount/:mentorId', (req, res) => {
+  const { mentorId } = req.params;
+  const query = `SELECT COUNT(*) AS themesCount FROM diploma_status 
+                 WHERE mentor_id = ? AND theme_status = 'Theme Submitted'`;
+  db.query(query, [mentorId], (error, results) => {
+      if (error) {
+          console.log(error);
+          res.status(500).send('Error occurred during fetching themes count');
+      } else {
+          res.status(200).send(results[0]);
+      }
+  });
+});
+
+
+router.get('/mentor/candidates/:mentorId', (req, res) => {
+  const { mentorId } = req.params;
+  const query = 'SELECT id, name FROM candidates WHERE mentor_id = ?';
+  db.query(query, [mentorId], (error, results) => {
+      if (error) {
+          console.log(error);
+          res.status(500).send('Error occurred during fetching candidates');
+      } else {
+          const candidates = results.map(candidate => ({
+              id: candidate.id,
+              name: candidate.name
+          }));
+          const candidatesCount = candidates.length;
+          res.status(200).send({ candidatesCount, candidates });
+      }
+  });
+});
+
 module.exports = router;
