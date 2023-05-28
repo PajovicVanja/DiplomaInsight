@@ -4,10 +4,20 @@
       <input type="checkbox" id="show-menu">
       <label for="show-menu" class="menu-icon"><i class="fas fa-bars"></i></label>
       <div class="content">
-        <div class="logo"><a href="/"><img class="logo-img" :src="logo" alt="DiplomaInsight logo" /></a></div>
+        <div class="logo" v-if="isCandidate"><a href="/" @click.prevent="showHomeStudent"><img class="logo-img"
+              :src="logo" alt="DiplomaInsight logo" /></a></div>
+        <div class="logo" v-if="!loggedIn"><a href="/"><img class="logo-img"
+              :src="logo" alt="DiplomaInsight logo" /></a></div>
+        <div class="logo" v-if="isUser"><a href="/" @click.prevent="showUserHome"><img class="logo-img"
+              :src="logo" alt="DiplomaInsight logo" /></a></div>
+        <div class="logo" v-if="isAdmin"><a href="/" @click.prevent="showAdmin"><img class="logo-img"
+              :src="logo" alt="DiplomaInsight logo" /></a></div>
         <ul class="links">
           <li v-if="isCandidate">
             <a href="#" @click.prevent="showHomeStudent">Home</a>
+          </li>
+          <li v-if="isUser">
+            <a href="#" @click.prevent="showUserHome">Home</a>
           </li>
 
           <li v-if="loggedIn && isUser || isCandidate">
@@ -17,12 +27,13 @@
             <ul>
               <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a>
               </li>
-              <li v-if="isCandidate"><a href="#" @click.prevent="showDisaprovedComment">Disaproved</a></li>
+              <li v-if="isCandidate && dispStatus === 'Disposition Disapproved'"><a href="#"
+                  @click.prevent="showDisaprovedComment">Disapproved</a></li>
               <li v-if="isCandidate && themeStatus === 'Theme Accepted'"><a href="#"
                   @click.prevent="showDownloadSigned">Download signed theme</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showDispositonReviewRegistration">Review Dispositions</a></li>
               <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThemes">Review Themes</a></li>
-              <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThesis">Review Thesis</a></li>
+              <li v-if="isUser"><a href="#" @click.prevent="showSubmittedThesis">Set deadlines and status</a></li>
             </ul>
           </li>
           <li v-if="isAdmin">
@@ -43,6 +54,15 @@
           </li>
 
           <li v-if="loggedIn && isUser || isCandidate"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
+          <li v-if="isAdmin">
+            <a href="#" class="desktop-link">University</a>
+            <input type="checkbox" id="show-university">
+            <label for="show-university">University</label>
+            <ul>
+              <li><a href="#" @click.prevent="showUniversity">Create</a></li>
+              <li><a href="#" @click.prevent="showUniversityDel">Delete</a></li>
+            </ul>
+          </li>
           <li>
             <a href="#" class="desktop-link">Account</a>
             <input type="checkbox" id="show-account">
@@ -57,23 +77,9 @@
               </li>
             </ul>
           </li>
-          <li v-if="isAdmin">
-            <a href="#" class="desktop-link">University</a>
-            <input type="checkbox" id="show-university">
-            <label for="show-university">University</label>
-            <ul>
-              <li><a href="#" @click.prevent="showUniversity">Create</a></li>
-              <li><a href="#" @click.prevent="showUniversityDel">Delete</a></li>
-            </ul>
-          </li>
+         
           <li>
-            <a href="#" class="desktop-link">Help</a>
-            <input type="checkbox" id="show-help">
-            <label for="show-help">Help</label>
-            <ul>
-              <li><a href="#">FAQs</a></li>
-              <li><a href="#">Contact Us</a></li>
-            </ul>
+            <a href="#" @click.prevent="showHelpComp">Help</a>
           </li>
         </ul>
       </div>
@@ -135,6 +141,15 @@
   <div style="padding-top: 10%;" v-if="showSubmittedThesisForm">
     <SubmittedThesis @hide-form="hideForms" />
   </div>
+  <div style="padding-top: 10%;" v-if="!loggedIn && !showLoginForm && !showRegisterForm && !showHelpCompForm">
+    <DefaultHome @hide-form="hideForms"/>
+</div>
+  <div style="padding-top: 10% ;" v-if="showUserHomeForm">
+    <UserHome @hide-form="hideForms"/>
+</div>
+  <div style="padding-top: 10% ;" v-if="showHelpCompForm">
+    <HelpComp @hide-form="hideForms"/>
+</div>
 </template>
 
 <script>
@@ -154,8 +169,11 @@ import SubmittedThemes from './components/SubmittedThemes.vue';
 import DisaprovedComment from './components/DisaprovedComment.vue';
 import DownloadSigned from './components/DownloadSigned.vue';
 import BlankForms from './components/BlankForms.vue';
-import HomeStudent from './components/HomeStudent.vue'; import SubmittedThesis from './components/SubmittedThesis.vue';
-
+import HomeStudent from './components/HomeStudent.vue';
+import SubmittedThesis from './components/SubmittedThesis.vue';
+import DefaultHome from './components/DefaultHome.vue';
+import UserHome from './components/UserHome.vue';
+import HelpComp from './components/HelpComp.vue';
 
 
 
@@ -183,6 +201,9 @@ export default {
     BlankForms,
     HomeStudent,
     SubmittedThesis,
+    DefaultHome,
+    UserHome,
+    HelpComp,
 
   },
 
@@ -191,6 +212,7 @@ export default {
       logo,
       userID: null,
       themeStatus: null,
+      dispStatus: null,
       showLoginForm: false,
       showRegisterForm: false,
       showUserCreateForm: false,
@@ -212,6 +234,8 @@ export default {
       showBlankFormsForm: false,
       showHomeStudentForm: false,
       showSubmittedThesisForm: false,
+      showUserHomeForm: false,
+      showHelpCompForm: false,
     };
   },
   async created() {
@@ -247,12 +271,23 @@ export default {
             console.error('Error fetching disposition status:', error);
           });
       }
+      if (this.userID !== null) {
+        axios.get(`http://localhost:3000/disposition/statusDisp/${this.userID}`)
+          .then(response => {
+            this.dispStatus = response.data.currentThemeStatus;
+            console.log("current disp status is " + this.dispStatus);
+          })
+          .catch(error => {
+            console.error('Error fetching disposition status:', error);
+          });
+      }
     },
     logoutUser() {
       this.loggedIn = false;
       this.isAdmin = false;
       this.isUser = false;
       this.isCandidate = false;
+      this.hideForms();
     },
     showUniversity() {
       this.hideForms();
@@ -322,6 +357,14 @@ export default {
       this.hideForms();
       this.showSubmittedThesisForm = true;
     },
+    showUserHome() {
+      this.hideForms();
+      this.showUserHomeForm = true;
+    },
+    showHelpComp() {
+      this.hideForms();
+      this.showHelpCompForm = true;
+    },
 
     hideForms() {
       this.showLoginForm = false;
@@ -341,6 +384,8 @@ export default {
       this.showBlankFormsForm = false;
       this.showHomeStudentForm = false;
       this.showSubmittedThesisForm = false;
+      this.showUserHomeForm = false;
+      this.showHelpCompForm = false;
     },
   },
 };

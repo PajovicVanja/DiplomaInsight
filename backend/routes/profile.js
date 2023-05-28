@@ -110,5 +110,99 @@ router.put('/:id', async (req, res) => {
   });
 });
 
+router.post('/user/check-password/:userID', async (req, res) => {
+  const { userID } = req.params;
+  const { password } = req.body;
+
+  const userQuery = 'SELECT * FROM users WHERE id = ?';
+
+  db.query(userQuery, [userID], async (error, users) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).send('Error occurred during checking password');
+    }
+
+    if (users.length > 0) {
+      const user = users[0];
+      const match = await bcrypt.compare(password, user.password);
+
+      if (match) {
+        return res.json({ passwordMatch: true });
+      } else {
+        return res.json({ passwordMatch: false });
+      }
+    } else {
+      res.status(404).send('User not found');
+    }
+  });
+});
+router.put('/user/change-password/:userID', async (req, res) => {
+  const { userID } = req.params;
+  const { password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const userQuery = 'UPDATE users SET password = ? WHERE id = ?';
+
+  db.query(userQuery, [hashedPassword, userID], (error, results) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).send('Error occurred during changing password');
+    }
+
+    if (results.affectedRows > 0) {
+      return res.json({ message: 'Password changed successfully' });
+    } else {
+      res.status(404).send('User not found');
+    }
+  });
+});
+router.post('/candidate/check-password/:userID', async (req, res) => {
+  const { userID } = req.params;
+  const { password } = req.body;
+
+  const candidateQuery = 'SELECT * FROM candidates WHERE id = ?';
+
+  db.query(candidateQuery, [userID], async (error, candidates) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).send('Error occurred during checking password');
+    }
+
+    if (candidates.length > 0) {
+      const candidate = candidates[0];
+      const match = await bcrypt.compare(password, candidate.password);
+
+      if (match) {
+        return res.json({ passwordMatch: true });
+      } else {
+        return res.json({ passwordMatch: false });
+      }
+    } else {
+      res.status(404).send('Candidate not found');
+    }
+  });
+});
+router.put('/candidate/change-password/:userID', async (req, res) => {
+  const { userID } = req.params;
+  const { password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const candidateQuery = 'UPDATE candidates SET password = ? WHERE id = ?';
+
+  db.query(candidateQuery, [hashedPassword, userID], (error, results) => {
+    if (error) {
+      console.log(error);
+      return res.status(500).send('Error occurred during changing password');
+    }
+
+    if (results.affectedRows > 0) {
+      return res.json({ message: 'Password changed successfully' });
+    } else {
+      res.status(404).send('Candidate not found');
+    }
+  });
+});
+
+
 
 module.exports = router;

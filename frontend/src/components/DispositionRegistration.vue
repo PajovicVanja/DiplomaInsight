@@ -15,7 +15,7 @@
       </div>
 
       <div class="form-group">
-        <label for="mentor">Select Mentor:</label>
+        <label for="mentor">Select available mentor:</label>
         <select id="mentor" v-model="mentorId" class="form-input" required>
           <option disabled value="">Please select a mentor</option>
           <option v-for="mentor in mentors" :key="mentor.id" :value="mentor.id">
