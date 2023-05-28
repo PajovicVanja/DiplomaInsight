@@ -176,23 +176,29 @@ router.get('/download-disposition/:dispositionId', (req, res) => {
 
 
 
-  router.get('/mentor', (req, res) => {
-    const query = 'SELECT * FROM users WHERE role = "user"  ';
-    db.query(query, (error, results) => {
-      if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during fetching candidates');
-      } else {
-        const mentor = results.map(mentor => ({
-          id: mentor.id,
-          name: mentor.name,
-          email: mentor.email
-          
-        }));
-        res.status(200).send(mentor);
-      }
-    });
+router.get('/mentor', (req, res) => {
+  const query = `
+      SELECT users.*
+      FROM users
+      LEFT JOIN candidates ON users.id = candidates.mentor_id
+      WHERE users.role = "user"
+      GROUP BY users.id
+      HAVING COUNT(candidates.id) < 11
+  `;
+  db.query(query, (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching candidates');
+    } else {
+      const mentor = results.map(mentor => ({
+        id: mentor.id,
+        name: mentor.name,
+        email: mentor.email
+      }));
+      res.status(200).send(mentor);
+    }
   });
+});
 
   router.get('/submitted-dispositions/:mentorId', (req, res) => {
     const { mentorId } = req.params;

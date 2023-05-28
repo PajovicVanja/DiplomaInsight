@@ -2,7 +2,7 @@
     <div class="register-container">
         <h4 class="delete-candidate-heading">Delete a Candidate</h4>
         <ul>
-            <li v-for="candidate in candidates" :key="candidate.id" class="candidate">
+            <li style="color:white" v-for="candidate in candidates" :key="candidate.id" class="candidate">
                  {{ candidate.name }}
                 <button class="delete-btn" @click="deleteCandidate(candidate.id)">Delete</button>
                 <button class="edit-btn" @click="startEditing(candidate)">Edit</button>

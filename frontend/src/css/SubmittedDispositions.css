@@ -60,3 +60,39 @@ button.disapprove:hover {
 h3 {
     margin-bottom: 10px;
 }
+
+button.statusButton {
+    background: #28a745;
+}
+
+button.statusButton:hover {
+    background: #1e7e34;
+}
+
+button.deadlineButton {
+    background: #dc3545;
+}
+
+button.deadlineButton:hover {
+    background: #c82333;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    color: #333;
+}
+
+input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: #f8f8f8;
+    color: #333;
+}

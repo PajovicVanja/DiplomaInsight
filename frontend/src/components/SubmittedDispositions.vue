@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="dispositions.length > 0">
         <h1>Submitted Dispositions</h1>
 
         <div v-for="disposition in dispositions" :key="disposition.id" class="disposition-container">
@@ -17,8 +17,17 @@
                 <button @click="submitCommentAndDisapprove(disposition.id)">Submit Comment</button>
             </div>
         </div>
+
     </div>
-    <div>
+    <div v-else class="disposition-container" style="display: flex;
+      justify-content: center;
+      align-items: center;">
+
+        <h3>No dispositions submitted</h3>
+
+    </div>
+
+    <div v-if="dispositionsUpdated.length > 0">
         <h1>Updated Dispositions</h1>
 
         <div v-for="dispositionUpd in dispositionsUpdated" :key="dispositionUpd.id" class="disposition-container">
@@ -36,6 +45,12 @@
                 <button @click="submitCommentAndDisapprove(dispositionUpd.id)">Submit Comment</button>
             </div>
         </div>
+
+    </div>
+    <div v-else class="disposition-container" style="display: flex;
+      justify-content: center;
+      align-items: center;">
+        <h3>No dispositions updated</h3>
     </div>
 </template>
 
@@ -88,7 +103,7 @@ export default {
                 this.dispositions = dispositionResponse.data;
 
                 const dispositionUpdResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
-            this.dispositionsUpdated = dispositionUpdResponse.data;
+                this.dispositionsUpdated = dispositionUpdResponse.data;
             } catch (error) {
                 console.error(error);
             }
@@ -121,7 +136,7 @@ export default {
                 this.dispositions = dispositionResponse.data;
 
                 const dispositionUpdResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
-            this.dispositionsUpdated = dispositionUpdResponse.data;
+                this.dispositionsUpdated = dispositionUpdResponse.data;
             } catch (error) {
                 console.error(error);
             }

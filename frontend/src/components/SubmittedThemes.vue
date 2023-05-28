@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="themed.length > 0">
         <h1>Submitted Themes</h1>
 
         <div v-for="disposition in themed" :key="disposition.id" class="disposition-container">
@@ -20,6 +20,14 @@
 </div>
 
         </div>
+    </div>
+
+    <div v-else class="disposition-container" style="display: flex;
+      justify-content: center;
+      align-items: center;">
+
+        <h3>No themes submitted</h3>
+
     </div>
 </template>
 
