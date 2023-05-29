@@ -53,18 +53,18 @@ export default {
     async created() {
         try {
             axios.defaults.withCredentials = true;
-            const response = await axios.get('http://localhost:3000/profile/current');
+            const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
             this.candidateId = response.data.id;
             console.log("current s" + this.candidateId)
 
             // Fetch the comment
-            const commentResponse = await axios.get(`http://localhost:3000/disposition/comment/${this.candidateId}`);
+            const commentResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/comment/${this.candidateId}`);
             this.comment = commentResponse.data.comment;
 
-            const mentorResponse = await axios.get('http://localhost:3000/disposition/mentor');
+            const mentorResponse = await axios.get('https://diplomainsight.onrender.com/disposition/mentor');
             this.mentors = mentorResponse.data;
 
-            const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
+            const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/${this.candidateId}`);
             this.dispositionId = dispositionResponse.data.id; // Get the disposition ID
         } catch (error) {
             console.error(error);
@@ -81,7 +81,7 @@ export default {
             formData.append('mentorId', this.mentorId);
 
             try {
-                const response = await axios.put(`http://localhost:3000/disposition/updateDisposition/${this.dispositionId}`, formData, {
+                const response = await axios.put(`https://diplomainsight.onrender.com/disposition/updateDisposition/${this.dispositionId}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

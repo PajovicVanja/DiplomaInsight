@@ -41,14 +41,14 @@
     async created() {
       try {
         axios.defaults.withCredentials = true;
-        const response = await axios.get('http://localhost:3000/profile/current');
+        const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
         this.userId = response.data.id;
         console.log(this.userId);
   
-        const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/current-user/${this.userId}`);
+        const submittedResponse = await axios.get(`https://diplomainsight.onrender.com/status/diploma-status/current-user/${this.userId}`);
         this.submitted = submittedResponse.data;
 
-        const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${this.userId}`);
+        const themeResponse = await axios.get(`https://diplomainsight.onrender.com/status/accepted-themes/${this.userId}`);
         this.theme = themeResponse.data[0];  
         console.log("frist" + this.theme.progressStatus);
 
@@ -72,14 +72,14 @@
     console.log("callaed")
       try {
         axios.defaults.withCredentials = true;
-        await axios.put(`http://localhost:3000/status/diploma-status/update/${this.userId}`, {
+        await axios.put(`https://diplomainsight.onrender.com/status/diploma-status/update/${this.userId}`, {
           progression_status: 'Thesis Submitted'
         });
 
-        const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/current-user/${this.userId}`);
+        const submittedResponse = await axios.get(`https://diplomainsight.onrender.com/status/diploma-status/current-user/${this.userId}`);
         this.submitted = submittedResponse.data;
 
-        const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${this.userId}`);
+        const themeResponse = await axios.get(`https://diplomainsight.onrender.com/status/accepted-themes/${this.userId}`);
         this.theme = themeResponse.data[0];  
         console.log("theme" + this.theme.progressStatus)
         

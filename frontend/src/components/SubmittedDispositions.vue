@@ -73,15 +73,15 @@ export default {
         try {
             // Fetch the current user's ID
             axios.defaults.withCredentials = true;
-            const response = await axios.get('http://localhost:3000/profile/current');
+            const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
             this.mentorId = response.data.id;
 
             // Fetch submitted dispositions
-            const dispositionResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositions/${this.mentorId}`);
+            const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/submitted-dispositions/${this.mentorId}`);
             this.dispositions = dispositionResponse.data;
 
 
-            const dispositionUpdResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
+            const dispositionUpdResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
             this.dispositionsUpdated = dispositionUpdResponse.data;
 
 
@@ -91,18 +91,18 @@ export default {
     },
     methods: {
         downloadDisposition(dispositionId) {
-            window.open(`http://localhost:3000/disposition/download-disposition/${dispositionId}`);
+            window.open(`https://diplomainsight.onrender.com/disposition/download-disposition/${dispositionId}`);
         },
         async approveDisposition(dispositionId) {
             try {
-                await axios.post(`http://localhost:3000/disposition/approve-disposition/${dispositionId}`, {
+                await axios.post(`https://diplomainsight.onrender.com/disposition/approve-disposition/${dispositionId}`, {
                     mentorId: this.mentorId,
                 });
                 // Refresh dispositions after approval
-                const dispositionResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositions/${this.mentorId}`);
+                const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/submitted-dispositions/${this.mentorId}`);
                 this.dispositions = dispositionResponse.data;
 
-                const dispositionUpdResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
+                const dispositionUpdResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
                 this.dispositionsUpdated = dispositionUpdResponse.data;
             } catch (error) {
                 console.error(error);
@@ -114,7 +114,7 @@ export default {
         async submitCommentAndDisapprove(dispositionId) {
             try {
                 // Post the comment
-                await axios.post(`http://localhost:3000/disposition/comment/${dispositionId}`, {
+                await axios.post(`https://diplomainsight.onrender.com/disposition/comment/${dispositionId}`, {
                     comment: this.comment,
                 });
                 this.comment = '';
@@ -130,12 +130,12 @@ export default {
             try {
                 this.currentDisposition = dispositionId;
                 this.inputVisible = true;
-                await axios.post(`http://localhost:3000/disposition/disapprove-disposition/${dispositionId}`);
+                await axios.post(`https://diplomainsight.onrender.com/disposition/disapprove-disposition/${dispositionId}`);
                 // Refresh dispositions after disapproval
-                const dispositionResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositions/${this.mentorId}`);
+                const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/submitted-dispositions/${this.mentorId}`);
                 this.dispositions = dispositionResponse.data;
 
-                const dispositionUpdResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
+                const dispositionUpdResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/submitted-dispositionsUpdated/${this.mentorId}`);
                 this.dispositionsUpdated = dispositionUpdResponse.data;
             } catch (error) {
                 console.error(error);

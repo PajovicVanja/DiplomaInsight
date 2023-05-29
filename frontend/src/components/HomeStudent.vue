@@ -34,7 +34,7 @@ export default {
     async created() {
         try {
             axios.defaults.withCredentials = true;
-            const response = await axios.get('http://localhost:3000/profile/current');
+            const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
             this.candidateId = response.data.id;
             console.log('Candidate ID:', this.candidateId);  
              this.loadStatus();
@@ -48,7 +48,7 @@ export default {
             console.log('loadStatus called');  // Debug log
             // Call to backend to get status
             try {
-                const response = await axios.get(`http://localhost:3000/status/statusForBar/${this.candidateId}`);
+                const response = await axios.get(`https://diplomainsight.onrender.com/status/statusForBar/${this.candidateId}`);
                 console.log('axios response:', response.data);  // Debug log
                 this.status = response.data;
             } catch (error) {

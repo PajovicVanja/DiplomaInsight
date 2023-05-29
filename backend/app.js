@@ -13,13 +13,15 @@ const candidateRoutes = require('./routes/candidate');
 const dispositionRoutes = require('./routes/disposition');
 const documentsRoutes = require('./routes/documents');
 const statusRoutes = require('./routes/status');
+const path = require('path');
 
 
 const app = express();
 const port = 3000;
 
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use(cors({
-    origin: 'http://localhost:8080', // or your frontend url
+    origin: 'https://diploma-insight.onrender.com', // or your frontend url
     credentials: true,
     withCredentials: true
   }));
@@ -49,5 +51,5 @@ app.use('/disposition', dispositionRoutes);
 app.use('/document', documentsRoutes);
 app.use('/status', statusRoutes);
 app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`)
+    console.log(`App listening at https://diploma-insight.onrender.com:${port}`)
   })

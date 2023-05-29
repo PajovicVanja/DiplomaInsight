@@ -29,7 +29,7 @@ export default {
       password: this.password
     };
 
-    axios.post('http://localhost:3000/login', loginData, { withCredentials: true })
+    axios.post('https://diplomainsight.onrender.com/login', loginData, { withCredentials: true })
       .then(response => {
         console.log('Response:', response);
         if (response.status === 200) {

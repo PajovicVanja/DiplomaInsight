@@ -9,7 +9,7 @@ export default {
   name: 'LogoutUser',
   methods: {
     logout() {
-      axios.post('http://localhost:3000/logout', {}, { withCredentials: true })
+      axios.post('https://diplomainsight.onrender.com/logout', {}, { withCredentials: true })
         .then(response => {
           console.log('Logout response:', response);
           if (response.status === 200) {

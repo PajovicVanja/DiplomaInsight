@@ -48,13 +48,13 @@ export default {
         try {
             // Fetch the current user's ID
             axios.defaults.withCredentials = true;
-            const response = await axios.get('http://localhost:3000/profile/current');
+            const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
             this.mentorId = response.data.id;
 console.log(this.mentorId);
 
 
             // Fetch themed dispositions
-            const themedResponse = await axios.get(`http://localhost:3000/disposition/themed-dispositions/${this.mentorId}`);
+            const themedResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/themed-dispositions/${this.mentorId}`);
             this.themed = themedResponse.data;
         } catch (error) {
             console.error(error);
@@ -62,12 +62,12 @@ console.log(this.mentorId);
     },
     methods: {
         downloadTheme(dispositionId) {
-            window.open(`http://localhost:3000/disposition/download-theme/${dispositionId}`);
+            window.open(`https://diplomainsight.onrender.com/disposition/download-theme/${dispositionId}`);
         },
         async acceptTheme(dispositionId) {
             try {
-                await axios.post(`http://localhost:3000/disposition/accept-theme/${dispositionId}`);
-                const themedResponse = await axios.get(`http://localhost:3000/disposition/themed-dispositions/${this.mentorId}`);
+                await axios.post(`https://diplomainsight.onrender.com/disposition/accept-theme/${dispositionId}`);
+                const themedResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/themed-dispositions/${this.mentorId}`);
                 this.themed = themedResponse.data;
             } catch (error) {
                 console.error(error);
@@ -75,8 +75,8 @@ console.log(this.mentorId);
         },
         async declineTheme(dispositionId) {
             try {
-                await axios.post(`http://localhost:3000/disposition/decline-theme/${dispositionId}`);
-                const themedResponse = await axios.get(`http://localhost:3000/disposition/themed-dispositions/${this.mentorId}`);
+                await axios.post(`https://diplomainsight.onrender.com/disposition/decline-theme/${dispositionId}`);
+                const themedResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/themed-dispositions/${this.mentorId}`);
                 this.themed = themedResponse.data;
             } catch (error) {
                 console.error(error);
@@ -94,7 +94,7 @@ console.log(this.mentorId);
     formData.append('signedTheme', this.selectedFile);
 
     try {
-        const response = await axios.post(`http://localhost:3000/disposition/uploadSignedTheme/${dispositionId}`, formData, {
+        const response = await axios.post(`https://diplomainsight.onrender.com/disposition/uploadSignedTheme/${dispositionId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

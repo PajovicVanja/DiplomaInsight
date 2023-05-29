@@ -49,11 +49,11 @@ export default {
     try {
       // Fetch the current user's ID
       axios.defaults.withCredentials = true;
-      const response = await axios.get('http://localhost:3000/profile/current');
+      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
       this.mentorId = response.data.id;
 
       // Fetch submitted dispositions with theme status "Theme Submitted" for the mentorId
-      const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/thesis-submitted/${this.mentorId}`);
+      const submittedResponse = await axios.get(`https://diplomainsight.onrender.com/status/diploma-status/thesis-submitted/${this.mentorId}`);
       this.submitted = submittedResponse.data;
 
       // Initialize the edited deadlines with the current deadlines
@@ -67,7 +67,7 @@ export default {
   methods: {
     async updateDispositionStatus(disposition) {
       try {
-        const response = await axios.put(`http://localhost:3000/status/updateProgress/${disposition.id}`, {
+        const response = await axios.put(`https://diplomainsight.onrender.com/status/updateProgress/${disposition.id}`, {
           candidateId: disposition.candidateId,
           mentorId: disposition.mentorId,
           progressStatus: disposition.progressStatus,
@@ -83,7 +83,7 @@ export default {
         const editedDeadline = new Date(this.editedDeadlines[disposition.id]);
         const formattedDeadline = editedDeadline.toISOString().split('T')[0];
 
-        const response = await axios.put(`http://localhost:3000/status/updateDeadline/${disposition.id}`, {
+        const response = await axios.put(`https://diplomainsight.onrender.com/status/updateDeadline/${disposition.id}`, {
           deadline: formattedDeadline,
         });
         console.log(response.data.message);

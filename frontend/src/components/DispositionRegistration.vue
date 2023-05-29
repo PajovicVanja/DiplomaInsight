@@ -54,12 +54,12 @@ export default {
   async created() {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get('http://localhost:3000/profile/current');
+      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
       this.candidateId = response.data.id;
       console.log( this.candidateId);
 
       // Fetch the list of mentors here, you might need to adjust the endpoint
-      const mentorResponse = await axios.get('http://localhost:3000/disposition/mentor');
+      const mentorResponse = await axios.get('https://diplomainsight.onrender.com/disposition/mentor');
       this.mentors = mentorResponse.data;
 
       this.fetchDispositionStatus(response.data.id);
@@ -84,7 +84,7 @@ export default {
     formData.append('candidateId', this.candidateId);
     formData.append('mentorId', this.mentorId);
 
-    const response = await axios.post('http://localhost:3000/disposition/registerDisposition', formData, {
+    const response = await axios.post('https://diplomainsight.onrender.com/disposition/registerDisposition', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -98,15 +98,15 @@ export default {
   }
 },
     downloadBlankDisposition() {
-    window.location.href = "http://localhost:3000/document/download/disposition";
+    window.location.href = "https://diplomainsight.onrender.com/document/download/disposition";
   },
   downloadBlankTheme() {
-    window.location.href = "http://localhost:3000/document/download/theme";
+    window.location.href = "https://diplomainsight.onrender.com/document/download/theme";
   },
   fetchDispositionStatus(id) {
     console.log("is called")
       if (this.candidateId !== null) {
-        axios.get(`http://localhost:3000/disposition/statusDisp/${id}`)
+        axios.get(`https://diplomainsight.onrender.com/disposition/statusDisp/${id}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
             console.log("current status is " + this.themeStatus);

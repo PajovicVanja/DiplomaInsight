@@ -30,11 +30,11 @@ export default {
 
         
         axios.defaults.withCredentials = true;
-        const response = await axios.get('http://localhost:3000/profile/current');
+        const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
         this.candidateId = response.data.id;
   
         // Check the status of the disposition here and update the flags accordingly
-        const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
+        const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/${this.candidateId}`);
         const disposition = dispositionResponse.data.status;
         this.dispositionId = dispositionResponse.data.id; // Get the disposition ID
 
@@ -55,7 +55,7 @@ export default {
       fetchDispositionStatus(id) {
     console.log("is called")
       if (this.candidateId !== null) {
-        axios.get(`http://localhost:3000/disposition/status/${id}`)
+        axios.get(`https://diplomainsight.onrender.com/disposition/status/${id}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
             console.log("current status is " + this.themeStatus);
@@ -77,10 +77,10 @@ export default {
 
   try {
     // Check the status of the disposition here and update the flags accordingly
-    const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
+    const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/${this.candidateId}`);
     this.dispositionId = dispositionResponse.data.id; // Get the disposition ID
     console.log('opp '+ dispositionResponse.data.id)
-    const response = await axios.post(`http://localhost:3000/disposition/submitTheme/${this.dispositionId}`, formData, {
+    const response = await axios.post(`https://diplomainsight.onrender.com/disposition/submitTheme/${this.dispositionId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

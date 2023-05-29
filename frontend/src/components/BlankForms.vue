@@ -66,7 +66,7 @@ export default {
       formData.append('blank_disposition', this.dispositionForm);
 
       try {
-        const response = await axios.post('http://localhost:3000/document/create', formData, {
+        const response = await axios.post('https://diplomainsight.onrender.com/document/create', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -84,7 +84,7 @@ export default {
       formData.append('blank_disposition', this.updateDispositionForm);
 
       try {
-        const response = await axios.put('http://localhost:3000/documents/1', formData, {
+        const response = await axios.put('https://diplomainsight.onrender.com/documents/1', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }

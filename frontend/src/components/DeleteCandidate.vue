@@ -74,7 +74,7 @@ export default {
     },
     async submitForm() {
       try {
-        await axios.put(`http://localhost:3000/candidate/${this.editingCandidateId}`, this.editingCandidate);
+        await axios.put(`https://diplomainsight.onrender.com/candidate/${this.editingCandidateId}`, this.editingCandidate);
         const index = this.localCandidates.findIndex(candidate => candidate.id === this.editingCandidateId);
         this.localCandidates[index] = this.editingCandidate;
         this.editingCandidateId = null;
@@ -92,7 +92,7 @@ export default {
     },
     async deleteCandidate(id) {
       try {
-        await axios.delete(`http://localhost:3000/candidate/${id}`);
+        await axios.delete(`https://diplomainsight.onrender.com/candidate/${id}`);
         this.localCandidates = this.localCandidates.filter(candidate => candidate.id !== id);
       } catch (error) {
         console.error(error);
