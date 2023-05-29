@@ -20,6 +20,9 @@
 * Frontend: Vue.js, with bootstraps and custom css
 * Database: MySQL
 
+## Deployed at: 
+* https://diplomainsight.onrender.com/#
+
 ## Features: 
 * TODO
 
