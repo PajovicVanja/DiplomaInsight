@@ -22,6 +22,11 @@
             </li>
           </ul>
         </div>
+
+        <div class="statistic theme-stat">
+          <full-calendar :events="calendarEvents" :config="calendarConfig"></full-calendar>
+        </div>
+
       </div>
     </div>
   </template>
@@ -32,7 +37,8 @@
   
   <script>
   import axios from 'axios';
-  
+  import FullCalendar from 'vue-fullcalendar';
+
   export default {
     data() {
       return {
@@ -41,8 +47,15 @@
         themesCount: 0,
         candidatesCount: 0,
         candidates: [],
+        calendarEvents: [],
+        calendarConfig: {
+        // Calendar configuration options
+      },
       };
     },
+    components: {
+    FullCalendar,
+  },
     async created() {
       try {
         axios.defaults.withCredentials = true;
@@ -61,6 +74,11 @@
         const candidatesResponse = await axios.get(`https://diplomainsight.onrender.com/status/mentor/candidates/${this.mentorId}`);
         this.candidatesCount = candidatesResponse.data.candidatesCount;
         this.candidates = candidatesResponse.data.candidates;
+
+          // Fetch the calendar events from the backend API
+        const calendarResponse = await axios.get(`https://diplomainsight.onrender.com/status/calendar/${this.mentorId}`);
+        this.calendarEvents = calendarResponse.data.events;
+ 
   
       } catch (error) {
         console.error(error);

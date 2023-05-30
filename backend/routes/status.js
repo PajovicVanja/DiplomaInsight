@@ -287,4 +287,23 @@ router.get('/mentor/candidates/:mentorId', (req, res) => {
   });
 });
 
+router.get('/calendar/:mentorId', (req, res) => {
+  const { mentorId } = req.params;
+  const query = 'SELECT deadline, candidate_id FROM diploma_status WHERE mentor_id = ? ';
+  
+  db.query(query, [mentorId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching submitted dispositions');
+    } else {
+      const events = results.map((result) => ({
+        title: result.candidate_id, // Customize the event title if needed
+        start: result.deadline, // Assuming the deadline column stores date or datetime values
+        color: '#000080',
+      }));
+      res.status(200).send(events);
+    }
+  });
+});
+
 module.exports = router;
