@@ -59,9 +59,6 @@ export default {
         },
         plugins: [dayGridPlugin, timeGridPlugin],
         defaultView: 'dayGridMonth',
-        eventClick: function (info) {
-          // Handle event click if needed
-        }
       },
     };
   },
