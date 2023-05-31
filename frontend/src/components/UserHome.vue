@@ -22,8 +22,13 @@
             </li>
           </ul>
         </div>
+        <div class="statistic theme-stat">
+        <div id="calendar"></div>
+      </div>
       </div>
     </div>
+
+  
   </template>
   
   
@@ -32,6 +37,9 @@
   
   <script>
   import axios from 'axios';
+  import { Calendar } from '@fullcalendar/core';
+  import dayGridPlugin from '@fullcalendar/daygrid';
+  import timeGridPlugin from '@fullcalendar/timegrid';
   
   export default {
     data() {
@@ -41,7 +49,19 @@
         themesCount: 0,
         candidatesCount: 0,
         candidates: [],
+        calendarEvents: []
       };
+    },
+    methods: {
+      initializeCalendar() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new Calendar(calendarEl, {
+          plugins: [dayGridPlugin, timeGridPlugin],
+          initialView: 'dayGridMonth',
+          events: this.calendarEvents
+        });
+        calendar.render();
+      }
     },
     async created() {
       try {
@@ -62,9 +82,16 @@
         this.candidatesCount = candidatesResponse.data.candidatesCount;
         this.candidates = candidatesResponse.data.candidates;
   
+        // Fetch the calendar events
+        const calendarResponse = await axios.get(`http://localhost:3000/status/calendar/${this.mentorId}`);
+        this.calendarEvents = calendarResponse.data.events;
+  
       } catch (error) {
         console.error(error);
       }
+    },
+    mounted() {
+      this.initializeCalendar();
     },
   };
   </script>

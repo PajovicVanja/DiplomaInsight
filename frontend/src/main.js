@@ -1,6 +1,9 @@
 import "bootstrap/dist/css/bootstrap.css"
 import { createApp } from 'vue'
 import App from './App.vue'
+import '@fullcalendar/common/main.css';
+
+
 
 
 /* import the fontawesome core */
