@@ -137,9 +137,7 @@ export default {
         } else if (this.isCandidate) {
           await axios.put(`http://localhost:3000/candidate/${this.userID}`, this.user, { withCredentials: true });
           alert('Profile updated successfully');
-        } else {
-         
-        }
+        } 
       } catch (error) {
         console.error(error);
       }
