@@ -2,7 +2,6 @@
   <div class="progress-container">
     <div class="progress">
       <div class="progress-bar progress-bar-striped" :style="{ width: status.percentage + '%', backgroundColor: status.color }">
-        <!-- <span>{{ status.text }}</span> -->
       </div>
     </div>
   </div>
@@ -45,14 +44,13 @@ export default {
     },
     methods: {
         async loadStatus() {
-            console.log('loadStatus called');  // Debug log
-            // Call to backend to get status
+            
             try {
                 const response = await axios.get(`http://localhost:3000/status/statusForBar/${this.candidateId}`);
-                console.log('axios response:', response.data);  // Debug log
+                console.log('axios response:', response.data);  
                 this.status = response.data;
             } catch (error) {
-                console.error("Error during axios call:", error);  // log the error for debugging
+                console.error("Error during axios call:", error);  
             }
         }
     },
@@ -65,30 +63,30 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 20vh; /* take the full height of the viewport */
+  height: 20vh; 
 }
 
 .progress {
   display: flex;
   justify-content: space-between;
   width: 80%;
-  height: 50px; /* This will make the progress bar thicker */
-  background-color: #acacac; /* A background color that will be visible when the progress bar isn't full */
-  border-radius: 25px; /* Round the corners of the progress bar */
-  overflow: hidden; /* Make sure the inner div stays inside the rounded corners */
+  height: 50px; 
+  background-color: #acacac; 
+  border-radius: 25px; 
+  overflow: hidden; 
 }
 
 .progress-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%; /* Make sure the inner div takes the full height of the outer div */
-  transition: width 0.4s ease-in-out; /* Smooth transition for the width */
+  height: 100%; 
+  transition: width 0.4s ease-in-out; 
 }
 
 .progress-bar span {
-  color: white; /* Make the text white so it contrasts with the progress bar color */
-  font-weight: bold; /* Make the text bold for more emphasis */
+  color: white; 
+  font-weight: bold; 
 }
 
 .textClass {

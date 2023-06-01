@@ -15,8 +15,8 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      dispositionId: null,  // Initialize it
-      disposition: null,  // Initialize it
+      dispositionId: null,  
+      disposition: null,  
       candidateId: '',
       comment: '',
       mentorId: '',
@@ -33,10 +33,9 @@ export default {
         const response = await axios.get('http://localhost:3000/profile/current');
         this.candidateId = response.data.id;
   
-        // Check the status of the disposition here and update the flags accordingly
         const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
         const disposition = dispositionResponse.data.status;
-        this.dispositionId = dispositionResponse.data.id; // Get the disposition ID
+        this.dispositionId = dispositionResponse.data.id; 
 
         this.fetchDispositionStatus(response.data.id);
         if (disposition === 'Disposition Approved') {
@@ -76,9 +75,8 @@ export default {
   formData.append('candidateId', this.candidateId);
 
   try {
-    // Check the status of the disposition here and update the flags accordingly
     const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
-    this.dispositionId = dispositionResponse.data.id; // Get the disposition ID
+    this.dispositionId = dispositionResponse.data.id; 
     console.log('opp '+ dispositionResponse.data.id)
     const response = await axios.post(`http://localhost:3000/disposition/submitTheme/${this.dispositionId}`, formData, {
       headers: {

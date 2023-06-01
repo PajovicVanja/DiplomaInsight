@@ -71,12 +71,10 @@ export default {
     },
     async created() {
         try {
-            // Fetch the current user's ID
             axios.defaults.withCredentials = true;
             const response = await axios.get('http://localhost:3000/profile/current');
             this.mentorId = response.data.id;
 
-            // Fetch submitted dispositions
             const dispositionResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositions/${this.mentorId}`);
             this.dispositions = dispositionResponse.data;
 
@@ -98,7 +96,6 @@ export default {
                 await axios.post(`http://localhost:3000/disposition/approve-disposition/${dispositionId}`, {
                     mentorId: this.mentorId,
                 });
-                // Refresh dispositions after approval
                 const dispositionResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositions/${this.mentorId}`);
                 this.dispositions = dispositionResponse.data;
 
@@ -113,14 +110,12 @@ export default {
         },
         async submitCommentAndDisapprove(dispositionId) {
             try {
-                // Post the comment
                 await axios.post(`http://localhost:3000/disposition/comment/${dispositionId}`, {
                     comment: this.comment,
                 });
                 this.comment = '';
-                this.currentDisposition = null; // Hide the comment input
+                this.currentDisposition = null; 
 
-                // Then disapprove the disposition
                 await this.disapproveDisposition(dispositionId);
             } catch (error) {
                 console.error(error);
@@ -131,7 +126,6 @@ export default {
                 this.currentDisposition = dispositionId;
                 this.inputVisible = true;
                 await axios.post(`http://localhost:3000/disposition/disapprove-disposition/${dispositionId}`);
-                // Refresh dispositions after disapproval
                 const dispositionResponse = await axios.get(`http://localhost:3000/disposition/submitted-dispositions/${this.mentorId}`);
                 this.dispositions = dispositionResponse.data;
 

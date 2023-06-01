@@ -3,7 +3,6 @@
       <h1 class="title">Welcome to Our Website!</h1>
       <p class="intro">We are pleased to offer a myriad of services to meet your needs. Please take the time to explore our offerings.</p>
   
-      <!-- Showcase some main features of your website -->
       <div class="feature-section student-section">
         <h2 class="section-title">Features for Students</h2>
         <div class="feature-container">
@@ -48,7 +47,6 @@
         </div>
       </div>
   
-      <!-- CTA section -->
       <div class="cta-section">
         <h2 class="cta-title">Commence Utilization</h2>
         <p class="cta-desc">Students are invited to sign in using the email and password provided by their professors in order to utilize our application.</p>

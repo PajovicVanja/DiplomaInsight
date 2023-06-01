@@ -9,7 +9,6 @@
             </div>
             <div>
                 <button @click="downloadTheme(disposition.id)">Download Theme</button>
-                <!-- <button class="approve" @click="acceptTheme(disposition.id)">Accept</button> -->
                 <button class="disapprove" @click="declineTheme(disposition.id)">Decline</button>
             </div>
             <div>
@@ -39,21 +38,19 @@ export default {
     data() {
         return {
             mentorId: '',
-            themed: [], // Holds the list of themed dispositions
-            selectedFile: null,  // Holds the selected file
+            themed: [], 
+            selectedFile: null,  
 
         };
     },
     async created() {
         try {
-            // Fetch the current user's ID
             axios.defaults.withCredentials = true;
             const response = await axios.get('http://localhost:3000/profile/current');
             this.mentorId = response.data.id;
 console.log(this.mentorId);
 
 
-            // Fetch themed dispositions
             const themedResponse = await axios.get(`http://localhost:3000/disposition/themed-dispositions/${this.mentorId}`);
             this.themed = themedResponse.data;
         } catch (error) {
@@ -99,9 +96,8 @@ console.log(this.mentorId);
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log(response.data); // Log the response from the server
+        console.log(response.data); 
 
-        // Call the acceptTheme method here if the upload was successful
         await this.acceptTheme(dispositionId);
     } catch (error) {
         console.error(error);

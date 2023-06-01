@@ -37,12 +37,12 @@ router.get('/studyProgram/:id', (req, res) => {
         console.log(error);
         res.status(500).send('Error occurred during fetching university name');
       } else {
-        res.status(200).send(results[0].name); // Send back only the name
+        res.status(200).send(results[0].name); 
       }
     });
   });
 
-// Update a study program
+
 router.put('/:id', (req, res) => {
     const { name, faculty_id } = req.body;
     const { id } = req.params;
@@ -58,7 +58,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// Delete a study program
+
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
 

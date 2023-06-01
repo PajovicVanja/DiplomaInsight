@@ -3,8 +3,8 @@ const cors = require('cors');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
-const authRoutes = require('./routes/auth'); // Import the auth routes
-const indexRoutes = require('./routes/index'); // Import the index routes
+const authRoutes = require('./routes/auth'); 
+const indexRoutes = require('./routes/index'); 
 const universityRoutes = require('./routes/university');
 const facultyRoutes = require('./routes/faculty');
 const studyProgramRoutes = require('./routes/studyProgram');
@@ -20,7 +20,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors({
-    origin: 'http://localhost:8080', // or your frontend url
+    origin: 'http://localhost:8080', 
     credentials: true,
     withCredentials: true
   }));
@@ -30,7 +30,7 @@ app.use(cors({
   // Session middleware
   const secretKey = crypto.randomBytes(64).toString('hex');
   app.use(session({
-    secret: secretKey, // Replace it with your own secret
+    secret: secretKey, 
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -39,13 +39,13 @@ app.use(cors({
       secure:false
     }
   }));
-app.use('/', indexRoutes); // Use index routes
-app.use('/', authRoutes); // Use auth routes
+app.use('/', indexRoutes); 
+app.use('/', authRoutes); 
 app.use('/university', universityRoutes);
 app.use('/faculty', facultyRoutes);
 app.use('/studyProgram', studyProgramRoutes);
 app.use('/profile', profileRoutes);
-app.use('/candidate', candidateRoutes); // Use candidate routes
+app.use('/candidate', candidateRoutes); 
 app.use('/disposition', dispositionRoutes);
 app.use('/document', documentsRoutes);
 app.use('/status', statusRoutes);

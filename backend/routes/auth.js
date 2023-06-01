@@ -69,7 +69,7 @@ router.get('/check-session', (req, res) => {
       }});
 
 router.post('/logout', (req, res) => {
-    console.log('Logout route called'); // Add this
+    console.log('Logout route called'); 
     if (req.session) {
       req.session.destroy((err) => {
         if (err) {

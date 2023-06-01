@@ -94,26 +94,21 @@ formatCalendarEvents(events) {
       const response = await axios.get('http://localhost:3000/profile/current');
       this.mentorId = response.data.id;
 
-      // Fetch the dispositions count
       const dispositionsResponse = await axios.get(`http://localhost:3000/status/mentor/dispositionsCount/${this.mentorId}`);
       this.dispositionsCount = dispositionsResponse.data.dispositionsCount;
 
-      // Fetch the themes count
       const themesResponse = await axios.get(`http://localhost:3000/status/mentor/themesCount/${this.mentorId}`);
       this.themesCount = themesResponse.data.themesCount;
 
-      // Fetch the candidates count and their names
       const candidatesResponse = await axios.get(`http://localhost:3000/status/mentor/candidates/${this.mentorId}`);
       this.candidatesCount = candidatesResponse.data.candidatesCount;
       this.candidates = candidatesResponse.data.candidates;
 
-      // Fetch the calendar events
       const calendarResponse = await axios.get(`http://localhost:3000/status/calendar/${this.mentorId}`);
       const events = this.formatCalendarEvents(calendarResponse.data);
 
       this.calendarEvents = events;
 
-      // Call initializeCalendar to render the calendar with updated events
       this.initializeCalendar();
     } catch (error) {
       console.error(error);
@@ -194,18 +189,15 @@ formatCalendarEvents(events) {
   color: #ffffff;
 }
 
-/* Modify the event title style */
 .fc-event-title {
   font-size: 14px;
   font-weight: bold;
 }
 
-/* Modify the event border style */
 .fc-event-container .fc-event {
   border-color: #000080;
 }
 
-/* Modify the event text color when hovered */
 .fc-event:hover {
   color: #000080;
   background-color: #ffffff;

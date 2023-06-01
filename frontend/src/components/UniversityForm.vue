@@ -59,7 +59,6 @@ export default {
         "Maribor, Slovenia",
         "Ljubljana, Slovenia",
         "Celje, Slovenia",
-        // Add more name suggestions here
       ],
       showSuggestionsLocation: false,
       showSuggestionsNames: false,

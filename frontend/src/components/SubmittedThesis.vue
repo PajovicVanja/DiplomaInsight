@@ -46,24 +46,21 @@ export default {
   data() {
     return {
       mentorId: '',
-      submitted: [], // Holds the list of submitted dispositions
-      selectedFile: null, // Holds the selected file
+      submitted: [], 
+      selectedFile: null, 
       editedDeadlines: {},
       editedDefending: {},
     };
   },
   async created() {
     try {
-      // Fetch the current user's ID
       axios.defaults.withCredentials = true;
       const response = await axios.get('http://localhost:3000/profile/current');
       this.mentorId = response.data.id;
 
-      // Fetch submitted dispositions with theme status "Theme Submitted" for the mentorId
       const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/thesis-submitted/${this.mentorId}`);
       this.submitted = submittedResponse.data;
 
-      // Initialize the edited deadlines with the current deadlines
       this.submitted.forEach((disposition) => {
         this.editedDeadlines[disposition.id] = disposition.deadline;
       });
@@ -126,7 +123,7 @@ export default {
         });
         return formattedDeadline;
       }
-      return 'N/A'; // If no deadline is set, display "N/A"
+      return 'N/A'; 
     },
   },
 };

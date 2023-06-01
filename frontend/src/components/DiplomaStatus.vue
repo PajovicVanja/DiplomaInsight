@@ -88,7 +88,7 @@ export default {
         return formattedDeadline;
         
       }
-      return 'N/A'; // If no deadline is set, display "N/A"
+      return 'N/A'; 
     },
     formatDefending(defending) {
       console.log("FOR DEBUG " + defending);
@@ -102,9 +102,9 @@ export default {
 
         return formattedDefending;
       } else{
-        this.theme.defending = "Mentor didn't set the date yet";
+        this.theme.defending = 'N/A';
       } 
-      return "Mentor didn't set the date yet";
+      return 'N/A';
     },
     async updateProgressionStatus() {
       console.log("callaed")

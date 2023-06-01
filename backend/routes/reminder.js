@@ -15,18 +15,18 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Schedule tasks to be run on the server
+
 cron.schedule('0 0 1 * *', function() {
   console.log('Running the monthly email notifier.');
 
-  // Get all the students with a deadline set
+  
   db.query('SELECT * FROM diploma_status JOIN candidates ON diploma_status.candidate_id = candidates.id WHERE deadline IS NOT NULL', (error, results) => {
     if (error) {
       console.log('Database operation error:', error);
       return;
     }
 
-    // For each student with a deadline, send a reminder email
+    
     results.forEach(row => {
       const now = moment();
       const deadline = moment(row.deadline);

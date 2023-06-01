@@ -69,7 +69,6 @@ module.exports = router;
 
 
 
-// Get a candidate by ID
 router.get('/:id', (req, res) => {
   const { id } = req.params;
 
@@ -84,7 +83,6 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// Update a candidate by ID
 router.put('/:id', (req, res) => {
   const { id } = req.params;
   const { name, studyDirection, university, faculty, enrollmentNumber, email } = req.body;
@@ -100,7 +98,6 @@ router.put('/:id', (req, res) => {
   });
 });
 
-// Delete a candidate by ID
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
@@ -115,7 +112,6 @@ router.delete('/:id', (req, res) => {
   });
 });
 
-// Get candidates by user ID
 router.get('/user/:userId', (req, res) => {
   const { userId } = req.params;
 
@@ -141,11 +137,10 @@ router.get('/user/:userId', (req, res) => {
 });
 
 
-// Get candidates by user ID
 router.get('/', (req, res) => {
   if (req.session && req.session.user) {
-    const mentorId = req.session.user.id; // Retrieve mentor ID from the session
-    console.log('Mentor ID:', mentorId); // Log the mentor ID
+    const mentorId = req.session.user.id; 
+    console.log('Mentor ID:', mentorId); 
 
     const query = 'SELECT * FROM candidates WHERE mentor_id = ?';
     db.query(query, [mentorId], (error, results) => {
@@ -153,7 +148,7 @@ router.get('/', (req, res) => {
         console.log(error);
         res.status(500).send('Error occurred during fetching candidates');
       } else {
-        console.log('Query Results:', results); // Log the query results
+        console.log('Query Results:', results); 
 
         const candidates = results.map(candidate => ({
           id: candidate.id,
@@ -172,7 +167,6 @@ router.get('/', (req, res) => {
   }
 });
 
-// Select all candidates
 router.get('/user', (req, res) => {
   const query = 'SELECT * FROM candidates';
   db.query(query, (error, results) => {

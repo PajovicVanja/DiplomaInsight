@@ -397,7 +397,6 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  /* Adjust this value according to your needs */
 }
 </style>
 <style scoped>

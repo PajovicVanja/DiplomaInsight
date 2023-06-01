@@ -5,9 +5,9 @@ const db = require('../db');
 const path = require('path');
 const fs = require('fs');
 
-const upload = multer({ dest: 'documents/' }); // Set the destination for uploaded files
+const upload = multer({ dest: 'documents/' }); 
 
-// API endpoint for saving the documents
+
 router.post('/create', upload.fields([
   { name: 'blank_theme', maxCount: 1 },
   { name: 'blank_disposition', maxCount: 1 }
@@ -25,7 +25,7 @@ router.post('/create', upload.fields([
   });
 });
 
-// API endpoint for updating the documents
+
 router.put('/update/:id', upload.fields([
   { name: 'blank_theme', maxCount: 1 },
   { name: 'blank_disposition', maxCount: 1 }
@@ -45,7 +45,7 @@ router.put('/update/:id', upload.fields([
 });
 
 
-// API endpoint for downloading the blank theme form
+
 router.get('/download/theme', (req, res) => {
     const query = 'SELECT blank_theme FROM documents ORDER BY id DESC LIMIT 1';
   
@@ -56,13 +56,13 @@ router.get('/download/theme', (req, res) => {
       } else {
         const filePath = results[0].blank_theme;
   
-        // Check if file exists
+        
         fs.access(filePath, fs.constants.F_OK, (err) => {
           if (err) {
             console.log(err);
             res.status(404).send('File not found');
           } else {
-            // If file exists, set headers and send file
+            
             res.setHeader('Content-Type', 'application/octet-stream');
             res.setHeader('Content-Disposition', 'attachment; filename=blank_theme_form.docx');
             res.sendFile(path.resolve(filePath));
@@ -72,7 +72,7 @@ router.get('/download/theme', (req, res) => {
     });
   });
   
-  // API endpoint for downloading the blank disposition form
+  
   router.get('/download/disposition', (req, res) => {
     const query = 'SELECT blank_disposition FROM documents ORDER BY id DESC LIMIT 1';
   
@@ -83,13 +83,13 @@ router.get('/download/theme', (req, res) => {
       } else {
         const filePath = results[0].blank_disposition;
   
-        // Check if file exists
+        
         fs.access(filePath, fs.constants.F_OK, (err) => {
           if (err) {
             console.log(err);
             res.status(404).send('File not found');
           } else {
-            // If file exists, set headers and send file
+            
             res.setHeader('Content-Type', 'application/octet-stream');
             res.setHeader('Content-Disposition', 'attachment; filename=blank_disposition_form.docx');
             res.sendFile(path.resolve(filePath));

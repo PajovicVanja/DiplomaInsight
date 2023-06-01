@@ -115,10 +115,9 @@ export default {
           this.user = userProfileResponse.data;
         } else if (this.isCandidate) {
           const candidateProfileResponse = await axios.get(`http://localhost:3000/candidate/${this.userID}`, { withCredentials: true });
-          this.user = candidateProfileResponse.data[0]; // assuming that the response is an array and you need the first object
+          this.user = candidateProfileResponse.data[0]; 
           console.log(this.user.study_program);
 
-          // Fetch faculty and university names
           this.user.faculty = await this.getNameFromID('faculty', this.user.faculty);
           this.user.university = await this.getNameFromID('university', this.user.university);
           this.user.study_program = await this.getNameFromID('studyProgram', this.user.study_program);
@@ -139,7 +138,7 @@ export default {
           await axios.put(`http://localhost:3000/candidate/${this.userID}`, this.user, { withCredentials: true });
           alert('Profile updated successfully');
         } else {
-          // Handle admin update here if necessary
+         
         }
       } catch (error) {
         console.error(error);
@@ -151,7 +150,7 @@ export default {
         return response.data;
       } catch (error) {
         console.error(error);
-        return id; // If fetching the name fails, return the ID
+        return id; 
       }
     },
 

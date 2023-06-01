@@ -3,14 +3,14 @@ const router = express.Router();
 const db = require('../db');
 const bcrypt = require('bcrypt');
 
-// Fetching user profile data
+
 router.get('/current', async (req, res) => {
-  // Check if user is logged in
+  
   if (!req.session.user) {
     return res.status(401).send('Please log in');
   }
   if (req.session.user.role == "candidate"){
-    const userId = req.session.user.id; // Get user id from session
+    const userId = req.session.user.id; 
 
   const query = 'SELECT * FROM candidates WHERE id = ?';
   db.query(query, [userId], (error, results) => {
@@ -22,7 +22,7 @@ router.get('/current', async (req, res) => {
     }
   });
   } else {
-  const userId = req.session.user.id; // Get user id from session
+  const userId = req.session.user.id; 
 
   const query = 'SELECT * FROM users WHERE id = ?';
   db.query(query, [userId], (error, results) => {
@@ -36,12 +36,12 @@ router.get('/current', async (req, res) => {
 }
 });
 
-// Updating user profile data
+
 router.put('/current', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).send('Please log in');
   }
-  const userId = req.session.user.id; // Get user id from session
+  const userId = req.session.user.id; 
   const { name, email } = req.body;
 
   const query = 'UPDATE users SET name = ?, email = ? WHERE id = ?';
@@ -55,7 +55,7 @@ router.put('/current', async (req, res) => {
   });
 });
 
-// Fetching all user profiles
+
 router.get('/', async (req, res) => {
   const query = 'SELECT * FROM users';
   db.query(query, (error, results) => {
@@ -68,7 +68,7 @@ router.get('/', async (req, res) => {
   });
 });
 
-// Delete a user by ID
+
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
@@ -98,7 +98,7 @@ router.put('/:id', async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
-  // Update the user's password in the database
+  
   const updatePasswordQuery = 'UPDATE users SET password = ? WHERE id = ?';
   db.query(updatePasswordQuery, [hashedPassword, userId], (error, results) => {
     if (error) {

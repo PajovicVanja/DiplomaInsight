@@ -25,7 +25,7 @@ router.get('/statusForBar/:candidateId', (req, res) => {
       res.status(500).send('Error occurred during fetching status');
     } else {
       if (results.length === 0) {
-        // No status found for the candidateId
+        
         res.status(404).send('No status found for this candidate');
       } else {
         const dispositionStatus = results[0].disposition_status;
@@ -33,14 +33,14 @@ router.get('/statusForBar/:candidateId', (req, res) => {
         console.log(dispositionStatus);
         console.log(themeStatus);
 
-        // Initialize the response with default values
+        
         let response = {
           text: 'Submit your Disposition and Theme Form',
           color: 'red',
           percentage: 0,
         };
 
-        // Update the response based on the actual statuses
+        
         if (dispositionStatus !== '' || themeStatus !== '') {
           if (dispositionStatus === 'Disposition Submitted' && themeStatus === 'Theme Submitted') {
             response = {
@@ -146,15 +146,15 @@ router.put('/updateDeadline/:id', (req, res) => {
         return res.status(500).json({ error });
       }
 
-      // Fetch the candidate's email
+      
       db.query('SELECT email,name FROM candidates WHERE id = ?', [candidateId], (error, results) => {
         if (error) {
           console.log('Database operation error:', error);
           return res.status(500).json({ error });
         }
 
-        const candidateEmail = results[0].email;  // Get the email of the candidate
-        const candidateName = results[0].name;  // Get the email of the candidate
+        const candidateEmail = results[0].email;  
+        const candidateName = results[0].name;  
 
         const mailOptions = {
           from: process.env.GMAIL_USER,
@@ -190,15 +190,15 @@ router.put('/updateDefending/:id', async (req, res) => {
         return res.status(500).json({ error });
       }
 
-      // Fetch the candidate's email
+      
       db.query('SELECT email, name FROM candidates WHERE id = ?', [candidateId], (error, results) => {
         if (error) {
           console.log('Database operation error:', error);
           return res.status(500).json({ error });
         }
 
-        const candidateEmail = results[0].email;  // Get the email of the candidate
-        const candidateName = results[0].name;  // Get the email of the candidate
+        const candidateEmail = results[0].email;  
+        const candidateName = results[0].name;  
 
         const mailOptions = {
           from: process.env.GMAIL_USER,
@@ -225,21 +225,21 @@ router.put('/updateProgress/:dispositionId', async (req, res) => {
   try {
     const dispositionId = req.params.dispositionId;
     const { candidateId, mentorId, progressStatus } = req.body;
-    // Calculate the deadline based on the progress status
+    
     let deadline = null;
     let defending = null;
 
     if (progressStatus === 'Thesis Reviewed') {
       const currentDate = new Date();
-      const oneMonthFromNow = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000); // Add one month (30 days) to the current date
-      deadline = oneMonthFromNow.toISOString().slice(0, 10); // Convert the deadline to YYYY-MM-DD format
+      const oneMonthFromNow = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000); 
+      deadline = oneMonthFromNow.toISOString().slice(0, 10); 
     } else if (progressStatus === 'Thesis Defended') {
-      // Set both deadline and defending to null
+      
       deadline = null;
       defending = null;
     }
 
-    // Update the disposition status and deadline in the database
+    
     const updateQuery = 'UPDATE diploma_status SET progress_status = ?, deadline = ?, defending = ? WHERE id = ?';
     await db.query(updateQuery, [progressStatus, deadline, defending, dispositionId]);
 
@@ -282,13 +282,13 @@ router.put('/diploma-status/update/:userId', async (req, res) => {
   const oneYearFromNow = new Date(currentDate.setFullYear(currentDate.getFullYear() + 1));
   deadline = oneYearFromNow.toISOString().slice(0, 10);
   try {
-    // Update the progression_status in the diploma_status table
+    
     await db.query('UPDATE diploma_status SET progress_status = ? , deadline = ? WHERE candidate_id = ?', [progression_status, deadline, userId]);
 
-    // Send a success response
+    
     res.status(200).json({ message: 'Progression status updated successfully' });
   } catch (error) {
-    // Send an error response
+    
     console.error(error);
     res.status(500).json({ error: 'An error occurred while updating the progression status' });
   }

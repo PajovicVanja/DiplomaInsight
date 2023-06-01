@@ -28,7 +28,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// Update a faculty
+
 router.put('/:id', (req, res) => {
     const { name, university_id } = req.body;
     const { id } = req.params;
@@ -53,12 +53,12 @@ router.get('/faculty/:id', (req, res) => {
         console.log(error);
         res.status(500).send('Error occurred during fetching faculty name');
       } else {
-        res.status(200).send(results[0].name); // Send back only the name
+        res.status(200).send(results[0].name); 
       }
     });
   });
 
-// Delete a faculty
+
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
 

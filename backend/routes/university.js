@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Create a new university
+
 router.post('/create', (req, res) => {
     const { name, location } = req.body;
 
@@ -17,7 +17,7 @@ router.post('/create', (req, res) => {
     });
 });
 
-// Get a list of all universities
+
 router.get('/', (req, res) => {
     const query = 'SELECT * FROM universities';
     db.query(query, (error, results) => {
@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
     });
 });
 
-// Get a university by id
+
 router.get('/:id', (req, res) => {
     const { id } = req.params;
 
@@ -54,12 +54,12 @@ router.get('/university/:id', (req, res) => {
         console.log(error);
         res.status(500).send('Error occurred during fetching university name');
       } else {
-        res.status(200).send(results[0].name); // Send back only the name
+        res.status(200).send(results[0].name); 
       }
     });
   });
 
-// Update a university by id
+
 router.put('/:id', (req, res) => {
     const { id } = req.params;
     const { name, location } = req.body;
@@ -75,7 +75,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// Delete a university by id
+
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
 

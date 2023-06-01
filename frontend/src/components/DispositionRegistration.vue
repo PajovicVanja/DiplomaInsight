@@ -46,9 +46,9 @@ export default {
     return {
       disposition: null,
       themeStatus:'',
-      candidateId: '',  // This will be set by the current user's id
-      mentorId: '',  // This will be selected from the dropdown
-      mentors: []  // This will hold the list of mentors
+      candidateId: '',  
+      mentorId: '',  
+      mentors: []  
     };
   },
   async created() {
@@ -58,7 +58,6 @@ export default {
       this.candidateId = response.data.id;
       console.log( this.candidateId);
 
-      // Fetch the list of mentors here, you might need to adjust the endpoint
       const mentorResponse = await axios.get('http://localhost:3000/disposition/mentor');
       this.mentors = mentorResponse.data;
 

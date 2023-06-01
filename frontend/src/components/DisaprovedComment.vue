@@ -43,7 +43,7 @@ export default {
   },
     data() {
         return {
-            dispositionId: null,  // Initialize it with a null value
+            dispositionId: null,  
             candidateId: '',
             comment: '',
             mentorId: '', 
@@ -57,7 +57,6 @@ export default {
             this.candidateId = response.data.id;
             console.log("current s" + this.candidateId)
 
-            // Fetch the comment
             const commentResponse = await axios.get(`http://localhost:3000/disposition/comment/${this.candidateId}`);
             this.comment = commentResponse.data.comment;
 

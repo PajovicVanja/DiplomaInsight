@@ -17,28 +17,23 @@ const transporter = nodemailer.createTransport({
 });
 
 
-// Set up multer for file upload
 const upload = multer({ dest: 'uploads/' });
 
-// Route for registering a thesis
 router.post('/registerDisposition', upload.single('disposition'), async (req, res) => {
   const disposition = req.file;
 
-  // Instead of inserting data directly, let's just store the path to the .docx file
   const { candidateId, mentorId } = req.body;
 
-  // First, insert the thesis proposal into the database
   db.query(
     'INSERT INTO diploma_status (disposition_status, candidate_id, mentor_id, disposition) VALUES (?, ?, ?, ?)',
     ['Disposition Submitted', candidateId, mentorId, disposition.path],
     async (error, results) => {
       if (error) {
-        console.log('Database operation error:', error); // Log the error to the console
+        console.log('Database operation error:', error); 
         return res.status(500).json({ error });
       }
 
       try {
-        // Retrieve mentor's email from the users table
         const mentorEmail = await new Promise((resolve, reject) => {
           db.query('SELECT email FROM users WHERE id = ?', [mentorId], (error, results) => {
             if (error) {
@@ -62,7 +57,6 @@ router.post('/registerDisposition', upload.single('disposition'), async (req, re
           });
         });
 
-        // Send the proposal form to the mentor for approval
         const mailOptions = {
           from: process.env.GMAIL_USER,
           to: mentorEmail,
@@ -78,7 +72,6 @@ router.post('/registerDisposition', upload.single('disposition'), async (req, re
           }
         });
 
-        // Send a success response
         res.json({ message: 'Thesis proposal submitted successfully!' });
       } catch (error) {
         console.error('Error occurred while submitting thesis proposal:', error);
@@ -93,7 +86,6 @@ router.put('/updateDisposition/:id', upload.single('disposition'), async (req, r
   const id = req.params.id;
 
   try {
-    // Update the diploma status entry in the database
     db.query(
       'UPDATE diploma_status SET disposition_status = ?, candidate_id = ?, mentor_id = ?, disposition = ? WHERE id = ?',
       ['Disposition Updated', candidateId, mentorId, disposition.path, id],
@@ -103,10 +95,9 @@ router.put('/updateDisposition/:id', upload.single('disposition'), async (req, r
           return res.status(500).json({ error });
         }
 
-        // Send an email to the mentor
         sendDispositionUpdateEmail(mentorId, candidateId);
 
-        // Send a success response
+        
         res.json({ message: 'Disposition updated successfully!' });
       }
     );
@@ -157,13 +148,13 @@ router.get('/download-disposition/:dispositionId', (req, res) => {
     } else {
       const dispositionPath = results[0].disposition;
 
-      // Check if file exists
+      
       fs.access(dispositionPath, fs.constants.F_OK, (err) => {
         if (err) {
           console.log(err);
           res.status(404).send('File not found');
         } else {
-          // If file exists, set headers and send file
+          
           res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
           res.setHeader('Content-Disposition', 'attachment; filename=disposition.docx');
           res.sendFile(path.resolve(dispositionPath));
@@ -266,7 +257,7 @@ router.get('/mentor', (req, res) => {
     });
   });
 
-  //FOR APPROVING AND DISAPPROVING DISPOSITIONS
+  
   router.post('/approve-disposition/:dispositionId', (req, res) => {
     const { dispositionId } = req.params;
     const { mentorId } = req.body;
@@ -284,7 +275,7 @@ router.get('/mentor', (req, res) => {
             console.log(error);
             res.status(500).send('Error occurred during assigning mentor');
           } else {
-            // Fetch the candidate's ID using the disposition ID
+            
             db.query('SELECT candidate_id FROM diploma_status WHERE id = ?', [dispositionId], (error, results) => {
               if (error) {
                 console.log('Error occurred while fetching candidate ID:', error);
@@ -293,7 +284,7 @@ router.get('/mentor', (req, res) => {
   
               const candidateId = results[0].candidate_id;
   
-              // Fetch the candidate's email using the candidate ID
+              
               db.query('SELECT email,name FROM candidates WHERE id = ?', [candidateId], (error, results) => {
                 if (error) {
                   console.log('Error occurred while fetching candidate email:', error);
@@ -303,10 +294,10 @@ router.get('/mentor', (req, res) => {
                 const candidateEmail = results[0].email;
                 const candidateName = results[0].name;
   
-                // Send an email to the candidate
+                
                 sendApprovalEmail(candidateEmail,candidateName);
   
-                // Send a success response
+                
                 res.status(200).send('Disposition approved and mentor assigned successfully');
                 
               });
@@ -344,7 +335,7 @@ router.get('/mentor', (req, res) => {
         console.log(error);
         res.status(500).send('Error occurred during disapproving disposition');
       } else {
-        // Fetch the candidate's ID using the disposition ID
+        
         db.query('SELECT candidate_id FROM diploma_status WHERE id = ?', [dispositionId], (error, results) => {
           if (error) {
             console.log('Error occurred while fetching candidate ID:', error);
@@ -353,7 +344,7 @@ router.get('/mentor', (req, res) => {
   
           const candidateId = results[0].candidate_id;
   
-          // Fetch the candidate's email using the candidate ID
+          
           db.query('SELECT email,name FROM candidates WHERE id = ?', [candidateId], (error, results) => {
             if (error) {
               console.log('Error occurred while fetching candidate email:', error);
@@ -363,10 +354,10 @@ router.get('/mentor', (req, res) => {
             const candidateEmail = results[0].email;
             const candidateName = results[0].name;
   
-            // Send an email to the candidate
+            
             sendDisapprovalEmail(candidateEmail,candidateName);
   
-            // Send a success response
+            
             res.status(200).send('Disposition disapproved successfully');
           });
         });
@@ -401,11 +392,11 @@ router.get('/mentor', (req, res) => {
         res.status(500).send('Error occurred during fetching current disposition');
       } else {
         if (results.length === 0) {
-          // No current disposition found for the candidateId
+          
           res.status(404).send('No current disposition found');
         } else {
           const currentDisposition = results[0];
-          // Send the current disposition data as a response
+          
           res.status(200).json(currentDisposition);
         }
       }
@@ -414,14 +405,14 @@ router.get('/mentor', (req, res) => {
   
   
   const uploadT = multer({ dest: 'uploads/' });
-// Route for submitting a dissertation theme for a specific disposition
+
 router.post('/submitTheme/:dispositionId', uploadT.single('dissertationTheme'), async (req, res) => {
   const theme = req.file;
   const { candidateId } = req.body;
-  const dispositionId = req.params.dispositionId; // Updated to use req.params.dispositionId
+  const dispositionId = req.params.dispositionId; 
 
   try {
-    // Retrieve mentor's ID from the diploma_status table
+    
     const mentorId = await new Promise((resolve, reject) => {
       db.query('SELECT mentor_id FROM diploma_status WHERE candidate_id = ? AND id = ?', [candidateId, dispositionId], (error, results) => {
         if (error) {
@@ -445,7 +436,7 @@ router.post('/submitTheme/:dispositionId', uploadT.single('dissertationTheme'), 
       });
     });
 
-    // Update the diploma_status table to set the theme status as "Theme Submitted" for the specific disposition and candidate
+    
     db.query(
       'UPDATE diploma_status SET theme_status = ?, theme = ? WHERE candidate_id = ? AND id = ?',
       ['Theme Submitted', theme.path, candidateId, dispositionId],
@@ -455,10 +446,10 @@ router.post('/submitTheme/:dispositionId', uploadT.single('dissertationTheme'), 
           return res.status(500).json({ error });
         }
 
-        // Send an email to the mentor
+        
         sendThemeSubmissionEmail(mentorId, candidateId, mentorName);
 
-        // Send a success response
+        
         res.json({ message: 'Dissertation theme submitted successfully!' });
       }
     );
@@ -507,13 +498,13 @@ router.get('/download-theme/:themeId', (req, res) => {
     } else {
       const themePath = results[0].theme;
 
-      // Check if file exists
+      
       fs.access(themePath, fs.constants.F_OK, (err) => {
         if (err) {
           console.log(err);
           res.status(404).send('File not found');
         } else {
-          // If file exists, set headers and send file
+          
           res.setHeader('Content-Type', 'application/octet-stream');
           res.setHeader('Content-Disposition', 'attachment; filename=theme.docx');
           res.sendFile(path.resolve(themePath));
@@ -535,18 +526,18 @@ router.get('/download-themeSigned/:themeId', (req, res) => {
     } else {
       const themePath = results[0].signed_theme;
 
-      // Check if file exists
+      
       fs.access(themePath, fs.constants.F_OK, (err) => {
         if (err) {
           console.log(err);
           res.status(404).send('File not found');
         } else {
-          // If file exists, set headers and send file
+          
           res.setHeader('Content-Type', 'application/octet-stream');
           res.setHeader('Content-Disposition', 'attachment; filename=themeSigned.docx');
           res.sendFile(path.resolve(themePath));
 
-          // Update the disposition status to "Disposition Downloaded"
+          
           db.query(updateQuery, ['Disposition Downloaded', themeId], (error) => {
             if (error) {
               console.log(error);
@@ -588,7 +579,7 @@ router.post('/decline-theme/:themeId', (req, res) => {
   });
 });  
 
-//check current diploma
+
 router.get('/status/:candidateId', (req, res) => {
   const { candidateId } = req.params;
 
@@ -600,11 +591,11 @@ router.get('/status/:candidateId', (req, res) => {
       res.status(500).send('Error occurred during fetching theme status');
     } else {
       if (results.length === 0) {
-        // No theme_status found for the candidateId
+        
         res.status(404).send('No theme status found for this candidate');
       } else {
         const themeStatus = results[0].theme_status;
-        // Send the current theme_status as a response
+        
         res.status(200).json({ currentThemeStatus: themeStatus });
       }
     }
@@ -621,11 +612,11 @@ router.get('/statusDisp/:candidateId', (req, res) => {
       res.status(500).send('Error occurred during fetching theme status');
     } else {
       if (results.length === 0) {
-        // No theme_status found for the candidateId
+        
         res.status(404).send('No theme status found for this candidate');
       } else {
         const themeStatus = results[0].disposition_status;
-        // Send the current theme_status as a response
+        
         res.status(200).json({ currentThemeStatus: themeStatus });
       }
     }
@@ -648,7 +639,7 @@ router.post('/uploadSignedTheme/:dispositionId', upload.single('signedTheme'), (
         return res.status(500).json({ error });
       }
 
-      // Fetch the student's email using the disposition ID
+      
       db.query('SELECT candidate_id FROM diploma_status WHERE id = ?', [dispositionId], (error, results) => {
         if (error) {
           console.log('Error occurred while fetching student ID:', error);
@@ -657,7 +648,7 @@ router.post('/uploadSignedTheme/:dispositionId', upload.single('signedTheme'), (
 
         const candidateId = results[0].candidate_id;
 
-        // Fetch the student's email using the candidate ID
+        
         db.query('SELECT email,name FROM candidates WHERE id = ?', [candidateId], (error, results) => {
           if (error) {
             console.log('Error occurred while fetching student email:', error);
@@ -667,7 +658,7 @@ router.post('/uploadSignedTheme/:dispositionId', upload.single('signedTheme'), (
           const studentEmail = results[0].email;
           const studentName = results[0].name;
 
-          // Send an email to the student
+          
           sendSignedThemeEmail(studentEmail,studentName);
 
           res.json({ message: 'Signed theme submitted successfully!' });
@@ -695,8 +686,8 @@ function sendSignedThemeEmail(studentEmail,studentName) {
 }
 
 router.post('/comment/:dispositionId', (req, res) => {
-  const { comment } = req.body; // Extract the comment from the request body
-  const { dispositionId } = req.params; // Extract the dispositionId from the request parameters
+  const { comment } = req.body; 
+  const { dispositionId } = req.params; 
 
   db.query(
     'UPDATE diploma_status SET comment = ? WHERE id = ?',
