@@ -4,7 +4,10 @@
     <input type="text" id="name" class="input-field" v-model="candidate.name">
 
     <label for="studyDirection">Study Direction:</label>
-    <input type="text" id="studyDirection" class="input-field" v-model="candidate.studyDirection">
+    <select id="studyDirection" class="input-field" v-model="candidate.studyDirection">
+      <option value="VS">VS</option>
+      <option value="UNI">UNI</option>
+    </select>
 
     <label for="enrollmentNumber">Enrollment Number:</label>
     <input type="text" id="enrollmentNumber" class="input-field" v-model="candidate.enrollmentNumber">

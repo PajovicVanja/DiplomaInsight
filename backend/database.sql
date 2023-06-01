@@ -41,6 +41,7 @@ CREATE TABLE `diploma_status` (
   `signed_theme` varchar(100) DEFAULT NULL,
   `progress_status` varchar(100) DEFAULT NULL,
   `deadline` date DEFAULT NULL,
+  `defending` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `candidate_id` (`candidate_id`),
   KEY `mentor_id` (`mentor_id`),

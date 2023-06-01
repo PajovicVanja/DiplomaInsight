@@ -16,19 +16,25 @@
     <button class="statusButton" @click="updateDispositionStatus(disposition)">Update Status</button>
   </div>
   <div>
+    <label>Add date for defending</label>
+    <input type="date" v-model="editedDefending[disposition.id]">
+    <button class="deadlineButton" @click="updateDefending(disposition)">Set</button>
+  </div>
+  <div>
     <label>Change Deadline:</label>
     <input type="date" v-model="editedDeadlines[disposition.id]">
     <button class="deadlineButton" @click="updateDeadline(disposition)">Update Deadline</button>
   </div>
+  
       </div>
     </div>
 
     
   </div>
 
-  <div v-else class="disposition-container" style="display: flex;
-        justify-content: center;
-        align-items: center;">
+  <div v-else class="disposition-container" style="display: flex,
+        justify-content: center,
+        align-items: center">
     <h3>No themes submitted</h3>
   </div>
 </template>
@@ -42,7 +48,8 @@ export default {
       mentorId: '',
       submitted: [], // Holds the list of submitted dispositions
       selectedFile: null, // Holds the selected file
-      editedDeadlines: {}, // Holds the edited deadlines for each disposition
+      editedDeadlines: {},
+      editedDefending: {},
     };
   },
   async created() {
@@ -85,9 +92,25 @@ export default {
 
         const response = await axios.put(`http://localhost:3000/status/updateDeadline/${disposition.id}`, {
           deadline: formattedDeadline,
+          candidateId: disposition.candidateId,
         });
         console.log(response.data.message);
         alert("You have succesfuly updated deadline!")
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async updateDefending(disposition) {
+      try {
+        const editedDefending = new Date(this.editedDefending[disposition.id]);
+        const defending = editedDefending.toISOString().split('T')[0];
+
+        const response = await axios.put(`http://localhost:3000/status/updateDefending/${disposition.id}`, {
+          deadline: defending,
+          candidateId: disposition.candidateId,
+        });
+        console.log(response.data.message);
+        alert("You have succesfuly set defending date!")
       } catch (error) {
         console.error(error);
       }

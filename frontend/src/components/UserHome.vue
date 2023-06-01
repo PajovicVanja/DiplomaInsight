@@ -49,32 +49,44 @@ export default {
   },
   methods: {
     initializeCalendar() {
-      var calendarEl = document.getElementById('calendar');
-      var calendar = new Calendar(calendarEl, {
-        plugins: [dayGridPlugin, timeGridPlugin],
-        initialView: 'dayGridMonth',
-        events: this.calendarEvents
-      });
-      calendar.render();
-    },
-    formatCalendarEvents(events) {
-      if (Array.isArray(events)) {
-        return events.map((event) => ({
-          title: String(event.title),
-          start: event.start,
-          color: '#000080'
-        }));
-      } else {
-        return [];
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new Calendar(calendarEl, {
+    plugins: [dayGridPlugin, timeGridPlugin],
+    initialView: 'dayGridMonth',
+    events: this.calendarEvents,
+    displayEventTime: false,
+    eventContent: (arg) => {
+      let arrayOfDomNodes = []
+      let titleEl = document.createElement('div')
+      titleEl.innerHTML = arg.event.title
+      arrayOfDomNodes.push(titleEl)
+  
+      if (arg.event.extendedProps.description) {
+        let descEl = document.createElement('div')
+        descEl.innerHTML = arg.event.extendedProps.description
+        arrayOfDomNodes.push(descEl)
       }
-    },
-    formatDate(dateString) {
-      const date = new Date(dateString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
+  
+      return { domNodes: arrayOfDomNodes }
     }
+  });
+  calendar.render();
+},
+formatCalendarEvents(events) {
+  if (Array.isArray(events)) {
+    const formattedEvents = events.map((event) => ({
+      title: String(event.title),
+      start: event.start,
+      color: '#000080',
+      extendedProps: {
+        description: event.description
+      }
+    }));
+    return formattedEvents;
+  } else {
+    return [];
+  }
+},
   },
   async created() {
     try {
@@ -201,5 +213,11 @@ export default {
 
 .calendar-container {
   height: 100%;
+}
+
+.calendar-container .fc-event-main {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 </style>

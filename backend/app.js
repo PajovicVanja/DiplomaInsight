@@ -13,6 +13,7 @@ const candidateRoutes = require('./routes/candidate');
 const dispositionRoutes = require('./routes/disposition');
 const documentsRoutes = require('./routes/documents');
 const statusRoutes = require('./routes/status');
+const reminderRoutes = require('./routes/reminder');
 
 
 const app = express();
@@ -48,6 +49,7 @@ app.use('/candidate', candidateRoutes); // Use candidate routes
 app.use('/disposition', dispositionRoutes);
 app.use('/document', documentsRoutes);
 app.use('/status', statusRoutes);
+app.use('/reminder', reminderRoutes);
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
   })

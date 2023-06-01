@@ -30,7 +30,7 @@
     </form>
   </div>
 
-  <div>
+  <div v-if="themeStatus">
     <ThemeSubmission />
   </div>
 </template>
