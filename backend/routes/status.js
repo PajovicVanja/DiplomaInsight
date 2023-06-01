@@ -289,7 +289,7 @@ router.get('/mentor/candidates/:mentorId', (req, res) => {
 
 router.get('/calendar/:mentorId', (req, res) => {
   const { mentorId } = req.params;
-  const query = 'SELECT deadline, candidate_id FROM diploma_status WHERE mentor_id = ? ';
+  const query = 'SELECT deadline, candidate_id, name FROM diploma_status inner join candidates on diploma_status.candidate_id = candidates.id WHERE diploma_status.mentor_id = ?';;
 
   db.query(query, [mentorId], (error, results) => {
     if (error) {
@@ -297,10 +297,19 @@ router.get('/calendar/:mentorId', (req, res) => {
       res.status(500).send('Error occurred during fetching submitted dispositions');
     } else {
       const events = results.map((result) => ({
-        title: result.candidate_id, // Customize the event title if needed
-        start: result.deadline, // Assuming the deadline column stores date or datetime values
-        color: '#000080',
+        title: result.name,
+        start: formatDate(result.deadline),
+        color: '#00080',
       }));
+      
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+      console.log(events)
       res.status(200).send(events);
     }
   });
