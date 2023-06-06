@@ -31,14 +31,19 @@
         </tr>
       </tbody>
     </table>
-
-    <DeleteCandidate v-if="selectedUserId !== null" :candidates="userCandidates[selectedUserId]" :user-id="selectedUserId" />
- 
+    <div>
+      <div class="delCand">
+        <DeleteCandidate  v-if="selectedUserId !== null" :candidates="userCandidates[selectedUserId]"
+          :user-id="selectedUserId" />
+      </div>
+      <div class="candidateChart"><canvas id="candidateChart" ></canvas></div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Chart from 'chart.js/auto';
 import DeleteCandidate from './DeleteCandidate.vue'
 
 export default {
@@ -50,6 +55,7 @@ export default {
       users: [],
       userCandidates: {},
       selectedUserId: null,
+      candidateChart: null, // Track the chart instance
     };
   },
   created() {
@@ -91,9 +97,48 @@ export default {
         const response = await axios.get(`http://localhost:3000/candidate/user/${userId}`);
         this.userCandidates = { ...this.userCandidates, [userId]: response.data };
         this.selectedUserId = userId;
+        this.generateCandidateChart();
       } catch (error) {
         console.error(error);
       }
+    },
+    generateCandidateChart() {
+      const ctx = document.getElementById('candidateChart').getContext('2d');
+      const userLabels = this.users.map(user => user.name);
+      const candidateCounts = this.users.map(user => {
+        const userId = user.id;
+        const candidateList = this.userCandidates[userId] || [];
+        return candidateList.length;
+      });
+
+      if (this.candidateChart) {
+        // Destroy the previous chart if it exists
+        this.candidateChart.destroy();
+      }
+
+      this.candidateChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: userLabels,
+          datasets: [
+            {
+              label: 'Candidate Count',
+              data: candidateCounts,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              precision: 0,
+            },
+          },
+        },
+      });
     },
   },
 };
