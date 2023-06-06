@@ -48,7 +48,6 @@ export default {
             axios.defaults.withCredentials = true;
             const response = await axios.get('http://localhost:3000/profile/current');
             this.mentorId = response.data.id;
-console.log(this.mentorId);
 
 
             const themedResponse = await axios.get(`http://localhost:3000/disposition/themed-dispositions/${this.mentorId}`);
@@ -96,7 +95,6 @@ console.log(this.mentorId);
                 'Content-Type': 'multipart/form-data'
             }
         });
-        console.log(response.data); 
 
         await this.acceptTheme(dispositionId);
     } catch (error) {

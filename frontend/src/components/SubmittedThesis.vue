@@ -76,7 +76,6 @@ export default {
           mentorId: disposition.mentorId,
           progressStatus: disposition.progressStatus,
         });
-        console.log(response.data.message);
         alert("You have succesfuly updated status!")
       } catch (error) {
         console.error(error);
@@ -91,7 +90,6 @@ export default {
           deadline: formattedDeadline,
           candidateId: disposition.candidateId,
         });
-        console.log(response.data.message);
         alert("You have succesfuly updated deadline!")
       } catch (error) {
         console.error(error);
@@ -106,7 +104,6 @@ export default {
           deadline: defending,
           candidateId: disposition.candidateId,
         });
-        console.log(response.data.message);
         alert("You have succesfuly set defending date!")
       } catch (error) {
         console.error(error);

@@ -52,12 +52,10 @@ export default {
         this.dissertationTheme = e.target.files[0];
       },
       fetchDispositionStatus(id) {
-    console.log("is called")
       if (this.candidateId !== null) {
         axios.get(`http://localhost:3000/disposition/status/${id}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
-            console.log("current status is " + this.themeStatus);
           })
           .catch(error => {
             console.error('Error fetching disposition status:', error);
@@ -77,7 +75,6 @@ export default {
   try {
     const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
     this.dispositionId = dispositionResponse.data.id; 
-    console.log('opp '+ dispositionResponse.data.id)
     const response = await axios.post(`http://localhost:3000/disposition/submitTheme/${this.dispositionId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'

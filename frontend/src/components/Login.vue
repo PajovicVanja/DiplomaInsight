@@ -22,7 +22,6 @@ export default {
   },
   methods: {
     login() {
-    console.log('Login method called');
 
     const loginData = {
       email: this.email,
@@ -31,7 +30,6 @@ export default {
 
     axios.post('http://localhost:3000/login', loginData, { withCredentials: true })
       .then(response => {
-        console.log('Response:', response);
         if (response.status === 200) {
           this.$emit('user-logged-in');
         }

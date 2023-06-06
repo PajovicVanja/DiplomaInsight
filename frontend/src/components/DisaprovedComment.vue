@@ -55,7 +55,6 @@ export default {
             axios.defaults.withCredentials = true;
             const response = await axios.get('http://localhost:3000/profile/current');
             this.candidateId = response.data.id;
-            console.log("current s" + this.candidateId)
 
             const commentResponse = await axios.get(`http://localhost:3000/disposition/comment/${this.candidateId}`);
             this.comment = commentResponse.data.comment;

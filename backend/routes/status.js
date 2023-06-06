@@ -296,7 +296,7 @@ router.put('/diploma-status/update/:userId', async (req, res) => {
 
 router.get('/diploma-status/thesis-submitted/:mentorId', (req, res) => {
   const { mentorId } = req.params;
-  const query = 'SELECT * FROM diploma_status WHERE mentor_id = ? AND progress_status = "Thesis Submitted" OR progress_status = "Thesis Reviewed" OR progress_status = "Thesis Defended" OR progress_status = "Diploma Issued"';
+  const query = `SELECT * FROM diploma_status WHERE mentor_id = ? AND (progress_status = "Thesis Submitted" OR progress_status = "Thesis Reviewed" OR progress_status = "Thesis Defended" OR progress_status = "Diploma Issued")`;
 
   db.query(query, [mentorId], (error, results) => {
     if (error) {
@@ -315,6 +315,7 @@ router.get('/diploma-status/thesis-submitted/:mentorId', (req, res) => {
     }
   });
 });
+
 
 router.get('/mentor/dispositionsCount/:mentorId', (req, res) => {
   const { mentorId } = req.params;
