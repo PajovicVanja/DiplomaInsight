@@ -45,7 +45,6 @@ export default {
         email: this.email,
         password: this.password
       });
-      console.log(response.data);
       alert(response.data);
     } catch (error) {
       if (error.response && error.response.data === 'User with that email already exists') {

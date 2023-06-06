@@ -265,7 +265,6 @@ export default {
         axios.get(`http://localhost:3000/disposition/status/${this.userID}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
-            console.log("current status is " + this.themeStatus);
           })
           .catch(error => {
             console.error('Error fetching disposition status:', error);
@@ -275,7 +274,6 @@ export default {
         axios.get(`http://localhost:3000/disposition/statusDisp/${this.userID}`)
           .then(response => {
             this.dispStatus = response.data.currentThemeStatus;
-            console.log("current disp status is " + this.dispStatus);
           })
           .catch(error => {
             console.error('Error fetching disposition status:', error);

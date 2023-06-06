@@ -11,7 +11,6 @@ export default {
     logout() {
       axios.post('http://localhost:3000/logout', {}, { withCredentials: true })
         .then(response => {
-          console.log('Logout response:', response);
           if (response.status === 200) {
             this.$emit('user-logged-out');
           }

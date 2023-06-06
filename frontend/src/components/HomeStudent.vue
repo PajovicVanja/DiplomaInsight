@@ -35,9 +35,7 @@ export default {
             axios.defaults.withCredentials = true;
             const response = await axios.get('http://localhost:3000/profile/current');
             this.candidateId = response.data.id;
-            console.log('Candidate ID:', this.candidateId);  
              this.loadStatus();
-             console.log(this.status.color);
         } catch (error) {
             console.error(error);
         }
@@ -47,7 +45,6 @@ export default {
             
             try {
                 const response = await axios.get(`http://localhost:3000/status/statusForBar/${this.candidateId}`);
-                console.log('axios response:', response.data);  
                 this.status = response.data;
             } catch (error) {
                 console.error("Error during axios call:", error);  

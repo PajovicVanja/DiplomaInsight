@@ -56,7 +56,6 @@ export default {
       axios.defaults.withCredentials = true;
       const response = await axios.get('http://localhost:3000/profile/current');
       this.candidateId = response.data.id;
-      console.log( this.candidateId);
 
       const mentorResponse = await axios.get('http://localhost:3000/disposition/mentor');
       this.mentors = mentorResponse.data;
@@ -103,12 +102,10 @@ export default {
     window.location.href = "http://localhost:3000/document/download/theme";
   },
   fetchDispositionStatus(id) {
-    console.log("is called")
       if (this.candidateId !== null) {
         axios.get(`http://localhost:3000/disposition/statusDisp/${id}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
-            console.log("current status is " + this.themeStatus);
           })
           .catch(error => {
             console.error('Error fetching disposition status:', error);

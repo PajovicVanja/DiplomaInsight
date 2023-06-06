@@ -54,19 +54,15 @@ export default {
       axios.defaults.withCredentials = true;
       const response = await axios.get('http://localhost:3000/profile/current');
       this.userId = response.data.id;
-      console.log(this.userId);
 
       const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/current-user/${this.userId}`);
       this.submitted = submittedResponse.data;
 
       const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${this.userId}`);
       this.theme = themeResponse.data[0];
-      console.log("defending is " + this.theme.defending);
-      console.log("deadline is is " + this.theme.deadline);
 
       const mentorsResponse = await axios.get(`http://localhost:3000/status/mentorName/${this.theme.mentorId}`);
       this.mentorName = mentorsResponse.data.name;
-      console.log("mentor name is " + this.mentorName);
 
       this.formatDefending(this.theme.defending);
 
@@ -91,7 +87,6 @@ export default {
       return 'N/A'; 
     },
     formatDefending(defending) {
-      console.log("FOR DEBUG " + defending);
       if (defending) {
         const formattedDefending = new Date(defending).toLocaleDateString('en-US', {
           year: 'numeric',
@@ -107,7 +102,6 @@ export default {
       return 'N/A';
     },
     async updateProgressionStatus() {
-      console.log("callaed")
       try {
         axios.defaults.withCredentials = true;
         await axios.put(`http://localhost:3000/status/diploma-status/update/${this.userId}`, {
@@ -119,7 +113,6 @@ export default {
 
         const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${this.userId}`);
         this.theme = themeResponse.data[0];
-        console.log("theme" + this.theme.progressStatus)
 
       } catch (error) {
         console.error(error);

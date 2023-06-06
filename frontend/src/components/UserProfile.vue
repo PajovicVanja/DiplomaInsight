@@ -116,7 +116,6 @@ export default {
         } else if (this.isCandidate) {
           const candidateProfileResponse = await axios.get(`http://localhost:3000/candidate/${this.userID}`, { withCredentials: true });
           this.user = candidateProfileResponse.data[0]; 
-          console.log(this.user.study_program);
 
           this.user.faculty = await this.getNameFromID('faculty', this.user.faculty);
           this.user.university = await this.getNameFromID('university', this.user.university);
