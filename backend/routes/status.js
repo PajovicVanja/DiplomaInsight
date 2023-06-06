@@ -427,5 +427,21 @@ router.get('/mentorName/:mentorId', (req, res) => {
   });
 });
 
-
+router.get('/mentor/data/:mentorId', (req, res) => {
+  const { mentorId } = req.params;
+  const query = 'SELECT progress_status, candidates.name FROM candidates inner join diploma_status on candidates.id = diploma_status.candidate_id WHERE diploma_status.mentor_id = ?';
+  db.query(query, [mentorId], (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching candidates');
+    } else {
+      const candidates = results.map(candidate => ({
+        id: candidate.id,
+        name: candidate.name
+      }));
+      const candidatesCount = candidates.length;
+      res.status(200).send({ candidatesCount, candidates });
+    }
+  });
+});
 module.exports = router;
