@@ -20,7 +20,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors({
-    origin: 'http://localhost:8080', 
+    origin: 'diploma-insight.onrender.com', 
     credentials: true,
     withCredentials: true
   }));
@@ -51,5 +51,5 @@ app.use('/document', documentsRoutes);
 app.use('/status', statusRoutes);
 app.use('/reminder', reminderRoutes);
 app.listen(port, () => {
-    console.log(`App listening at http://localhost:${port}`)
+    console.log(`App listening at https://diplomainsight.onrender.com/`)
   })

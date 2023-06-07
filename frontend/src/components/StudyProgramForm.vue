@@ -30,7 +30,7 @@
     },
     async created() {
       try {
-        const response = await axios.get('http://localhost:3000/faculty');
+        const response = await axios.get('https://diplomainsight.onrender.com/faculty');
         this.faculties = response.data;
       } catch (error) {
         console.error(error);
@@ -39,7 +39,7 @@
     methods: {
       async submitForm() {
         try {
-          await axios.post('http://localhost:3000/studyprogram/create', this.studyProgram);
+          await axios.post('https://diplomainsight.onrender.com/studyprogram/create', this.studyProgram);
           this.studyProgram.name = '';
           this.studyProgram.faculty_id = '';
           alert('Study program added successfully!');

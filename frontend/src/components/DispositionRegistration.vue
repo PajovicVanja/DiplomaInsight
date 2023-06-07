@@ -54,10 +54,10 @@ export default {
   async created() {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get('http://localhost:3000/profile/current');
+      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
       this.candidateId = response.data.id;
 
-      const mentorResponse = await axios.get('http://localhost:3000/disposition/mentor');
+      const mentorResponse = await axios.get('https://diplomainsight.onrender.com/disposition/mentor');
       this.mentors = mentorResponse.data;
 
       this.fetchDispositionStatus(response.data.id);
@@ -82,7 +82,7 @@ export default {
     formData.append('candidateId', this.candidateId);
     formData.append('mentorId', this.mentorId);
 
-    const response = await axios.post('http://localhost:3000/disposition/registerDisposition', formData, {
+    const response = await axios.post('https://diplomainsight.onrender.com/disposition/registerDisposition', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -96,14 +96,14 @@ export default {
   }
 },
     downloadBlankDisposition() {
-    window.location.href = "http://localhost:3000/document/download/disposition";
+    window.location.href = "https://diplomainsight.onrender.com/document/download/disposition";
   },
   downloadBlankTheme() {
-    window.location.href = "http://localhost:3000/document/download/theme";
+    window.location.href = "https://diplomainsight.onrender.com/document/download/theme";
   },
   fetchDispositionStatus(id) {
       if (this.candidateId !== null) {
-        axios.get(`http://localhost:3000/disposition/statusDisp/${id}`)
+        axios.get(`https://diplomainsight.onrender.com/disposition/statusDisp/${id}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
           })

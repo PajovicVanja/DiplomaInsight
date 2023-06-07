@@ -103,7 +103,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('http://localhost:3000/check-session', { withCredentials: true });
+      const response = await axios.get('https://diplomainsight.onrender.com/check-session', { withCredentials: true });
       if (response.data.loggedIn) {
         this.isAdmin = response.data.user.role === 'admin';
         this.isUser = response.data.user.role === 'user';
@@ -111,10 +111,10 @@ export default {
         this.userID = response.data.user.id;
 
         if (this.isUser || this.isAdmin) {
-          const userProfileResponse = await axios.get(`http://localhost:3000/profile/current`, { withCredentials: true });
+          const userProfileResponse = await axios.get(`https://diplomainsight.onrender.com/profile/current`, { withCredentials: true });
           this.user = userProfileResponse.data;
         } else if (this.isCandidate) {
-          const candidateProfileResponse = await axios.get(`http://localhost:3000/candidate/${this.userID}`, { withCredentials: true });
+          const candidateProfileResponse = await axios.get(`https://diplomainsight.onrender.com/candidate/${this.userID}`, { withCredentials: true });
           this.user = candidateProfileResponse.data[0]; 
 
           this.user.faculty = await this.getNameFromID('faculty', this.user.faculty);
@@ -131,10 +131,10 @@ export default {
     async updateProfile() {
       try {
         if (this.isUser) {
-          await axios.put(`http://localhost:3000/profile/${this.userID}`, this.user, { withCredentials: true });
+          await axios.put(`https://diplomainsight.onrender.com/profile/${this.userID}`, this.user, { withCredentials: true });
           alert('Profile updated successfully');
         } else if (this.isCandidate) {
-          await axios.put(`http://localhost:3000/candidate/${this.userID}`, this.user, { withCredentials: true });
+          await axios.put(`https://diplomainsight.onrender.com/candidate/${this.userID}`, this.user, { withCredentials: true });
           alert('Profile updated successfully');
         } 
       } catch (error) {
@@ -143,7 +143,7 @@ export default {
     },
     async getNameFromID(type, id) {
       try {
-        const response = await axios.get(`http://localhost:3000/${type}/${type}/${id}`, { withCredentials: true });
+        const response = await axios.get(`https://diplomainsight.onrender.com/${type}/${type}/${id}`, { withCredentials: true });
         return response.data;
       } catch (error) {
         console.error(error);
@@ -155,9 +155,9 @@ export default {
   try {
     let url;
     if (this.isAdmin || this.isUser) {
-      url = `http://localhost:3000/profile/user/check-password/${this.userID}`;
+      url = `https://diplomainsight.onrender.com/profile/user/check-password/${this.userID}`;
     } else if (this.isCandidate) {
-      url = `http://localhost:3000/profile/candidate/check-password/${this.userID}`;
+      url = `https://diplomainsight.onrender.com/profile/candidate/check-password/${this.userID}`;
     } else {
       throw new Error('Invalid user type');
     }
@@ -181,9 +181,9 @@ async changePassword() {
   try {
     let url;
     if (this.isAdmin || this.isUser) {
-      url = `http://localhost:3000/profile/user/change-password/${this.userID}`;
+      url = `https://diplomainsight.onrender.com/profile/user/change-password/${this.userID}`;
     } else if (this.isCandidate) {
-      url = `http://localhost:3000/profile/candidate/change-password/${this.userID}`;
+      url = `https://diplomainsight.onrender.com/profile/candidate/change-password/${this.userID}`;
     } else {
       throw new Error('Invalid user type');
     }

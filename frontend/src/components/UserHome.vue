@@ -91,20 +91,20 @@ formatCalendarEvents(events) {
   async created() {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get('http://localhost:3000/profile/current');
+      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
       this.mentorId = response.data.id;
 
-      const dispositionsResponse = await axios.get(`http://localhost:3000/status/mentor/dispositionsCount/${this.mentorId}`);
+      const dispositionsResponse = await axios.get(`https://diplomainsight.onrender.com/status/mentor/dispositionsCount/${this.mentorId}`);
       this.dispositionsCount = dispositionsResponse.data.dispositionsCount;
 
-      const themesResponse = await axios.get(`http://localhost:3000/status/mentor/themesCount/${this.mentorId}`);
+      const themesResponse = await axios.get(`https://diplomainsight.onrender.com/status/mentor/themesCount/${this.mentorId}`);
       this.themesCount = themesResponse.data.themesCount;
 
-      const candidatesResponse = await axios.get(`http://localhost:3000/status/mentor/candidates/${this.mentorId}`);
+      const candidatesResponse = await axios.get(`https://diplomainsight.onrender.com/status/mentor/candidates/${this.mentorId}`);
       this.candidatesCount = candidatesResponse.data.candidatesCount;
       this.candidates = candidatesResponse.data.candidates;
 
-      const calendarResponse = await axios.get(`http://localhost:3000/status/calendar/${this.mentorId}`);
+      const calendarResponse = await axios.get(`https://diplomainsight.onrender.com/status/calendar/${this.mentorId}`);
       const events = this.formatCalendarEvents(calendarResponse.data);
 
       this.calendarEvents = events;

@@ -50,8 +50,8 @@ export default {
   async created() {
     try {
       const [programsResponse, facultiesResponse] = await Promise.all([
-        axios.get('http://localhost:3000/studyProgram'),
-        axios.get('http://localhost:3000/faculty')
+        axios.get('https://diplomainsight.onrender.com/studyProgram'),
+        axios.get('https://diplomainsight.onrender.com/faculty')
       ]);
 
       this.programs = programsResponse.data;
@@ -71,7 +71,7 @@ export default {
     },
     async submitForm() {
       try {
-        await axios.put(`http://localhost:3000/studyProgram/${this.editingProgramId}`, this.editingProgram);
+        await axios.put(`https://diplomainsight.onrender.com/studyProgram/${this.editingProgramId}`, this.editingProgram);
         const index = this.programs.findIndex(program => program.id === this.editingProgramId);
         this.programs[index] = this.editingProgram;
         this.editingProgramId = null;
@@ -82,7 +82,7 @@ export default {
     },
     async deleteProgram(id) {
       try {
-        await axios.delete(`http://localhost:3000/studyProgram/${id}`);
+        await axios.delete(`https://diplomainsight.onrender.com/studyProgram/${id}`);
         this.programs = this.programs.filter((program) => program.id !== id);
       } catch (error) {
         console.error(error);

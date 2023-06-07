@@ -63,13 +63,13 @@ export default {
   },
   async created() {
     try {
-      const universitiesResponse = await axios.get('http://localhost:3000/university');
+      const universitiesResponse = await axios.get('https://diplomainsight.onrender.com/university');
       this.universities = universitiesResponse.data;
 
-      const facultiesResponse = await axios.get('http://localhost:3000/faculty');
+      const facultiesResponse = await axios.get('https://diplomainsight.onrender.com/faculty');
       this.faculties = facultiesResponse.data;
 
-      const studyProgramsResponse = await axios.get('http://localhost:3000/studyprogram');
+      const studyProgramsResponse = await axios.get('https://diplomainsight.onrender.com/studyprogram');
       this.studyPrograms = studyProgramsResponse.data;
 
     } catch (error) {
@@ -87,7 +87,7 @@ export default {
   methods: {
     async submitForm() {
     try {
-      await axios.post('http://localhost:3000/candidate/create', this.candidate);
+      await axios.post('https://diplomainsight.onrender.com/candidate/create', this.candidate);
 
       // Reset form fields
       this.candidate.name = '';
