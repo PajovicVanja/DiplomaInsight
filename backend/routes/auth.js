@@ -111,7 +111,7 @@ router.post('/logout', (req, res) => {
   
           sendVerificationEmail(name, email, userId);
   
-          return res.status(201).send('User registered successfully, please verify your email');
+          return res.status(201).send('User registered successfully, please open your email and click on the link we sent you.');
         });
       });
   });

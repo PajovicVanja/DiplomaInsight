@@ -96,6 +96,8 @@ export default {
         this.theme.defending = formattedDefending;
 
         return formattedDefending;
+      }  else if (defending == null){
+        this.theme.defending = 'N/A';
       } else{
         this.theme.defending = 'N/A';
       } 

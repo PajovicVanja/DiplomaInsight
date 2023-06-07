@@ -721,6 +721,21 @@ router.get('/comment/:candidateId', (req, res) => {
 });
 
 
+router.delete('/delete/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM diploma_status WHERE id = ?';
+
+  db.query(query, id, (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during deleting the disposition');
+    } else {
+      res.send('Successfully deleted disposition');
+    }
+  });
+});
+
+
 
 
 
