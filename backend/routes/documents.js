@@ -47,30 +47,33 @@ router.put('/update/:id', upload.fields([
 
 
 router.get('/download/theme', (req, res) => {
-    const query = 'SELECT blank_theme FROM documents ORDER BY id DESC LIMIT 1';
-  
-    db.query(query, (error, results) => {
+  const query = 'SELECT blank_theme FROM documents ORDER BY id DESC LIMIT 1';
+
+  db.query(query, (error, results) => {
       if (error) {
-        console.log(error);
-        res.status(500).send('Error occurred during fetching the blank theme form');
+          console.log(error);
+          res.status(500).send('Error occurred during fetching the blank theme form');
       } else {
-        const filePath = results[0].blank_theme;
-  
-        
-        fs.access(filePath, fs.constants.F_OK, (err) => {
-          if (err) {
-            console.log(err);
-            res.status(404).send('File not found');
-          } else {
-            
-            res.setHeader('Content-Type', 'application/octet-stream');
-            res.setHeader('Content-Disposition', 'attachment; filename=blank_theme_form.docx');
-            res.sendFile(path.resolve(filePath));
+          if (results.length === 0) {
+              return res.status(204).send('Admin did not submit any documents');
           }
-        });
+
+          const filePath = results[0].blank_theme;
+
+          fs.access(filePath, fs.constants.F_OK, (err) => {
+              if (err) {
+                  console.log(err);
+                  res.status(404).send('File not found');
+              } else {
+                  res.setHeader('Content-Type', 'application/octet-stream');
+                  res.setHeader('Content-Disposition', 'attachment; filename=blank_theme_form.docx');
+                  res.sendFile(path.resolve(filePath));
+              }
+          });
       }
-    });
   });
+});
+
   
   
   router.get('/download/disposition', (req, res) => {
@@ -81,15 +84,17 @@ router.get('/download/theme', (req, res) => {
         console.log(error);
         res.status(500).send('Error occurred during fetching the blank disposition form');
       } else {
+        if (results.length === 0) {
+          return res.status(204).send('Admin did not submit any documents');
+        }
+  
         const filePath = results[0].blank_disposition;
   
-        
         fs.access(filePath, fs.constants.F_OK, (err) => {
           if (err) {
             console.log(err);
             res.status(404).send('File not found');
           } else {
-            
             res.setHeader('Content-Type', 'application/octet-stream');
             res.setHeader('Content-Disposition', 'attachment; filename=blank_disposition_form.docx');
             res.sendFile(path.resolve(filePath));
@@ -98,6 +103,8 @@ router.get('/download/theme', (req, res) => {
       }
     });
   });
+  
+  
   
 
 

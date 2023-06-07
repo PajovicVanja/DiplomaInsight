@@ -95,12 +95,42 @@ export default {
     alert('An error occurred while submitting your thesis proposal.');
   }
 },
-    downloadBlankDisposition() {
+async downloadBlankDisposition() {
+  try {
+    const response = await axios.get('http://localhost:3000/document/download/disposition');
+    if (response.status === 204) {
+      alert('Admin did not submit any documents.');
+      return;
+    }
     window.location.href = "http://localhost:3000/document/download/disposition";
-  },
-  downloadBlankTheme() {
-    window.location.href = "http://localhost:3000/document/download/theme";
-  },
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.status === 404) {
+      alert('File not found.');
+    } else {
+      alert('An error occurred while downloading the file.');
+    }
+  }
+},
+
+async downloadBlankTheme() {
+    try {
+        const response = await axios.get('http://localhost:3000/document/download/theme');
+        if (response.status === 204) {
+            alert('Admin did not submit any documents.');
+            return;
+        }
+        window.location.href = "http://localhost:3000/document/download/theme";
+    } catch (error) {
+        console.error(error);
+        if (error.response && error.response.status === 404) {
+            alert('File not found.');
+        } else {
+            alert('An error occurred while downloading the file.');
+        }
+    }
+},
+
   fetchDispositionStatus(id) {
       if (this.candidateId !== null) {
         axios.get(`http://localhost:3000/disposition/statusDisp/${id}`)

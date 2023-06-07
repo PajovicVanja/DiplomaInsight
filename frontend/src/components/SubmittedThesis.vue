@@ -18,12 +18,14 @@
   <div>
     <label>Add date for defending</label>
     <input type="date" v-model="editedDefending[disposition.id]">
-    <button class="deadlineButton" @click="updateDefending(disposition)">Set</button>
+    <button class="statusButton" @click="updateDefending(disposition)">Set</button>
   </div>
   <div>
     <label>Change Deadline:</label>
     <input type="date" v-model="editedDeadlines[disposition.id]">
-    <button class="deadlineButton" @click="updateDeadline(disposition)">Update Deadline</button>
+    <button class="statusButton" @click="updateDeadline(disposition)">Update Deadline</button>
+    <button class="deadlineButton" @click="deleteDisposition(disposition.id)">Delete</button>
+
   </div>
   
       </div>
@@ -110,6 +112,19 @@ export default {
         console.error(error);
       }
     },
+    async deleteDisposition(id) {
+  try {
+    //eslint-disable-next-line no-unused-vars
+    const response = await axios.delete(`http://localhost:3000/disposition/delete/${id}`);
+    alert("You have successfully deleted the disposition!");
+    // Refresh the list of submitted dispositions
+    const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/thesis-submitted/${this.mentorId}`);
+    this.submitted = submittedResponse.data;
+  } catch (error) {
+    console.error(error);
+    alert("An error occurred while deleting the disposition.");
+  }
+},
 
 
     formatDeadline(deadline) {
@@ -127,3 +142,5 @@ export default {
 };
 </script>
 <style scoped src="../css/SubmittedDispositions.css"></style>
+
+
