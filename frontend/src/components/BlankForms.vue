@@ -110,6 +110,7 @@ body {
 }
 
 .document-container {
+  background-color: #f4ebeb;
   display: flex;
   flex-direction: column;
   align-items: center;

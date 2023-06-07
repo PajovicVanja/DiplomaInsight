@@ -1,19 +1,24 @@
 <template>
-  <div>
+  <div class="main">
     <h4>Delete a University</h4>
     <ul>
       <li v-for="university in universities" :key="university.id">
-        {{ university.name }}
-        <button @click="deleteUniversity(university.id)">Delete</button>
-        <button @click="startEditing(university)">Edit</button>
+        <div class="university-item">
+          <span class="university-name">{{ university.name }}</span>
+          <div class="button-container">
+            <button @click="deleteUniversity(university.id)" class="del-btn">Delete</button>
+            <button @click="startEditing(university)" class="edit-btn">Edit</button>
+          </div>
+        </div>
         
         <div v-if="editingUniversityId === university.id">
           <form @submit.prevent="submitForm">
             <label for="name">University Name:</label>
             <input type="text" id="name" v-model="editingUniversity.name">
+            <label for="location">Location:</label>
             <input type="text" id="location" v-model="editingUniversity.location">
-
-            <button type="submit">Update University</button>
+  
+            <button type="submit" class="update-btn">Update University</button>
           </form>
         </div>
       </li>
@@ -22,6 +27,7 @@
   <div>
     <DeleteFaculty :key="componentKey"></DeleteFaculty>
   </div>
+  
 </template>
 
 <script>

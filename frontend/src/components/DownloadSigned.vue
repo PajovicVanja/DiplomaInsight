@@ -67,7 +67,7 @@ export default {
 .parent button {
   font-weight: bold;
   color: #fff; 
-  background-color: #007BFF; 
+  background-color: #4881A0;
   border: none;
   padding: 10px 20px; 
   margin-top: 20px; 
@@ -76,7 +76,7 @@ export default {
 }
 
 .parent button:hover {
-  background-color: #0056b3;
+  background-color: #366873;
 }
 .cntr{
   display: flex;

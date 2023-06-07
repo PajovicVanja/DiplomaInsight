@@ -4,7 +4,7 @@ body {
   }
   
   .form-wrapper {
-    background-color: #f0f0f0;
+    background-color: #ffffff;
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
@@ -16,7 +16,7 @@ body {
   }
   
   .form-section {
-    background-color: #ffffff;
+    background-color: #f4ebeb;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 10px;
     max-width: 500px;

@@ -1,30 +1,35 @@
 <template>
-  <div>
+  <div class="main">
     <h4>Study Programs</h4>
     <ul>
       <li v-for="program in programs" :key="program.id">
-        {{ program.name }}, faculty - {{ getFacultyName(program.faculty_id) }}
-        <button @click="deleteProgram(program.id)">Delete</button>
-        <button @click="startEditing(program)">Edit</button>
-
+        <div class="program-item">
+          <span class="program-name">{{ program.name }}, faculty - {{ getFacultyName(program.faculty_id) }}</span>
+          <div class="button-container">
+            <button @click="deleteProgram(program.id)" class="del-btn">Delete</button>
+            <button @click="startEditing(program)" class="edit-btn">Edit</button>
+          </div>
+        </div>
+        
         <div v-if="editingProgramId === program.id">
           <form @submit.prevent="submitForm">
             <label for="name">Study Program Name:</label>
             <input type="text" id="name" v-model="editingProgram.name">
-
+  
             <label for="faculty_id">Faculty:</label>
             <select v-model="editingProgram.faculty_id">
               <option v-for="faculty in faculties" :key="faculty.id" :value="faculty.id">
                 {{ faculty.name }}
               </option>
             </select>
-
-            <button type="submit">Update Study Program</button>
+  
+            <button type="submit" class="update-btn">Update Study Program</button>
           </form>
         </div>
       </li>
     </ul>
   </div>
+  
 </template>
   
 <script>

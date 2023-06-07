@@ -3,7 +3,7 @@ h4 {
   }
   
   .delete-candidate-heading {
-    color: white;
+    color: rgb(35, 34, 34);
   }
   
   .register-container {
@@ -15,9 +15,9 @@ h4 {
     max-width: 400px;
     margin: 0 auto;
     padding: 20px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.626);
     border-radius: 10px;
-    background-color: #787878;
+    background-color: #f4ebeb;
   }
   
   .register-form {
@@ -40,7 +40,7 @@ h4 {
     border-radius: 5px;
     color: white;
     font-weight: bold;
-    background: linear-gradient(90deg, #3ad5b8, #3ad53a);
+    background-color: #43b9ebe4;
     cursor: pointer;
     transition: all 0.3s ease;
   }
@@ -59,7 +59,7 @@ h4 {
     border-radius: 5px;
     color: white;
     font-weight: bold;
-    background: linear-gradient(90deg, #f44336, #e53935);
+    background-color: #5b1313dd;
     cursor: pointer;
     transition: all 0.3s ease;
   }
@@ -79,7 +79,7 @@ h4 {
     border-radius: 5px;
     color: white;
     font-weight: bold;
-    background: linear-gradient(90deg, #3ad5b8, #3ad53a);
+    background-color: #3b57e5;
     cursor: pointer;
     transition: all 0.3s ease;
   }

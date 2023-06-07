@@ -71,6 +71,7 @@ export default {
   methods: {
     async updateDispositionStatus(disposition) {
       try {
+            //eslint-disable-next-line no-unused-vars
         const response = await axios.put(`http://localhost:3000/status/updateProgress/${disposition.id}`, {
           candidateId: disposition.candidateId,
           mentorId: disposition.mentorId,
@@ -85,7 +86,7 @@ export default {
       try {
         const editedDeadline = new Date(this.editedDeadlines[disposition.id]);
         const formattedDeadline = editedDeadline.toISOString().split('T')[0];
-
+        //eslint-disable-next-line no-unused-vars
         const response = await axios.put(`http://localhost:3000/status/updateDeadline/${disposition.id}`, {
           deadline: formattedDeadline,
           candidateId: disposition.candidateId,
@@ -99,7 +100,7 @@ export default {
       try {
         const editedDefending = new Date(this.editedDefending[disposition.id]);
         const defending = editedDefending.toISOString().split('T')[0];
-
+        // eslint-disable-next-line no-unused-vars
         const response = await axios.put(`http://localhost:3000/status/updateDefending/${disposition.id}`, {
           deadline: defending,
           candidateId: disposition.candidateId,

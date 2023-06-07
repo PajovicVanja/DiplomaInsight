@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+    background-color: #f4ebeb;
     padding: 20px;
 }
 
@@ -15,25 +15,37 @@ ul {
 }
 
 li {
-    background-color: #fff;
+  background-color: #f4ebeb;
     margin-bottom: 15px;
     padding: 20px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+
 }
 
 button {
-    background: linear-gradient(to right, #ff9966 0%, #ff5e62 100%);
+    padding: 5px 10px;
+    color: white;
     border: none;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 20px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background 0.5s;
-    margin-right: 10px;
+    margin: 5px;
 }
-
+.update-btn{
+    background-color: #43b9ebe4;
+  }
+   .del-btn{
+    background-color: #5b1313dd;
+  
+  }
+    
+.edit-btn{
+    background-color: #3b57e5;
+  
+  }
 button:hover {
-    background: linear-gradient(to right, #ff5e62 0%, #ff9966 100%);
+    background: #4f97a5cd;
+    color: #373232;
 }
 
 form {
@@ -69,3 +81,36 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background: linear-gradient(to right, #ff5e62 0%, #ff9966 100%);
 }
+.faculty-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .faculty-name {
+    float: right;
+  }
+  
+  .button-container {
+    float: left;
+  }
+  .program-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .program-name {
+    float: right;
+  }
+  .university-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .university-name {
+    float: right;
+  }    
+  .main{
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }

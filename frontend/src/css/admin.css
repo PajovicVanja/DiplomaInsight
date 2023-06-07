@@ -1,19 +1,37 @@
 h1 {
     color: white;
   }
-  
-  .registered-users {
-    padding-top: 10%;
+  .table{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;
     margin: 0 auto;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    padding-left: 20px;
+
+
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    background-color: #444040;
+  }
+  input{
+    background-color: #353131;
+    color: beige;
+  }
+  .registered-users {
+    padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
     padding: 20px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
     border-radius: 10px;
-    background-color: #333;
+    background-color: #353131;
   }
   
   table {
@@ -28,21 +46,44 @@ h1 {
   
   button {
     padding: 5px 10px;
-    background-color: #743ad5;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
   }
+   .more-btn{
+    background-color: #3f59dd86;
+
+}
+ .save-btn{
+  background-color: #43b9eb86;
+
+}
+ .del-btn{
+  background-color: #5b13137c;
+
+}
   
+.info-btn{
+  background-color: #3f59dd86;
+
+}
   input[type="password"] {
     padding: 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
   }
-.candidateChart{
-  float: left;
-}
-.delCand{
-  float: right;
-}
+  .candidateChart {
+    float: left;
+    width: 600px; /* Adjust the width as per your requirement */
+    height: 400px; /* Adjust the height as per your requirement */
+    padding: 30px;
+  }
+  
+  .userCandidateChart {
+    float: right;
+    width: 600px; /* Adjust the width as per your requirement */
+    height: 400px; /* Adjust the height as per your requirement */
+    padding: 30px;
+
+  }

@@ -90,6 +90,7 @@ export default {
     formData.append('signedTheme', this.selectedFile);
 
     try {
+        // eslint-disable-next-line no-unused-vars
         const response = await axios.post(`http://localhost:3000/disposition/uploadSignedTheme/${dispositionId}`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'

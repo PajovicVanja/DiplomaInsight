@@ -1,25 +1,29 @@
 <template>
-  <div>
+  <div class="main">
     <h4>Delete a Faculty</h4>
     <ul>
       <li v-for="faculty in faculties" :key="faculty.id">
-        {{ faculty.name }}, university - {{ getUniversityName(faculty.university_id) }}
-        <button @click="deleteFaculty(faculty.id)">Delete</button>
-        <button @click="startEditing(faculty)">Edit</button>
+        <div class="faculty-item">
+          <span class="faculty-name">{{ faculty.name }}, university - {{ getUniversityName(faculty.university_id) }}</span>
+          <div class="button-container">
+            <button @click="deleteFaculty(faculty.id)" class="del-btn">Delete</button>
+            <button @click="startEditing(faculty)" class="edit-btn">Edit</button>
+          </div>
+        </div>
         
         <div v-if="editingFacultyId === faculty.id">
           <form @submit.prevent="submitForm">
             <label for="name">Faculty Name:</label>
             <input type="text" id="name" v-model="editingFaculty.name">
-
+  
             <label for="university_id">University:</label>
             <select v-model="editingFaculty.university_id">
               <option v-for="university in universities" :key="university.id" :value="university.id">
                 {{ university.name }}
               </option>
             </select>
-
-            <button type="submit">Update Faculty</button>
+  
+            <button type="submit" class="update-btn">Update Faculty</button>
           </form>
         </div>
       </li>
@@ -28,6 +32,7 @@
   <div>
     <DeleteStudy :key="componentKey"></DeleteStudy>
   </div>
+  
 </template>
 
 <script>

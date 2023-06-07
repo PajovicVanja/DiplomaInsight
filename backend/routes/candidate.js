@@ -115,7 +115,7 @@ router.delete('/:id', (req, res) => {
 router.get('/user/:userId', (req, res) => {
   const { userId } = req.params;
 
-  const query = 'SELECT * FROM candidates WHERE mentor_id = ?';
+  const query = 'SELECT * FROM candidates inner join diploma_status on candidates.id = diploma_status.candidate_id WHERE diploma_status.mentor_id = ?';
   db.query(query, [userId], (error, results) => {
     if (error) {
       console.log(error);
@@ -129,8 +129,10 @@ router.get('/user/:userId', (req, res) => {
         faculty: candidate.faculty,
         enrollmentNumber: candidate.enrollment_number,
         email: candidate.email,
-        studyProgram: candidate.study_program
+        studyProgram: candidate.study_program,
+        progress:candidate.progress_status
       }));
+      console.log(candidates)
       res.status(200).send(candidates);
     }
   });
@@ -182,6 +184,23 @@ router.get('/user', (req, res) => {
         faculty: candidate.faculty,
         enrollmentNumber: candidate.enrollment_number,
         email: candidate.email
+      }));
+      res.status(200).send(candidates);
+    }
+  });
+});
+
+router.get('/count', (req, res) => {
+  const query = 'SELECT u.id, u.name, COUNT(c.id) AS cnt FROM users u LEFT JOIN candidates c ON u.id = c.mentor_id GROUP BY u.id, u.name;';
+  db.query(query, (error, results) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error occurred during fetching candidates');
+    } else {
+      const candidates = results.map(candidate => ({
+        userid: candidate.id,
+        username: candidate.name,
+        count: candidate.cnt
       }));
       res.status(200).send(candidates);
     }
