@@ -14,13 +14,13 @@ const dispositionRoutes = require('./routes/disposition');
 const documentsRoutes = require('./routes/documents');
 const statusRoutes = require('./routes/status');
 const reminderRoutes = require('./routes/reminder');
-
+const path = require('path');
 
 const app = express();
 const port = 3000;
-
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use(cors({
-    origin: 'https://diploma-insight.onrender.com/', 
+    origin: 'https://diploma-insight.onrender.com', 
     credentials: true,
     withCredentials: true
   }));
