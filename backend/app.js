@@ -20,7 +20,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors({
-    origin: 'diploma-insight.onrender.com', 
+    origin: 'https://diploma-insight.onrender.com/', 
     credentials: true,
     withCredentials: true
   }));
