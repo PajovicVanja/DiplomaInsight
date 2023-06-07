@@ -160,7 +160,7 @@ function sendVerificationEmail(name, email, userId) {
       from: process.env.GMAIL_USER,
       to: email,
       subject: 'Please confirm your email',
-      text: `Dear ${name},\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\nhttps://diploma-insight.onrender.com/verify?token=${token}\n\nIf you did not request this, please ignore this email.\n`
+      text: `Dear ${name},\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\nhttps://diplomainsight.onrender.com/verify?token=${token}\n\nIf you did not request this, please ignore this email.\n`
     };
   
     transporter.sendMail(mailOptions, function(error, info) {
