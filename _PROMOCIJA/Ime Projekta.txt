@@ -1,0 +1,24 @@
+Evidenca kandidatov za diplomo
+
+Ta rešitev služi kot celovit digitalni sistem, zasnovan za poenostavitev procesa upravljanja kandidatov za diplomo. Sistem se osredotoča na avtomatizacijo rutinskih nalog in izboljšanje natančnosti in učinkovitosti akademskih procesov.
+
+Leto izdelave: 2023
+
+Vanja Pajović
+Bogdan Kašćelan
+
+
+Domača stran: https://diplomainsight.onrender.com/
+Vir podatkov: https://feri.um.si/studij/zakljucna-dela/
+...
+Koda: https://github.com/PajovicVanja/DiplomaInsight
+
+Kategorizacija: celovita informacijska rešitev, spletna aplikacija, predstavitvena spletna stran
+
+Oznake: VueJS, MySql, NodeJS, Scrum, GitHub, Express, REST...
+
+Projekt "Evidenca kandidatov za diplomo" je celovita informacijska rešitev, zasnovana za sledenje in upravljanje diplomskih kandidatov. Ta spletna aplikacija je zasnovana tako, da omogoča učinkovito in enostavno administracijo ter sledenje statusu in napredku študentov, ki so v procesu izdelave diplomske naloge.
+
+Sistem je zasnovan z uporabo VueJS za frontend, kar omogoča dinamično in intuitivno uporabniško izkušnjo. Za backend smo izbrali NodeJS in Express, kar omogoča visoko učinkovito in skalabilno aplikacijsko logiko. Uporabili smo tudi MySql za upravljanje podatkov, kar zagotavlja zanesljivo in robustno shranjevanje podatkov.
+
+Naša rešitev je izjemno prilagodljiva in uporabna za vse univerze, visokošolske ustanove ali kakršne koli izobraževalne institucije, ki želijo digitalizirati in optimizirati proces sledenja diplomskim kandidatom. Poleg tega je naša aplikacija zasnovana tako, da je enostavna za uporabo, kar pomeni, da je potrebna minimalna usposabljanja za učinkovito uporabo sistema.
