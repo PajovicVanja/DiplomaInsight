@@ -10,18 +10,15 @@
 
 
 ## Usage:
-* To start using our application, run "npm start" in the terminal of folder "backend" then run "npm run serve" in the terminal of folder "frontend"
+* To start using our application, open https://diplomainsight.onrender.com in url, thats where our project is deployed
+* To use admin, write admin@a for email and 123 for password
 
-## Screenshots or Demo: 
-* TODO
 
 ## Technologies Used: 
 * Backend: Node.js(express.js) with libraries
 * Frontend: Vue.js, with bootstraps and custom css
 * Database: MySQL
 
-## Features: 
-* TODO
 
 ## Authors: 
 * Vanja Pajović (vanja.pajovic@student.um.si)
