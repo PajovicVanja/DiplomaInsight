@@ -11,6 +11,9 @@
 
 ## Usage:
 * To start using our application, open https://diplomainsight.onrender.com in url, thats where our project is deployed
+* To use admin, write admin@a for email and 123 for password
+* To use candidates profile, password is auto generated, it is the same as email, you can change it in Profile=> Change password
+
 
 
 ## Technologies Used: 
