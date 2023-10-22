@@ -50,6 +50,7 @@ app.use('/disposition', dispositionRoutes);
 app.use('/document', documentsRoutes);
 app.use('/status', statusRoutes);
 app.use('/reminder', reminderRoutes);
-app.listen(port, () => {
-    console.log(`App listening at https://diplomainsight.onrender.com/`)
-  })
+// app.listen(port, () => {
+//     console.log(`App listening at https://diplomainsight.onrender.com/`)
+//   })
+module.exports = app;
