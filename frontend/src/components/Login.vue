@@ -28,7 +28,7 @@ export default {
       password: this.password
     };
 
-    axios.post('https://diplomainsight.onrender.com/login', loginData, { withCredentials: true })
+    axios.post('http://localhost:3000/login', loginData, { withCredentials: true })
       .then(response => {
         if (response.status === 200) {
           this.$emit('user-logged-in');

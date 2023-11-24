@@ -90,7 +90,7 @@ export default {
   methods: {
     async fetchUsers() {
       try {
-        const response = await axios.get('https://diplomainsight.onrender.com/profile');
+        const response = await axios.get('http://localhost:3000/profile');
         this.users = response.data;
       } catch (error) {
         console.error(error);
@@ -98,7 +98,7 @@ export default {
     },
     async deleteUser(userId) {
       try {
-        await axios.delete(`https://diplomainsight.onrender.com/profile/${userId}`);
+        await axios.delete(`http://localhost:3000/profile/${userId}`);
         this.users = this.users.filter(user => user.id !== userId);
         alert('User deleted successfully!');
       } catch (error) {
@@ -108,7 +108,7 @@ export default {
     async updateUserPassword(user) {
       try {
         const { id, newPassword } = user;
-        const response = await axios.put(`https://diplomainsight.onrender.com/profile/${id}`, { password: newPassword });
+        const response = await axios.put(`http://localhost:3000/profile/${id}`, { password: newPassword });
         if (response.status === 200) {
           alert('Password updated successfully!');
         } else {
@@ -120,7 +120,7 @@ export default {
     },
     async fetchUserCandidates(userId) {
       try {
-        const response = await axios.get(`https://diplomainsight.onrender.com/candidate/user/${userId}`);
+        const response = await axios.get(`http://localhost:3000/candidate/user/${userId}`);
         this.userCandidates = { ...this.userCandidates, [userId]: response.data };
         this.selectedUserId = userId;
         this.generateCandidateChart();

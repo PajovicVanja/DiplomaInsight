@@ -30,10 +30,10 @@ export default {
 
         
         axios.defaults.withCredentials = true;
-        const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
+        const response = await axios.get('http://localhost:3000/profile/current');
         this.candidateId = response.data.id;
   
-        const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/${this.candidateId}`);
+        const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
         const disposition = dispositionResponse.data.status;
         this.dispositionId = dispositionResponse.data.id; 
 
@@ -53,7 +53,7 @@ export default {
       },
       fetchDispositionStatus(id) {
       if (this.candidateId !== null) {
-        axios.get(`https://diplomainsight.onrender.com/disposition/status/${id}`)
+        axios.get(`http://localhost:3000/disposition/status/${id}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
           })
@@ -73,9 +73,9 @@ export default {
   formData.append('candidateId', this.candidateId);
 
   try {
-    const dispositionResponse = await axios.get(`https://diplomainsight.onrender.com/disposition/${this.candidateId}`);
+    const dispositionResponse = await axios.get(`http://localhost:3000/disposition/${this.candidateId}`);
     this.dispositionId = dispositionResponse.data.id; 
-    const response = await axios.post(`https://diplomainsight.onrender.com/disposition/submitTheme/${this.dispositionId}`, formData, {
+    const response = await axios.post(`http://localhost:3000/disposition/submitTheme/${this.dispositionId}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

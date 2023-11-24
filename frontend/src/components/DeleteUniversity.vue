@@ -51,7 +51,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('https://diplomainsight.onrender.com/university');
+      const response = await axios.get('http://localhost:3000/university');
       this.universities = response.data;
     } catch (error) {
       console.error(error);
@@ -64,7 +64,7 @@ export default {
     },
     async submitForm() {
       try {
-        await axios.put(`https://diplomainsight.onrender.com/university/${this.editingUniversityId}`, this.editingUniversity);
+        await axios.put(`http://localhost:3000/university/${this.editingUniversityId}`, this.editingUniversity);
         const index = this.universities.findIndex(university => university.id === this.editingUniversityId);
         this.universities[index] = this.editingUniversity;
         this.editingUniversityId = null;
@@ -76,7 +76,7 @@ export default {
     },
     async deleteUniversity(id) {
       try {
-        await axios.delete(`https://diplomainsight.onrender.com/university/${id}`);
+        await axios.delete(`http://localhost:3000/university/${id}`);
         this.universities = this.universities.filter((university) => university.id !== id);
         this.componentKey += 1;
       } catch (error) {

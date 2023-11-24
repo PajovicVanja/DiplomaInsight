@@ -18,12 +18,18 @@ const path = require('path');
 
 const app = express();
 const port = 3000;
-app.use(express.static(path.join(__dirname, 'dist')));
+// app.use(express.static(path.join(__dirname, 'dist')));
+// app.use(cors({
+//     origin: 'http://localhost:8080', 
+//     credentials: true,
+//     withCredentials: true
+//   }));
 app.use(cors({
-    origin: 'https://diploma-insight.onrender.com', 
-    credentials: true,
-    withCredentials: true
-  }));
+  origin: 'http://localhost:8080', // or your frontend url
+  credentials: true,
+  withCredentials: true
+}));
+
   
   app.use(bodyParser.json());
   
@@ -50,7 +56,7 @@ app.use('/disposition', dispositionRoutes);
 app.use('/document', documentsRoutes);
 app.use('/status', statusRoutes);
 app.use('/reminder', reminderRoutes);
-// app.listen(port, () => {
-//     console.log(`App listening at https://diplomainsight.onrender.com/`)
-//   })
+app.listen(port, () => {
+    console.log(`App listening at http://localhost:8080/`)
+  })
 module.exports = app;

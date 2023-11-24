@@ -38,7 +38,7 @@
     },
     async created() {
       try {
-        const response = await axios.get('https://diplomainsight.onrender.com/university');
+        const response = await axios.get('http://localhost:3000/university');
         this.universities = response.data;
       } catch (error) {
         console.error(error);
@@ -46,7 +46,7 @@
     },
     methods: {
         getUniversities() {
-        axios.get('https://diplomainsight.onrender.com/university')
+        axios.get('http://localhost:3000/university')
         .then(response => {
             this.universities = response.data;
         })
@@ -56,7 +56,7 @@
     },
       async submitForm() {
         try {
-          await axios.post('https://diplomainsight.onrender.com/faculty/create', this.faculty);
+          await axios.post('http://localhost:3000/faculty/create', this.faculty);
           this.faculty.name = '';
           this.faculty.university_id = '';
           this.componentKey += 1; 

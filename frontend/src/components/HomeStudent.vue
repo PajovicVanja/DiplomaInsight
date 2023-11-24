@@ -33,7 +33,7 @@ export default {
     async created() {
         try {
             axios.defaults.withCredentials = true;
-            const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
+            const response = await axios.get('http://localhost:3000/profile/current');
             this.candidateId = response.data.id;
              this.loadStatus();
         } catch (error) {
@@ -44,7 +44,7 @@ export default {
         async loadStatus() {
             
             try {
-                const response = await axios.get(`https://diplomainsight.onrender.com/status/statusForBar/${this.candidateId}`);
+                const response = await axios.get(`http://localhost:3000/status/statusForBar/${this.candidateId}`);
                 this.status = response.data;
             } catch (error) {
                 console.error("Error during axios call:", error);  

@@ -23,10 +23,10 @@ export default {
   async created() {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
+      const response = await axios.get('http://localhost:3000/profile/current');
       const candidateId = response.data.id;
 
-      const themeResponse = await axios.get(`https://diplomainsight.onrender.com/status/accepted-themes/${candidateId}`);
+      const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${candidateId}`);
       this.acceptedThemes = themeResponse.data;
     } catch (error) {
       console.error(error);
@@ -34,12 +34,12 @@ export default {
   },
   methods: {
     downloadTheme(themeId) {
-      window.open(`https://diplomainsight.onrender.com/disposition/download-themeSigned/${themeId}`);
+      window.open(`http://localhost:3000/disposition/download-themeSigned/${themeId}`);
     },
     async updateProgressionStatus(themeId) {
       try {
         axios.defaults.withCredentials = true;
-        await axios.put(`https://diplomainsight.onrender.com/status/diploma-status/update/${themeId}`, {
+        await axios.put(`http://localhost:3000/status/diploma-status/update/${themeId}`, {
           progression_status: 'Thesis Submitted'
         });
       } catch (error) {

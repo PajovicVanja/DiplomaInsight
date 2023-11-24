@@ -60,7 +60,7 @@ export default {
     },
     async created() {
         try {
-            const response = await axios.get('https://diplomainsight.onrender.com/candidate');
+            const response = await axios.get('http://localhost:3000/candidate');
             this.candidates = response.data;
         } catch (error) {
             console.error(error);
@@ -73,7 +73,7 @@ export default {
         },
         async submitForm() {
             try {
-                await axios.put(`https://diplomainsight.onrender.com/candidate/${this.editingCandidateId}`, this.editingCandidate);
+                await axios.put(`http://localhost:3000/candidate/${this.editingCandidateId}`, this.editingCandidate);
                 const index = this.candidates.findIndex(candidate => candidate.id === this.editingCandidateId);
                 this.candidates[index] = this.editingCandidate;
                 this.editingCandidateId = null;
@@ -84,7 +84,7 @@ export default {
         },
         async deleteCandidate(id) {
             try {
-                await axios.delete(`https://diplomainsight.onrender.com/candidate/${id}`);
+                await axios.delete(`http://localhost:3000/candidate/${id}`);
                 this.candidates = this.candidates.filter((candidate) => candidate.id !== id);
             } catch (error) {
                 console.error(error);

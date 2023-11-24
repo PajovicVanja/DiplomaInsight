@@ -54,10 +54,10 @@ export default {
   async created() {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
+      const response = await axios.get('http://localhost:3000/profile/current');
       this.candidateId = response.data.id;
 
-      const mentorResponse = await axios.get('https://diplomainsight.onrender.com/disposition/mentor');
+      const mentorResponse = await axios.get('http://localhost:3000/disposition/mentor');
       this.mentors = mentorResponse.data;
 
       this.fetchDispositionStatus(response.data.id);
@@ -82,7 +82,7 @@ export default {
     formData.append('candidateId', this.candidateId);
     formData.append('mentorId', this.mentorId);
 
-    const response = await axios.post('https://diplomainsight.onrender.com/disposition/registerDisposition', formData, {
+    const response = await axios.post('http://localhost:3000/disposition/registerDisposition', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -133,7 +133,7 @@ async downloadBlankTheme() {
 
   fetchDispositionStatus(id) {
       if (this.candidateId !== null) {
-        axios.get(`https://diplomainsight.onrender.com/disposition/statusDisp/${id}`)
+        axios.get(`http://localhost:3000/disposition/statusDisp/${id}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
           })

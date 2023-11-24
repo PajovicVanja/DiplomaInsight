@@ -57,10 +57,10 @@ export default {
   async created() {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
+      const response = await axios.get('http://localhost:3000/profile/current');
       this.mentorId = response.data.id;
 
-      const submittedResponse = await axios.get(`https://diplomainsight.onrender.com/status/diploma-status/thesis-submitted/${this.mentorId}`);
+      const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/thesis-submitted/${this.mentorId}`);
       this.submitted = submittedResponse.data;
 
       this.submitted.forEach((disposition) => {
@@ -74,7 +74,7 @@ export default {
     async updateDispositionStatus(disposition) {
       try {
             //eslint-disable-next-line no-unused-vars
-        const response = await axios.put(`https://diplomainsight.onrender.com/status/updateProgress/${disposition.id}`, {
+        const response = await axios.put(`http://localhost:3000/status/updateProgress/${disposition.id}`, {
           candidateId: disposition.candidateId,
           mentorId: disposition.mentorId,
           progressStatus: disposition.progressStatus,
@@ -89,7 +89,7 @@ export default {
         const editedDeadline = new Date(this.editedDeadlines[disposition.id]);
         const formattedDeadline = editedDeadline.toISOString().split('T')[0];
         //eslint-disable-next-line no-unused-vars
-        const response = await axios.put(`https://diplomainsight.onrender.com/status/updateDeadline/${disposition.id}`, {
+        const response = await axios.put(`http://localhost:3000/status/updateDeadline/${disposition.id}`, {
           deadline: formattedDeadline,
           candidateId: disposition.candidateId,
         });
@@ -103,7 +103,7 @@ export default {
         const editedDefending = new Date(this.editedDefending[disposition.id]);
         const defending = editedDefending.toISOString().split('T')[0];
         // eslint-disable-next-line no-unused-vars
-        const response = await axios.put(`https://diplomainsight.onrender.com/status/updateDefending/${disposition.id}`, {
+        const response = await axios.put(`http://localhost:3000/status/updateDefending/${disposition.id}`, {
           deadline: defending,
           candidateId: disposition.candidateId,
         });

@@ -52,16 +52,16 @@ export default {
   async created() {
     try {
       axios.defaults.withCredentials = true;
-      const response = await axios.get('https://diplomainsight.onrender.com/profile/current');
+      const response = await axios.get('http://localhost:3000/profile/current');
       this.userId = response.data.id;
 
-      const submittedResponse = await axios.get(`https://diplomainsight.onrender.com/status/diploma-status/current-user/${this.userId}`);
+      const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/current-user/${this.userId}`);
       this.submitted = submittedResponse.data;
 
-      const themeResponse = await axios.get(`https://diplomainsight.onrender.com/status/accepted-themes/${this.userId}`);
+      const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${this.userId}`);
       this.theme = themeResponse.data[0];
 
-      const mentorsResponse = await axios.get(`https://diplomainsight.onrender.com/status/mentorName/${this.theme.mentorId}`);
+      const mentorsResponse = await axios.get(`http://localhost:3000/status/mentorName/${this.theme.mentorId}`);
       this.mentorName = mentorsResponse.data.name;
 
       this.formatDefending(this.theme.defending);
@@ -106,14 +106,14 @@ export default {
     async updateProgressionStatus() {
       try {
         axios.defaults.withCredentials = true;
-        await axios.put(`https://diplomainsight.onrender.com/status/diploma-status/update/${this.userId}`, {
+        await axios.put(`http://localhost:3000/status/diploma-status/update/${this.userId}`, {
           progression_status: 'Thesis Submitted'
         });
 
-        const submittedResponse = await axios.get(`https://diplomainsight.onrender.com/status/diploma-status/current-user/${this.userId}`);
+        const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/current-user/${this.userId}`);
         this.submitted = submittedResponse.data;
 
-        const themeResponse = await axios.get(`https://diplomainsight.onrender.com/status/accepted-themes/${this.userId}`);
+        const themeResponse = await axios.get(`http://localhost:3000/status/accepted-themes/${this.userId}`);
         this.theme = themeResponse.data[0];
 
       } catch (error) {

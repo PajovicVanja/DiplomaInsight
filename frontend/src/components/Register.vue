@@ -40,7 +40,7 @@ export default {
     async register() {
   if (!this.isPasswordShort) {
     try {
-      const response = await axios.post('https://diplomainsight.onrender.com/register', {
+      const response = await axios.post('http://localhost:3000/register', {
         name: this.name,
         email: this.email,
         password: this.password

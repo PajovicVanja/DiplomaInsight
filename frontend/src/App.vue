@@ -245,7 +245,7 @@ export default {
   methods: {
     async checkSession() {
       try {
-        const response = await axios.get('https://diplomainsight.onrender.com/check-session', { withCredentials: true });
+        const response = await axios.get('http://localhost:3000/check-session', { withCredentials: true });
         if (response.data.loggedIn) {
           this.loggedIn = true;
           this.isAdmin = response.data.user.role === 'admin';
@@ -262,7 +262,7 @@ export default {
     },
     fetchDispositionStatus() {
       if (this.userID !== null) {
-        axios.get(`https://diplomainsight.onrender.com/disposition/status/${this.userID}`)
+        axios.get(`http://localhost:3000/disposition/status/${this.userID}`)
           .then(response => {
             this.themeStatus = response.data.currentThemeStatus;
           })
@@ -271,7 +271,7 @@ export default {
           });
       }
       if (this.userID !== null) {
-        axios.get(`https://diplomainsight.onrender.com/disposition/statusDisp/${this.userID}`)
+        axios.get(`http://localhost:3000/disposition/statusDisp/${this.userID}`)
           .then(response => {
             this.dispStatus = response.data.currentThemeStatus;
           })
