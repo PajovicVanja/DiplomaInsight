@@ -21,10 +21,8 @@
           </li>
 
           <li v-if="loggedIn && isUser || isCandidate">
-            <a href="#" class="desktop-link">Diploma</a>
-            <input type="checkbox" id="show-university">
-            <label for="show-university">Diploma</label>
-            <ul>
+            <a href="#" class="desktop-link" @click.prevent="toggleDiplomaMenu">Diploma</a>
+              <ul v-show="diplomaMenuVisible">
               <li v-if="isCandidate"><a href="#" @click.prevent="showDispositonRegistration">Disposition Submission</a>
               </li>
               <li v-if="isCandidate && dispStatus === 'Disposition Disapproved'"><a href="#"
@@ -44,10 +42,8 @@
           </li>
 
           <li v-if="loggedIn && isAdmin || isUser">
-            <a href="#" class="desktop-link">Candidates</a>
-            <input type="checkbox" id="show-candidates">
-            <label for="show-candidates">Candidates</label>
-            <ul>
+            <a href="#" class="desktop-link" @click.prevent="toggleCandidatesMenu">Candidates</a>
+          <ul v-show="candidatesMenuVisible">
               <li><a href="#" @click.prevent="showUserCreate">Create</a></li>
               <li><a href="#" @click.prevent="showDeleteCandidate">Delete</a></li>
             </ul>
@@ -55,20 +51,18 @@
 
           <li v-if="loggedIn && isUser || isCandidate"><a href="#" @click.prevent="showUserProfile">Profile</a></li>
           <li v-if="isAdmin">
-            <a href="#" class="desktop-link">University</a>
-            <input type="checkbox" id="show-university">
-            <label for="show-university">University</label>
-            <ul>
+            <a href="#" class="desktop-link" @click.prevent="toggleUniversityMenu">University</a>
+  <ul v-show="universityMenuVisible">
               <li><a href="#" @click.prevent="showUniversity">Create</a></li>
               <li><a href="#" @click.prevent="showUniversityDel">Delete</a></li>
             </ul>
           </li>
           <li>
-            <a href="#" class="desktop-link">Account</a>
-            <input type="checkbox" id="show-account">
-            <label for="show-account">Account</label>
-            <ul>
-              <li v-if="!loggedIn"><a href="#" @click.prevent="showLogin">Login</a></li>
+            <a href="#" class="desktop-link" @click.prevent="toggleAccountMenu">Account</a>
+            <!-- <input type="checkbox" id="show-account">
+            <label for="show-account">Account</label> -->
+            <ul v-show="accountMenuVisible">
+              <li v-if="!loggedIn" ><a href="#" @click.prevent="showLogin">Login</a></li>
               <li v-if="!loggedIn"><a href="#" @click.prevent="showRegister">Register</a></li>
               <li v-if="loggedIn">
                 <a href="#">
@@ -236,6 +230,10 @@ export default {
       showSubmittedThesisForm: false,
       showUserHomeForm: false,
       showHelpCompForm: false,
+      accountMenuVisible: false, // Add this
+      diplomaMenuVisible: false,
+    candidatesMenuVisible: false,
+    universityMenuVisible: false,
     };
   },
   async created() {
@@ -363,6 +361,20 @@ export default {
       this.hideForms();
       this.showHelpCompForm = true;
     },
+    toggleAccountMenu() {
+    this.accountMenuVisible = !this.accountMenuVisible;
+    console.log('Account menu visible:', this.accountMenuVisible); // This should log true or false on click
+  },
+
+  toggleDiplomaMenu() {
+    this.diplomaMenuVisible = !this.diplomaMenuVisible;
+  },
+  toggleCandidatesMenu() {
+    this.candidatesMenuVisible = !this.candidatesMenuVisible;
+  },
+  toggleUniversityMenu() {
+    this.universityMenuVisible = !this.universityMenuVisible;
+  },
 
     hideForms() {
       this.showLoginForm = false;

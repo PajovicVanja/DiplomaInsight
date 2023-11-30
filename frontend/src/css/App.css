@@ -56,7 +56,7 @@ nav .content .links{
 .content .links li label{
   display: none;
 }
-.content .links li a:hover,
+.content .links li a,
 .content .links li label:hover{
   background: #323c4e;
 }
@@ -121,19 +121,39 @@ nav .content .links{
 }
 
 /* Dropdown Menu code start */
-.content .links ul{
+/* .content .links ul{
   position: absolute;
   background: #171c24;
   top: 80px;
   z-index: -1;
   opacity: 0;
   visibility: hidden;
+} */
+.content .links {
+  position: relative;
 }
-.content .links li:hover > ul{
+
+/* .content .links li:hover > ul{
   top: 70px;
   opacity: 1;
   visibility: visible;
   transition: all 0.3s ease;
+} */
+.content .links ul {
+  position: absolute;
+  top: 100%; /* This ensures the dropdown starts right after the li */
+  left: 0; /* Aligns the dropdown to the left of the li */
+  transform: translateY(0); /* Resets any previous transformation */
+  /* ... other styles ... */
+}
+ul[v-show="accountMenuVisible"] {
+  display: block !important; /* This is just for debugging; do not use !important in production */
+}
+.content .links > li {
+  position: relative; /* This makes the dropdown position relative to this li */
+}
+.content .links > li > ul {
+  z-index: 100; /* or any number high enough to be on top of other page content */
 }
 .content .links ul li a{
   display: block;
