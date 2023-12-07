@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - auth.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>auth.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">66.47</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">175</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">23.64</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">1.72</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">const express = require(&#039;express&#039;);
+const router = express.Router();
+const db = require(&#039;../db&#039;);
+const bcrypt = require(&#039;bcrypt&#039;);
+const jwt = require(&#039;jsonwebtoken&#039;);
+const nodemailer = require(&#039;nodemailer&#039;);
+const crypto = require(&#039;crypto&#039;);
+
+const secretKey = crypto.randomBytes(64).toString(&#039;hex&#039;);
+
+router.post(&#039;/login&#039;, (req, res) =&gt; {
+  const { email, password } = req.body;
+
+  const userQuery = &#039;SELECT * FROM users WHERE email = ?&#039;;
+  const candidateQuery = &#039;SELECT * FROM candidates WHERE email = ?&#039;;
+
+  db.query(userQuery, [email], async (error, users) =&gt; {
+    if (error) {
+      console.log(error);
+      return res.status(500).send(&#039;Error occurred during login&#039;);
+    }
+
+    if (users.length &gt; 0) {
+      const user = users[0];
+
+      if (!user.verified) {
+        return res.status(401).send(&#039;Please verify your email before logging in&#039;);
+      }
+
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        req.session.user = user;
+        return res.status(200).send(&#039;User logged in successfully&#039;);
+      } else {
+        return res.status(401).send(&#039;Incorrect password&#039;);
+      }
+    }
+
+    db.query(candidateQuery, [email], async (error, candidates) =&gt; {
+      if (error) {
+        console.log(error);
+        return res.status(500).send(&#039;Error occurred during login&#039;);
+      }
+
+      if (candidates.length &gt; 0) {
+        const candidate = candidates[0];
+
+        const match = await bcrypt.compare(password, candidate.password);
+        if (match) {
+          candidate.role = &#039;candidate&#039;;
+          req.session.user = candidate;
+          return res.status(200).send(&#039;Candidate logged in successfully&#039;);
+        } else {
+          return res.status(401).send(&#039;Incorrect password&#039;);
+        }
+      }
+
+      res.status(401).send(&#039;Email not registered&#039;);
+    });
+  });
+});
+
+
+router.get(&#039;/check-session&#039;, (req, res) =&gt; {
+    if (req.session &amp;&amp; req.session.user) {
+        res.status(200).send({ loggedIn: true, user: req.session.user });
+      } else {
+        res.status(200).send({ loggedIn: false });
+      }});
+
+router.post(&#039;/logout&#039;, (req, res) =&gt; {
+    console.log(&#039;Logout route called&#039;); 
+    if (req.session) {
+      req.session.destroy((err) =&gt; {
+        if (err) {
+          console.log(err);
+          res.status(500).send(&#039;Could not log out&#039;);
+        } else {
+          res.status(200).send(&#039;User logged out successfully&#039;);
+        }
+      });
+    } else {
+      res.status(400).send(&#039;No active session&#039;);
+    }});
+
+    router.post(&#039;/register&#039;, async (req, res) =&gt; {
+      const { name, email, password } = req.body;
+  
+      const checkUserQuery = &#039;SELECT * FROM users WHERE email = ?&#039;;
+      db.query(checkUserQuery, [email], async (error, results) =&gt; {
+        if (error) {
+          console.log(error);
+          return res.status(500).send(&#039;Error occurred during registration&#039;);
+        }
+  
+        if (results.length &gt; 0) {
+          return res.status(400).send(&#039;User with that email already exists&#039;);
+        }
+  
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+  
+        const insertQuery = &#039;INSERT INTO users (name, email, password, verified, role) VALUES (?, ?, ?, ?, ?)&#039;;
+        db.query(insertQuery, [name, email, hashedPassword, false, &quot;user&quot;], (error, results) =&gt; {
+          if (error) {
+            console.log(error);
+            return res.status(500).send(&#039;Error occurred during registration&#039;);
+          }
+  
+          const userId = results.insertId;
+  
+          sendVerificationEmail(name, email, userId);
+  
+          return res.status(201).send(&#039;User registered successfully, please open your email and click on the link we sent you.&#039;);
+        });
+      });
+  });
+
+router.get(&#039;/verify&#039;, (req, res) =&gt; {
+    const token = req.query.token;
+
+    // Verify the token
+    jwt.verify(token, secretKey, (err, decoded) =&gt; {
+      if (err) {
+        // Token is invalid or expired
+        return res.status(400).send(&#039;Invalid token&#039;);
+      } else {
+        // Token is valid, mark user&#039;s email as verified
+        const userId = decoded.userId;
+  
+        // Code to mark user&#039;s email as verified in database
+        const query = &#039;UPDATE users SET verified = ? WHERE id = ?&#039;;
+        db.query(query, [true, userId], (error, results) =&gt; {
+          if (error) {
+            console.log(error);
+            res.status(500).send(&#039;Error occurred during email verification&#039;);
+          } else {
+            res.send(&#039;Email verified successfully&#039;);
+          }
+        });
+      }
+    });
+});
+
+function sendVerificationEmail(name, email, userId) {
+    const token = jwt.sign({ userId }, secretKey, { expiresIn: &#039;1h&#039; });
+
+    const transporter = nodemailer.createTransport({
+      host: &#039;smtp.gmail.com&#039;,
+      port: 465,
+      secure: true,
+      service: &quot;gmail&quot;,
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASS
+      }
+    });
+  
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: email,
+      subject: &#039;Please confirm your email&#039;,
+      text: `Dear ${name},\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\nhttp://localhost:8080/verify?token=${token}\n\nIf you did not request this, please ignore this email.\n`
+    };
+  
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log(&#039;Email sent: &#039; + info.response);
+      }
+    });
+}
+
+module.exports = router;</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>

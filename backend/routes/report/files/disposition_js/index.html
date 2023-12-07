@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plato - disposition.js</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
+  <link href="../../assets/css/vendor/morris.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/bootstrap.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/font-awesome.css" rel="stylesheet">
+  <link href="../../assets/css/vendor/codemirror.css" rel="stylesheet">
+  <link href="../../assets/css/plato.css" rel="stylesheet">
+  <link href="../../assets/css/plato-file.css" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="http://github.com/es-analysis/plato">Plato on Github</a>
+    <ul class="nav navbar-nav">
+      <li>
+        <a href="../../index.html">Report Home</a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="jumbotron">
+  <div class="container">
+    <h1>disposition.js</h1>
+  </div>
+</div>
+
+<div class="container aggregate-stats">
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Maintainability <a href="http://blogs.msdn.com/b/codeanalysis/archive/2007/11/20/maintainability-index-range-and-meaning.aspx"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="A value between 0 and 100 that represents the relative ease of maintaining the code. A high value means better maintainability." data-original-title="Maintainability Index"  data-container="body"></i></a></h2>
+      <p class="stat">70.84</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Lines of code <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h2>
+      <p class="stat">749</p>
+    </div>
+  </div>
+  <div class="row historical">
+    <div class="col-md-6">
+      <p id="chart_historical_maint" class="chart"></p>
+    </div>
+    <div class="col-md-6">
+      <p id="chart_historical_sloc" class="chart"></p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h2 class="header">Difficulty  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="The difficulty measure is related to the difficulty of the program to write or understand." data-original-title="Difficulty" data-container="body"></i></a></h2>
+      <p class="stat">48.40</p>
+    </div>
+    <div class="col-md-6">
+      <h2 class="header">Estimated Errors  <a href="http://en.wikipedia.org/wiki/Halstead_complexity_measures"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Halstead's delivered bugs is an estimate for the number of errors in the implementation." data-original-title="Delivered Bugs" data-container="body"></i></a></h2>
+      <p class="stat">6.89</p>
+    </div>
+  </div>
+</div>
+
+<div class="container charts">
+  <div class="row">
+    <h2 class="header">Function weight</h2>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3 class="chart-header">By Complexity <a href="http://en.wikipedia.org/wiki/Cyclomatic_complexity"><i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="This metric counts the number of distinct paths through a block of code. Lower values are better." data-original-title="Cyclomatic Complexity" data-container="body"></i></a></h3>
+      <div id="fn-by-complexity" class="stat"></div>
+    </div>
+    <div class="col-md-6">
+      <h3 class="chart-header">By SLOC  <i class="icon icon-info-sign" rel="popover" data-placement="top" data-trigger="hover" data-content="Source Lines of Code / Logical Lines of Code" data-original-title="SLOC/LSLOC" data-container="body"></i></h3>
+      <div id="fn-by-sloc" class="stat"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <textarea id="file-source" class="col-md-12">const express = require(&#039;express&#039;);
+const multer = require(&#039;multer&#039;);
+const router = express.Router();
+const db = require(&#039;../db&#039;);
+const path = require(&#039;path&#039;);
+const fs = require(&#039;fs&#039;);
+const nodemailer = require(&#039;nodemailer&#039;);
+const transporter = nodemailer.createTransport({
+  host: &#039;smtp.gmail.com&#039;,
+  port: 465,
+  secure: true,
+  service: &#039;gmail&#039;,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
+
+
+const upload = multer({ dest: &#039;uploads/&#039; });
+
+router.post(&#039;/registerDisposition&#039;, upload.single(&#039;disposition&#039;), async (req, res) =&gt; {
+  const disposition = req.file;
+
+  const { candidateId, mentorId } = req.body;
+
+  db.query(
+    &#039;INSERT INTO diploma_status (disposition_status, candidate_id, mentor_id, disposition) VALUES (?, ?, ?, ?)&#039;,
+    [&#039;Disposition Submitted&#039;, candidateId, mentorId, disposition.path],
+    async (error, results) =&gt; {
+      if (error) {
+        console.log(&#039;Database operation error:&#039;, error); 
+        return res.status(500).json({ error });
+      }
+
+      try {
+        const mentorEmail = await new Promise((resolve, reject) =&gt; {
+          db.query(&#039;SELECT email FROM users WHERE id = ?&#039;, [mentorId], (error, results) =&gt; {
+            if (error) {
+              console.log(&#039;Error occurred while fetching mentor email:&#039;, error);
+              reject(error);
+            } else {
+              const mentorEmail = results[0].email;
+              resolve(mentorEmail);
+            }
+          });
+        });
+        const mentorName = await new Promise((resolve, reject) =&gt; {
+          db.query(&#039;SELECT name FROM users WHERE id = ?&#039;, [mentorId], (error, results) =&gt; {
+            if (error) {
+              console.log(&#039;Error occurred while fetching mentor email:&#039;, error);
+              reject(error);
+            } else {
+              const mentorName = results[0].name;
+              resolve(mentorName);
+            }
+          });
+        });
+
+        const mailOptions = {
+          from: process.env.GMAIL_USER,
+          to: mentorEmail,
+          subject: &#039;Thesis Proposal Submission&#039;,
+          text: `Dear ${mentorName},\n\nStudent with id: ${candidateId} has submitted a disposition that is waiting your review and approval.\n\nPlease log in to the system to access the proposal form.\n`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) =&gt; {
+          if (error) {
+            console.log(&#039;Error occurred while sending email:&#039;, error);
+          } else {
+            console.log(&#039;Email sent:&#039;, info.response);
+          }
+        });
+
+        res.json({ message: &#039;Thesis proposal submitted successfully!&#039; });
+      } catch (error) {
+        console.error(&#039;Error occurred while submitting thesis proposal:&#039;, error);
+        res.status(500).json({ error: &#039;An error occurred while submitting the thesis proposal.&#039; });
+      }
+    }
+  );
+});
+router.put(&#039;/updateDisposition/:id&#039;, upload.single(&#039;disposition&#039;), async (req, res) =&gt; {
+  const disposition = req.file;
+  const { candidateId, mentorId } = req.body;
+  const id = req.params.id;
+
+  try {
+    db.query(
+      &#039;UPDATE diploma_status SET disposition_status = ?, candidate_id = ?, mentor_id = ?, disposition = ? WHERE id = ?&#039;,
+      [&#039;Disposition Updated&#039;, candidateId, mentorId, disposition.path, id],
+      (error, results) =&gt; {
+        if (error) {
+          console.log(&#039;Database operation error:&#039;, error);
+          return res.status(500).json({ error });
+        }
+
+        sendDispositionUpdateEmail(mentorId, candidateId);
+
+        
+        res.json({ message: &#039;Disposition updated successfully!&#039; });
+      }
+    );
+  } catch (error) {
+    console.error(&#039;Error occurred while updating the disposition:&#039;, error);
+    res.status(500).json({ error: &#039;An error occurred while updating the disposition.&#039; });
+  }
+});
+
+function sendDispositionUpdateEmail(mentorId, candidateId) {
+  db.query(&#039;SELECT email, name FROM users WHERE id = ?&#039;, [mentorId], (error, results) =&gt; {
+    if (error) {
+      console.log(&#039;Error occurred while fetching mentor email:&#039;, error);
+      return;
+    }
+
+    const mentorEmail = results[0].email;
+    const mentorName = results[0].name;
+
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: mentorEmail,
+      subject: &#039;Disposition Update&#039;,
+      text: `Dear ${mentorName},\n\nThe disposition for candidate ID ${candidateId} has been updated.\n\nPlease log in to the system to review the updated disposition.\n`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) =&gt; {
+      if (error) {
+        console.log(&#039;Error occurred while sending email:&#039;, error);
+      } else {
+        console.log(&#039;Email sent:&#039;, info.response);
+      }
+    });
+  });
+}
+
+
+
+router.get(&#039;/download-disposition/:dispositionId&#039;, (req, res) =&gt; {
+  const { dispositionId } = req.params;
+
+  const query = &#039;SELECT disposition FROM diploma_status WHERE id = ?&#039;;
+
+  db.query(query, [dispositionId], (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during fetching disposition&#039;);
+    } else {
+      const dispositionPath = results[0].disposition;
+
+      
+      fs.access(dispositionPath, fs.constants.F_OK, (err) =&gt; {
+        if (err) {
+          console.log(err);
+          res.status(404).send(&#039;File not found&#039;);
+        } else {
+          
+          res.setHeader(&#039;Content-Type&#039;, &#039;application/vnd.openxmlformats-officedocument.wordprocessingml.document&#039;);
+          res.setHeader(&#039;Content-Disposition&#039;, &#039;attachment; filename=disposition.docx&#039;);
+          res.sendFile(path.resolve(dispositionPath));
+        }
+      });
+    }
+  });
+});
+
+
+
+
+router.get(&#039;/mentor&#039;, (req, res) =&gt; {
+  const query = `
+      SELECT users.*
+      FROM users
+      LEFT JOIN candidates ON users.id = candidates.mentor_id
+      WHERE users.role = &quot;user&quot;
+      GROUP BY users.id
+      HAVING COUNT(candidates.id) &lt; 11
+  `;
+  db.query(query, (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during fetching candidates&#039;);
+    } else {
+      const mentor = results.map(mentor =&gt; ({
+        id: mentor.id,
+        name: mentor.name,
+        email: mentor.email
+      }));
+      res.status(200).send(mentor);
+    }
+  });
+});
+
+  router.get(&#039;/submitted-dispositions/:mentorId&#039;, (req, res) =&gt; {
+    const { mentorId } = req.params;
+  
+    const query = &#039;SELECT * FROM diploma_status WHERE mentor_id = ? AND disposition_status = &quot;Disposition Submitted&quot;&#039;;
+  
+    db.query(query, [mentorId], (error, results) =&gt; {
+      if (error) {
+        console.log(error);
+        res.status(500).send(&#039;Error occurred during fetching submitted dispositions&#039;);
+      } else {
+        const dispositions = results.map(disposition =&gt; ({
+          id: disposition.id,
+          candidateId: disposition.candidate_id,
+          mentorId: disposition.mentor_id,
+          dispositionPath: disposition.disposition,
+          dispositionStatus: disposition.disposition_status
+        }));
+        res.status(200).send(dispositions);
+      }
+    });
+  });
+  router.get(&#039;/submitted-dispositionsUpdated/:mentorId&#039;, (req, res) =&gt; {
+    const { mentorId } = req.params;
+  
+    const query = &#039;SELECT * FROM diploma_status WHERE mentor_id = ? AND disposition_status = &quot;Disposition Updated&quot;&#039;;
+  
+    db.query(query, [mentorId], (error, results) =&gt; {
+      if (error) {
+        console.log(error);
+        res.status(500).send(&#039;Error occurred during fetching submitted dispositions&#039;);
+      } else {
+        const dispositions = results.map(disposition =&gt; ({
+          id: disposition.id,
+          candidateId: disposition.candidate_id,
+          mentorId: disposition.mentor_id,
+          dispositionPath: disposition.disposition,
+          dispositionStatus: disposition.disposition_status
+        }));
+        res.status(200).send(dispositions);
+      }
+    });
+  });
+  
+
+  router.get(&#039;/themed-dispositions/:mentorId&#039;, (req, res) =&gt; {
+    const { mentorId } = req.params;
+  
+    const query = &#039;SELECT * FROM diploma_status WHERE mentor_id = ? AND theme_status = &quot;Theme Submitted&quot;&#039;;
+  
+    db.query(query, [mentorId], (error, results) =&gt; {
+      if (error) {
+        console.log(error);
+        res.status(500).send(&#039;Error occurred during fetching submitted dispositions&#039;);
+      } else {
+        const dispositions = results.map(disposition =&gt; ({
+          id: disposition.id,
+          candidateId: disposition.candidate_id,
+          mentorId: disposition.mentor_id,
+          dispositionPath: disposition.disposition,
+          themeStatus: disposition.theme_status
+        }));
+        res.status(200).send(dispositions);
+      }
+    });
+  });
+
+  
+  router.post(&#039;/approve-disposition/:dispositionId&#039;, (req, res) =&gt; {
+    const { dispositionId } = req.params;
+    const { mentorId } = req.body;
+  
+    const statusQuery = &#039;UPDATE diploma_status SET disposition_status = ? WHERE id = ?&#039;;
+    const mentorQuery = &#039;UPDATE candidates SET mentor_id = ? WHERE id = (SELECT candidate_id FROM diploma_status WHERE id = ?)&#039;;
+  
+    db.query(statusQuery, [&#039;Disposition Approved&#039;, dispositionId], (error, results) =&gt; {
+      if (error) {
+        console.log(error);
+        res.status(500).send(&#039;Error occurred during approving disposition&#039;);
+      } else {
+        db.query(mentorQuery, [mentorId, dispositionId], (error, results) =&gt; {
+          if (error) {
+            console.log(error);
+            res.status(500).send(&#039;Error occurred during assigning mentor&#039;);
+          } else {
+            
+            db.query(&#039;SELECT candidate_id FROM diploma_status WHERE id = ?&#039;, [dispositionId], (error, results) =&gt; {
+              if (error) {
+                console.log(&#039;Error occurred while fetching candidate ID:&#039;, error);
+                return;
+              }
+  
+              const candidateId = results[0].candidate_id;
+  
+              
+              db.query(&#039;SELECT email,name FROM candidates WHERE id = ?&#039;, [candidateId], (error, results) =&gt; {
+                if (error) {
+                  console.log(&#039;Error occurred while fetching candidate email:&#039;, error);
+                  return;
+                }
+  
+                const candidateEmail = results[0].email;
+                const candidateName = results[0].name;
+  
+                
+                sendApprovalEmail(candidateEmail,candidateName);
+  
+                
+                res.status(200).send(&#039;Disposition approved and mentor assigned successfully&#039;);
+                
+              });
+            });
+          }
+        });
+      }
+    });
+  });
+  
+  function sendApprovalEmail(candidateEmail,candidateName) {
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: candidateEmail,
+      subject: &#039;Disposition Approval&#039;,
+      text: `Dear ${candidateName},\n\nYour disposition has been approved.\n\nCongratulations on this achievement!\n`,
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) =&gt; {
+      if (error) {
+        console.log(&#039;Error occurred while sending email:&#039;, error);
+      } else {
+        console.log(&#039;Email sent:&#039;, info.response);
+      }
+    });
+  }
+  
+  router.post(&#039;/disapprove-disposition/:dispositionId&#039;, (req, res) =&gt; {
+    const { dispositionId } = req.params;
+  
+    const query = &#039;UPDATE diploma_status SET disposition_status = ? WHERE id = ?&#039;;
+  
+    db.query(query, [&#039;Disposition Disapproved&#039;, dispositionId], (error, results) =&gt; {
+      if (error) {
+        console.log(error);
+        res.status(500).send(&#039;Error occurred during disapproving disposition&#039;);
+      } else {
+        
+        db.query(&#039;SELECT candidate_id FROM diploma_status WHERE id = ?&#039;, [dispositionId], (error, results) =&gt; {
+          if (error) {
+            console.log(&#039;Error occurred while fetching candidate ID:&#039;, error);
+            return;
+          }
+  
+          const candidateId = results[0].candidate_id;
+  
+          
+          db.query(&#039;SELECT email,name FROM candidates WHERE id = ?&#039;, [candidateId], (error, results) =&gt; {
+            if (error) {
+              console.log(&#039;Error occurred while fetching candidate email:&#039;, error);
+              return;
+            }
+  
+            const candidateEmail = results[0].email;
+            const candidateName = results[0].name;
+  
+            
+            sendDisapprovalEmail(candidateEmail,candidateName);
+  
+            
+            res.status(200).send(&#039;Disposition disapproved successfully&#039;);
+          });
+        });
+      }
+    });
+  });
+  
+  function sendDisapprovalEmail(candidateEmail,candidateName) {
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: candidateEmail,
+      subject: &#039;Disposition Disapproval&#039;,
+      text: `Dear ${candidateName},\n\nYour disposition has been disapproved.\n\nPlease log in and check disapproved list for further information.\n`,
+    };
+  
+    transporter.sendMail(mailOptions, (error, info) =&gt; {
+      if (error) {
+        console.log(&#039;Error occurred while sending email:&#039;, error);
+      } else {
+        console.log(&#039;Email sent:&#039;, info.response);
+      }
+    });
+  }
+  
+  
+  router.get(&#039;/:candidateId&#039;, (req, res) =&gt; {
+    const { candidateId } = req.params;
+    const query = &#039;SELECT * FROM diploma_status WHERE candidate_id = ? ORDER BY id DESC &#039;;
+    db.query(query, [candidateId], (error, results) =&gt; {
+      if (error) {
+        console.log(error);
+        res.status(500).send(&#039;Error occurred during fetching current disposition&#039;);
+      } else {
+        if (results.length === 0) {
+          
+          res.status(404).send(&#039;No current disposition found&#039;);
+        } else {
+          const currentDisposition = results[0];
+          
+          res.status(200).json(currentDisposition);
+        }
+      }
+    });
+  });
+  
+  
+  const uploadT = multer({ dest: &#039;uploads/&#039; });
+
+router.post(&#039;/submitTheme/:dispositionId&#039;, uploadT.single(&#039;dissertationTheme&#039;), async (req, res) =&gt; {
+  const theme = req.file;
+  const { candidateId } = req.body;
+  const dispositionId = req.params.dispositionId; 
+
+  try {
+    
+    const mentorId = await new Promise((resolve, reject) =&gt; {
+      db.query(&#039;SELECT mentor_id FROM diploma_status WHERE candidate_id = ? AND id = ?&#039;, [candidateId, dispositionId], (error, results) =&gt; {
+        if (error) {
+          console.log(&#039;Error occurred while fetching mentor ID:&#039;, error);
+          reject(error);
+        } else {
+          const mentorId = results[0].mentor_id;
+          resolve(mentorId);
+        }
+      });
+    });
+    const mentorName = await new Promise((resolve, reject) =&gt; {
+      db.query(&#039;SELECT name FROM users WHERE id = ?&#039;, [mentorId], (error, results) =&gt; {
+        if (error) {
+          console.log(&#039;Error occurred while fetching mentor ID:&#039;, error);
+          reject(error);
+        } else {
+          const mentorName = results[0].name;
+          resolve(mentorName);
+        }
+      });
+    });
+
+    
+    db.query(
+      &#039;UPDATE diploma_status SET theme_status = ?, theme = ? WHERE candidate_id = ? AND id = ?&#039;,
+      [&#039;Theme Submitted&#039;, theme.path, candidateId, dispositionId],
+      (error, results) =&gt; {
+        if (error) {
+          console.log(&#039;Database operation error:&#039;, error);
+          return res.status(500).json({ error });
+        }
+
+        
+        sendThemeSubmissionEmail(mentorId, candidateId, mentorName);
+
+        
+        res.json({ message: &#039;Dissertation theme submitted successfully!&#039; });
+      }
+    );
+  } catch (error) {
+    console.error(&#039;Error occurred while submitting dissertation theme:&#039;, error);
+    res.status(500).json({ error: &#039;An error occurred while submitting the dissertation theme.&#039; });
+  }
+});
+
+function sendThemeSubmissionEmail(mentorId, candidateId, mentorName) {
+  db.query(&#039;SELECT email FROM users WHERE id = ?&#039;, [mentorId], (error, results) =&gt; {
+    if (error) {
+      console.log(&#039;Error occurred while fetching mentor email:&#039;, error);
+      return;
+    }
+
+    const mentorEmail = results[0].email;
+
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: mentorEmail,
+      subject: &#039;Dissertation Theme Submission&#039;,
+      text: `Dear ${mentorName},\n\nTheme form has been submitted by candidate ID ${candidateId} for your review and signature.\n\nPlease log in to the system to access the theme.\n`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) =&gt; {
+      if (error) {
+        console.log(&#039;Error occurred while sending email:&#039;, error);
+      } else {
+        console.log(&#039;Email sent:&#039;, info.response);
+      }
+    });
+  });
+}
+
+
+router.get(&#039;/download-theme/:themeId&#039;, (req, res) =&gt; {
+  const { themeId } = req.params;
+
+  const query = &#039;SELECT theme FROM diploma_status WHERE id = ?&#039;;
+
+  db.query(query, [themeId], (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during fetching theme&#039;);
+    } else {
+      const themePath = results[0].theme;
+
+      
+      fs.access(themePath, fs.constants.F_OK, (err) =&gt; {
+        if (err) {
+          console.log(err);
+          res.status(404).send(&#039;File not found&#039;);
+        } else {
+          
+          res.setHeader(&#039;Content-Type&#039;, &#039;application/octet-stream&#039;);
+          res.setHeader(&#039;Content-Disposition&#039;, &#039;attachment; filename=theme.docx&#039;);
+          res.sendFile(path.resolve(themePath));
+        }
+      });
+    }
+  });
+});
+router.get(&#039;/download-themeSigned/:themeId&#039;, (req, res) =&gt; {
+  const { themeId } = req.params;
+
+  const selectQuery = &#039;SELECT signed_theme FROM diploma_status WHERE id = ?&#039;;
+  const updateQuery = &#039;UPDATE diploma_status SET disposition_status = ? WHERE id = ?&#039;;
+
+  db.query(selectQuery, [themeId], (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during fetching theme&#039;);
+    } else {
+      const themePath = results[0].signed_theme;
+
+      
+      fs.access(themePath, fs.constants.F_OK, (err) =&gt; {
+        if (err) {
+          console.log(err);
+          res.status(404).send(&#039;File not found&#039;);
+        } else {
+          
+          res.setHeader(&#039;Content-Type&#039;, &#039;application/octet-stream&#039;);
+          res.setHeader(&#039;Content-Disposition&#039;, &#039;attachment; filename=themeSigned.docx&#039;);
+          res.sendFile(path.resolve(themePath));
+
+          
+          db.query(updateQuery, [&#039;Disposition Downloaded&#039;, themeId], (error) =&gt; {
+            if (error) {
+              console.log(error);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
+router.post(&#039;/accept-theme/:themeId&#039;, (req, res) =&gt; {
+  const { themeId } = req.params;
+
+  const query = &#039;UPDATE diploma_status SET theme_status = ? WHERE id = ?&#039;;
+
+  db.query(query, [&#039;Theme Accepted&#039;, themeId], (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during accepting theme&#039;);
+    } else {
+      res.status(200).send(&#039;Theme accepted successfully&#039;);
+    }
+  });
+});
+
+router.post(&#039;/decline-theme/:themeId&#039;, (req, res) =&gt; {
+  const { themeId } = req.params;
+
+  const query = &#039;UPDATE diploma_status SET theme_status = ? WHERE id = ?&#039;;
+
+  db.query(query, [&#039;Theme Declined&#039;, themeId], (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during declining theme&#039;);
+    } else {
+      res.status(200).send(&#039;Theme declined successfully&#039;);
+    }
+  });
+});  
+
+
+router.get(&#039;/status/:candidateId&#039;, (req, res) =&gt; {
+  const { candidateId } = req.params;
+
+  const query = &#039;SELECT theme_status FROM diploma_status WHERE candidate_id = ? ORDER BY id DESC LIMIT 1&#039;;
+
+  db.query(query, [candidateId], (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during fetching theme status&#039;);
+    } else {
+      if (results.length === 0) {
+        
+        res.status(404).send(&#039;No theme status found for this candidate&#039;);
+      } else {
+        const themeStatus = results[0].theme_status;
+        
+        res.status(200).json({ currentThemeStatus: themeStatus });
+      }
+    }
+  });
+});
+router.get(&#039;/statusDisp/:candidateId&#039;, (req, res) =&gt; {
+  const { candidateId } = req.params;
+
+  const query = &#039;SELECT disposition_status FROM diploma_status WHERE candidate_id = ? ORDER BY id DESC LIMIT 1&#039;;
+
+  db.query(query, [candidateId], (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during fetching theme status&#039;);
+    } else {
+      if (results.length === 0) {
+        
+        res.status(404).send(&#039;No theme status found for this candidate&#039;);
+      } else {
+        const themeStatus = results[0].disposition_status;
+        
+        res.status(200).json({ currentThemeStatus: themeStatus });
+      }
+    }
+  });
+});
+
+router.post(&#039;/uploadSignedTheme/:dispositionId&#039;, upload.single(&#039;signedTheme&#039;), (req, res) =&gt; {
+  const signedTheme = req.file;
+  const dispositionId = req.params.dispositionId;
+
+  console.log(signedTheme.path);
+  console.log(dispositionId);
+
+  db.query(
+    &#039;UPDATE diploma_status SET signed_theme = ? WHERE id = ?&#039;,
+    [signedTheme.path, dispositionId],
+    (error, results) =&gt; {
+      if (error) {
+        console.log(&#039;Database operation error:&#039;, error);
+        return res.status(500).json({ error });
+      }
+
+      
+      db.query(&#039;SELECT candidate_id FROM diploma_status WHERE id = ?&#039;, [dispositionId], (error, results) =&gt; {
+        if (error) {
+          console.log(&#039;Error occurred while fetching student ID:&#039;, error);
+          return;
+        }
+
+        const candidateId = results[0].candidate_id;
+
+        
+        db.query(&#039;SELECT email,name FROM candidates WHERE id = ?&#039;, [candidateId], (error, results) =&gt; {
+          if (error) {
+            console.log(&#039;Error occurred while fetching student email:&#039;, error);
+            return;
+          }
+
+          const studentEmail = results[0].email;
+          const studentName = results[0].name;
+
+          
+          sendSignedThemeEmail(studentEmail,studentName);
+
+          res.json({ message: &#039;Signed theme submitted successfully!&#039; });
+        });
+      });
+    }
+  );
+});
+
+function sendSignedThemeEmail(studentEmail,studentName) {
+  const mailOptions = {
+    from: process.env.GMAIL_USER,
+    to: studentEmail,
+    subject: &#039;Signed Theme Submission&#039;,
+    text: `Dear ${studentName},\n\nYour signed theme documents are now available for download.\n\nPlease log in to the system to download them and make sure to submit them to the faculty before the submission deadline.\n`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) =&gt; {
+    if (error) {
+      console.log(&#039;Error occurred while sending email:&#039;, error);
+    } else {
+      console.log(&#039;Email sent:&#039;, info.response);
+    }
+  });
+}
+
+router.post(&#039;/comment/:dispositionId&#039;, (req, res) =&gt; {
+  const { comment } = req.body; 
+  const { dispositionId } = req.params; 
+
+  db.query(
+    &#039;UPDATE diploma_status SET comment = ? WHERE id = ?&#039;,
+    [comment, dispositionId],
+    (error, results) =&gt; {
+      if (error) {
+        console.log(&#039;Database operation error:&#039;, error);
+        return res.status(500).json({ error });
+      }
+
+      res.json({ message: &#039;Comment successfully added!&#039; });
+    }
+  );
+});
+
+router.get(&#039;/comment/:candidateId&#039;, (req, res) =&gt; {
+  const { candidateId } = req.params;
+
+  db.query(
+    &#039;SELECT comment FROM diploma_status WHERE candidate_id = ?&#039;,
+    [candidateId],
+    (error, results) =&gt; {
+      if (error) {
+        console.log(&#039;Database operation error:&#039;, error);
+        return res.status(500).json({ error });
+      }
+
+      res.json({ comment: results[0].comment });
+    }
+  );
+});
+
+
+router.delete(&#039;/delete/:id&#039;, (req, res) =&gt; {
+  const { id } = req.params;
+  const query = &#039;DELETE FROM diploma_status WHERE id = ?&#039;;
+
+  db.query(query, id, (error, results) =&gt; {
+    if (error) {
+      console.log(error);
+      res.status(500).send(&#039;Error occurred during deleting the disposition&#039;);
+    } else {
+      res.send(&#039;Successfully deleted disposition&#039;);
+    }
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = router;</textarea>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p>.</p>
+  </div>
+</footer>
+
+<script type="text/html" id="complexity-popover-template">
+  <div class="complexity-notice">
+    Complexity : {{ cyclomatic }} <br>
+    Length : {{ halstead.length }} <br>
+    Difficulty : {{ halstead.difficulty.toFixed(2) }} <br>
+    Est # bugs : {{ halstead.bugs.toFixed(2) }}<br>
+  </div>
+</script>
+
+<script type="text/javascript" src="../../assets/scripts/bundles/core-bundle.js"></script>
+<script type="text/javascript" src="../../assets/scripts/bundles/codemirror.js"></script>
+<script type="text/javascript" src="../../assets/scripts/codemirror.markpopovertext.js"></script>
+<script type="text/javascript" src="report.js"></script>
+<script type="text/javascript" src="report.history.js"></script>
+<script type="text/javascript" src="../../assets/scripts/plato-file.js"></script>
+</body>
+</html>
