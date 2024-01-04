@@ -115,10 +115,10 @@ export default {
     async deleteDisposition(id) {
   try {
     //eslint-disable-next-line no-unused-vars
-    const response = await axios.delete(`http://localhost:3000/disposition/delete/${id}`);
+    const response = await axios.delete(`https://diplomainsight.onrender.com/disposition/delete/${id}`);
     alert("You have successfully deleted the disposition!");
     // Refresh the list of submitted dispositions
-    const submittedResponse = await axios.get(`http://localhost:3000/status/diploma-status/thesis-submitted/${this.mentorId}`);
+    const submittedResponse = await axios.get(`https://diplomainsight.onrender.com/status/diploma-status/thesis-submitted/${this.mentorId}`);
     this.submitted = submittedResponse.data;
   } catch (error) {
     console.error(error);

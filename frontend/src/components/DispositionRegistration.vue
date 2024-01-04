@@ -97,12 +97,12 @@ export default {
 },
 async downloadBlankDisposition() {
   try {
-    const response = await axios.get('http://diplomainsight.onrender.com/document/download/disposition');
+    const response = await axios.get('https://diplomainsight.onrender.com/document/download/disposition');
     if (response.status === 204) {
       alert('Admin did not submit any documents.');
       return;
     }
-    window.location.href = "http://diplomainsight.onrender.com/document/download/disposition";
+    window.location.href = "https://diplomainsight.onrender.com/document/download/disposition";
   } catch (error) {
     console.error(error);
     if (error.response && error.response.status === 404) {
@@ -115,12 +115,12 @@ async downloadBlankDisposition() {
 
 async downloadBlankTheme() {
     try {
-        const response = await axios.get('http://diplomainsight.onrender.com/document/download/theme');
+        const response = await axios.get('https://diplomainsight.onrender.com/document/download/theme');
         if (response.status === 204) {
             alert('Admin did not submit any documents.');
             return;
         }
-        window.location.href = "http://diplomainsight.onrender.com/document/download/theme";
+        window.location.href = "https://diplomainsight.onrender.com/document/download/theme";
     } catch (error) {
         console.error(error);
         if (error.response && error.response.status === 404) {
