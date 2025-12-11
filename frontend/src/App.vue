@@ -88,7 +88,7 @@
   </div>
 
   <div style="padding-top: 10%;" v-if="showLoginForm">
-    <Login @hide-form="hideForms" @user-logged-in="checkSession" />
+    <Login @hide-form="hideForms" @user-logged-in="handleLoginSuccess" />
   </div>
 
   <div style="padding-top: 10%;" v-if="showRegisterForm">
@@ -243,6 +243,19 @@ export default {
   },
 
   methods: {
+    async handleLoginSuccess() {
+      // 1. refresh info about logged-in user
+      await this.checkSession();
+
+      // 2. show the correct “home” depending on role
+      if (this.isAdmin) {
+        this.showAdmin();
+      } else if (this.isUser) {
+        this.showUserHome();
+      } else if (this.isCandidate) {
+        this.showHomeStudent();
+      }
+    },
     async checkSession() {
       try {
         const response = await axios.get('https://diplomainsight.onrender.com/check-session', { withCredentials: true });
