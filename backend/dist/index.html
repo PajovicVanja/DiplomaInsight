@@ -9,7 +9,10 @@
 
   <!-- Contentsquare / Hotjar tracking script -->
   <script src="https://t.contentsquare.net/uxa/7565b2e24550c.js"></script>
-  <script>hj('event', 'variant_A');</script>
+<script>
+  window.hj = window.hj || function(){ (hj.q = hj.q || []).push(arguments) };
+  hj('event', 'variant_A');
+</script>
 
   <!-- existing Vue build scripts -->
   <script defer="defer" src="/js/chunk-vendors.c30d2017.js"></script>
