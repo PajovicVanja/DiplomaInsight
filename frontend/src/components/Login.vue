@@ -1,9 +1,19 @@
 <template>
-   <div class="login-container">
-    <h2 >Login</h2>
+  <div class="login-container">
+    <h2>Login</h2>
     <form class="login-form" @submit.prevent="login">
-      <input class="input-field" type="email" placeholder="Email" v-model="email" />
-      <input class="input-field" type="password" placeholder="Password" v-model="password" />
+      <input 
+        class="input-field" 
+        type="email" 
+        placeholder="Email" 
+        v-model="email" 
+      />
+      <input 
+        class="input-field" 
+        type="password" 
+        placeholder="Password" 
+        v-model="password" 
+      />
       <button class="submit-btn" type="submit">Login</button>
     </form>
   </div>
@@ -22,16 +32,26 @@ export default {
   },
   methods: {
     login() {
+      const loginData = {
+        email: this.email,
+        password: this.password
+      };
 
-    const loginData = {
-      email: this.email,
-      password: this.password
-    };
-
-    axios.post('https://diplomainsight.onrender.com/login', loginData, { withCredentials: true })
+      axios.post(
+        'https://diplomainsight.onrender.com/login',
+        loginData,
+        { withCredentials: true }
+      )
       .then(response => {
         if (response.status === 200) {
+          // ✅ OBAVJESTI APP DA JE USER LOGOVAN
           this.$emit('user-logged-in');
+
+          // ✅ ✅ ✅ B VERZIJA: AUTOMATSKI REDIRECT
+          this.$router.push('/'); 
+          // Ako imaš posebnu rutu:
+          // this.$router.push('/home');
+          // this.$router.push('/dashboard');
         }
       })
       .catch(error => {
@@ -41,13 +61,9 @@ export default {
           console.error('Error:', error);
         }
       });
-  }
+    }
   }
 }
-
 </script>
 
 <style src="../css/Login.css" scoped></style>
-
-
-
