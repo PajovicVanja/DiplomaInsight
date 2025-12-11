@@ -1,40 +1,57 @@
 <template>
   <div class="document-container">
-    <h1 class="header">Submit Documents</h1>
 
-    <form @submit.prevent="submitDocuments" class="form-container">
-      <div class="form-group">
-        <label for="themeForm" class="form-label">Blank Theme Form:</label>
-        <input type="file" id="themeForm" class="form-input" @change="onThemeFormChange" required>
-      </div>
+    <h1 class="main-title">Document Management</h1>
 
-      <div class="form-group">
-        <label for="dispositionForm" class="form-label">Blank Disposition Form:</label>
-        <input type="file" id="dispositionForm" class="form-input" @change="onDispositionFormChange" required>
-      </div>
+    <!-- ✅ THEME SECTION -->
+    <div class="section-card theme-section">
+      <h2>Theme Form</h2>
 
-      <button type="submit" class="submit-btn">Submit</button>
-    </form>
+      <form @submit.prevent="submitTheme">
+        <div class="form-group">
+          <label>Upload New Theme Form:</label>
+          <input type="file" @change="onThemeFormChange" required />
+        </div>
 
-    <h1 class="header">Update Documents</h1>
+        <button type="submit" class="submit-btn">Submit Theme</button>
+      </form>
 
-    <form @submit.prevent="updateDocuments" class="form-container">
-      <div class="form-group">
-        <label for="updateThemeForm" class="form-label">Updated Blank Theme Form:</label>
-        <input type="file" id="updateThemeForm" class="form-input" @change="onUpdateThemeFormChange" required>
-      </div>
+      <form @submit.prevent="updateTheme" class="update-form">
+        <div class="form-group">
+          <label>Update Existing Theme Form:</label>
+          <input type="file" @change="onUpdateThemeFormChange" required />
+        </div>
 
-      <div class="form-group">
-        <label for="updateDispositionForm" class="form-label">Updated Blank Disposition Form:</label>
-        <input type="file" id="updateDispositionForm" class="form-input" @change="onUpdateDispositionFormChange" required>
-      </div>
+        <button type="submit" class="update-btn">Update Theme</button>
+      </form>
+    </div>
 
-      <button type="submit" class="update-btn">Update</button>
-    </form>
+    <!-- ✅ DISPOSITION SECTION -->
+    <div class="section-card disposition-section">
+      <h2>Disposition Form</h2>
+
+      <form @submit.prevent="submitDisposition">
+        <div class="form-group">
+          <label>Upload New Disposition Form:</label>
+          <input type="file" @change="onDispositionFormChange" required />
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Disposition</button>
+      </form>
+
+      <form @submit.prevent="updateDisposition" class="update-form">
+        <div class="form-group">
+          <label>Update Existing Disposition Form:</label>
+          <input type="file" @change="onUpdateDispositionFormChange" required />
+        </div>
+
+        <button type="submit" class="update-btn">Update Disposition</button>
+      </form>
+    </div>
+
   </div>
 </template>
 
-  
 <script>
 import axios from 'axios';
 
@@ -60,40 +77,64 @@ export default {
     onUpdateDispositionFormChange(e) {
       this.updateDispositionForm = e.target.files[0];
     },
-    async submitDocuments() {
+
+    async submitTheme() {
       const formData = new FormData();
       formData.append('blank_theme', this.themeForm);
+
+      try {
+        const response = await axios.post(
+          'https://diplomainsight.onrender.com/document/create',
+          formData
+        );
+        alert(response.data.message);
+      } catch (error) {
+        alert('Error while submitting theme.');
+      }
+    },
+
+    async updateTheme() {
+      const formData = new FormData();
+      formData.append('blank_theme', this.updateThemeForm);
+
+      try {
+        const response = await axios.put(
+          'https://diplomainsight.onrender.com/documents/1',
+          formData
+        );
+        alert(response.data.message);
+      } catch (error) {
+        alert('Error while updating theme.');
+      }
+    },
+
+    async submitDisposition() {
+      const formData = new FormData();
       formData.append('blank_disposition', this.dispositionForm);
 
       try {
-        const response = await axios.post('https://diplomainsight.onrender.com/document/create', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-
+        const response = await axios.post(
+          'https://diplomainsight.onrender.com/document/create',
+          formData
+        );
         alert(response.data.message);
       } catch (error) {
-        console.error(error);
-        alert('An error occurred while submitting the documents.');
+        alert('Error while submitting disposition.');
       }
     },
-    async updateDocuments() {
+
+    async updateDisposition() {
       const formData = new FormData();
-      formData.append('blank_theme', this.updateThemeForm);
       formData.append('blank_disposition', this.updateDispositionForm);
 
       try {
-        const response = await axios.put('https://diplomainsight.onrender.com/documents/1', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-
+        const response = await axios.put(
+          'https://diplomainsight.onrender.com/documents/1',
+          formData
+        );
         alert(response.data.message);
       } catch (error) {
-        console.error(error);
-        alert('An error occurred while updating the documents.');
+        alert('Error while updating disposition.');
       }
     }
   }
@@ -101,78 +142,77 @@ export default {
 </script>
 
 <style scoped>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-}
 
 .document-container {
-  background-color: #ffffff;
+  background: #f5f7fa;
+  min-height: 100vh;
+  padding: 50px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 3em;
 }
 
-.header {
-  color: #333;
-  margin-bottom: 1em;
+.main-title {
+  font-size: 32px;
+  margin-bottom: 40px;
+  font-weight: bold;
 }
 
-.form-container {
-  display: flex;
-  flex-direction: column;
+.section-card {
+  background: white;
   width: 100%;
-  max-width: 600px;
-  padding-bottom: 30px;
+  max-width: 700px;
+  padding: 30px;
+  margin-bottom: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.section-card h2 {
+  margin-bottom: 20px;
 }
 
 .form-group {
-  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
 }
 
-.form-label {
-  margin-bottom: 0.5em;
-}
-
-.form-input {
-  padding: 0.5em;
-}
-
-.submit-btn, .update-btn {
-  padding: 0.5em 1em;
-  border: none;
-  color: white;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+.form-group input {
+  padding: 8px;
 }
 
 .submit-btn {
   background-color: #007BFF;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.update-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .submit-btn:hover {
   background-color: #0069d9;
 }
 
-.update-btn {
-  background-color: #28a745;
-}
-
 .update-btn:hover {
   background-color: #218838;
 }
 
-@media (max-width: 768px) {
-  .form-container {
-    width: 100%;
-  }
+.update-form {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
 }
 
 </style>
-  
