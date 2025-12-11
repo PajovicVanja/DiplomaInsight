@@ -31,30 +31,34 @@ export default {
     }
   },
   methods: {
-    async login() {
-      try {
-        const response = await axios.post(
-          'https://diplomainsight.onrender.com/login',
-          {
-            email: this.email,
-            password: this.password
-          },
-          { withCredentials: true }
-        );
+async login() {
+  try {
+    const response = await axios.post(
+      'https://diplomainsight.onrender.com/login',
+      {
+        email: this.email,
+        password: this.password
+      },
+      { withCredentials: true }
+    );
 
-        if (response.status === 200) {
-          this.$emit('user-logged-in');
+    if (response.status === 200) {
+      // 🔥 JAVIMO App.vue DA JE LOGIN USPJEŠAN
+      this.$emit('user-logged-in');
 
-        }
-
-      } catch (error) {
-        if (error.response) {
-          alert(error.response.data);
-        } else {
-          console.error('Error:', error);
-        }
-      }
+      // 🔥 SAKRIJ LOGIN FORMU (pošalji event roditelju)
+      this.$emit('hide-form');
     }
+
+  } catch (error) {
+    if (error.response) {
+      alert(error.response.data);
+    } else {
+      console.error('Error:', error);
+    }
+  }
+}
+
   }
 }
 </script>
